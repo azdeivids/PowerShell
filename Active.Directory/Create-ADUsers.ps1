@@ -1,8 +1,8 @@
 <#
 .SYNOPSIS
-Create Active Directory users in bulk from a CSV file
+Create Active Directory users in bulk from a CSV file.
 .DESCRIPTION
-Create Active Directory users in bulk from a CSV file
+Create Active Directory users in bulk from a CSV file.
 .PARAMETER filepath
 The path and file name to the CSV containing the details for account creation. This parameter is mandatory.
 .PARAMETER upnsuffix
@@ -11,7 +11,7 @@ The UPN suffix to be added to the user. Will be used for their email address fie
 Path to the Organizational Unit in Active Directory where all the users should be placed during the creation. This parameter is mandatory.
 .PARAMETER ADGroup
 Group name where the users are to be joined. Can accept multiple values. This parameter is optional.
-.PARAMETER Password
+.PARAMETER Credentials
 Password to be set for the users during the account creation. 
 .PARAMETER pwreset
 Enable or disabled the option for the created users to reset their password.
@@ -44,7 +44,8 @@ param(
     $ADGroup,
     [Alias("Dept")]
     $Department,
-    $Password,
+    [Alias("Password")]
+    $Credentials,
     $pwreset
 )
 If (Test-Path -LiteralPath $filepath)
@@ -56,13 +57,13 @@ If (Test-Path -LiteralPath $filepath)
         $UserLastName = $User.Lastname
         $samAccountName = $User.samAccountName
         $Upn = $samAccountName + "@$upnsuffix"
-        $Password = $User.Password
+        $Credentials = $User.Credentials
 
         $ValidateUser = Get-ADUser -Filter "samAccountName -eq '$samAccountName'"
 
         If ($ValidateUser -eq $null)
         {
-            New-ADUser -Name $samAccountName -DisplayName $Displayname -GivenName $UserFirstName -Surname $UserLastName -SamAccountName $samAccountName -UserPrincipalName $upn -Department $Department -EmailAddress $upn -ChangePasswordAtLogon $pwreset -AccountPassword (ConvertTo-SecureString $Password -AsPlainText) -Enabled $true -PasswordNeverExpires $True -Verbose
+            New-ADUser -Name $samAccountName -DisplayName $Displayname -GivenName $UserFirstName -Surname $UserLastName -SamAccountName $samAccountName -UserPrincipalName $upn -Department $Department -EmailAddress $upn -ChangePasswordAtLogon $pwreset -AccountPassword (ConvertTo-SecureString $Credentials -AsPlainText) -Enabled $true -PasswordNeverExpires $True -Verbose
 
             If ($AdGroup)
             {
