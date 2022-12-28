@@ -636,11 +636,21 @@ Function UninstallMsftBloat {
 	Get-AppxPackage "Microsoft.YourPhone" | Remove-AppxPackage -AllUsers
 	Get-AppxPackage "Microsoft.MixedReality.Portal" | Remove-AppxPackage -AllUsers
 	Get-AppxPackage "Microsoft.Todos" | Remove-AppxPackage -AllUsers
-	Get-AppxPackage "Microsoft.XboxGameCallableUI" | Remove-AppxPackage -AllUsers	
-	Get-AppxPackage "Microsoft.XboxIdentityProvider" | Remove-AppxPackage -AllUsers
 	Get-AppxPackage "Microsoft.WindowsSoundRecorder" | Remove-AppxPackage -AllUsers
 	Get-AppxPackage "Microsoft.ZuneMusic" | Remove-AppxPackage -AllUsers
 	Get-AppxPackage "Microsoft.ZuneVideo" | Remove-AppxPackage -AllUsers
+	Get-AppxPackage "Microsoft.XboxApp" | Remove-AppxPackage -AllUsers
+	Get-AppxPackage "Microsoft.XboxIdentityProvider" | Remove-AppxPackage -AllUsers -ErrorAction SilentlyContinue
+	Get-AppxPackage "Microsoft.XboxSpeechToTextOverlay" | Remove-AppxPackage -AllUsers
+	Get-AppxPackage "Microsoft.XboxGameOverlay" | Remove-AppxPackage -AllUsers
+	Get-AppxPackage "Microsoft.XboxGameCallableUI" | Remove-AppxPackage -AllUsers
+	Get-AppxPackage "Microsoft.Xbox.TCUI" | Remove-AppxPackage -AllUsers
+
+	If (!(Test-Path "HKLM:\SOFTWARE\Policies\Microsoft\Windows\GameDVR")) {
+		New-Item -Path "HKLM:\SOFTWARE\Policies\Microsoft\Windows\GameDVR" | Out-Null
+	}
+	Set-ItemProperty -Path "HKCU:\System\GameConfigStore" -Name "GameDVR_Enabled" -Type DWord -Value 0
+	Set-ItemProperty -Path "HKLM:\SOFTWARE\Policies\Microsoft\Windows\GameDVR" -Name "AllowGameDVR" -Type DWord -Value 0
 }
 function UninstallThirdPartyBloat {
 	Write-Output "Uninstalling default third party applications..."
