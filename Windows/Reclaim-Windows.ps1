@@ -1,3 +1,5 @@
+"############################################### CONIGURATION LOG ############################################### `n" >> "windows_configuration.log"
+
 # Default preset
 $tweaks = @(
 	### Require administrator privileges ###
