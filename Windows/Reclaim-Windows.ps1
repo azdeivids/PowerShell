@@ -167,6 +167,8 @@ Function DisableTelemetry {
 	Disable-ScheduledTask -TaskName "Microsoft\Windows\Customer Experience Improvement Program\Consolidator" | Out-Null
 	Disable-ScheduledTask -TaskName "Microsoft\Windows\Customer Experience Improvement Program\UsbCeip" | Out-Null
 	Disable-ScheduledTask -TaskName "Microsoft\Windows\DiskDiagnostic\Microsoft-Windows-DiskDiagnosticDataCollector" | Out-Null
+
+	" Telemetry has been disabled `n" >> "windows_configuration.xml"
 }
 # Enable Telemetry
 Function EnableTelemetry {
@@ -180,6 +182,8 @@ Function EnableTelemetry {
 	Enable-ScheduledTask -TaskName "Microsoft\Windows\Customer Experience Improvement Program\Consolidator" | Out-Null
 	Enable-ScheduledTask -TaskName "Microsoft\Windows\Customer Experience Improvement Program\UsbCeip" | Out-Null
 	Enable-ScheduledTask -TaskName "Microsoft\Windows\DiskDiagnostic\Microsoft-Windows-DiskDiagnosticDataCollector" | Out-Null
+
+	" Telemetry has been enabled `n" >> "windows_configuration.xml"
 }
 # Disable Web Search in Start Menu
 Function DisableWebSearch {
@@ -190,6 +194,8 @@ Function DisableWebSearch {
 		New-Item -Path "HKLM:\SOFTWARE\Policies\Microsoft\Windows\Windows Search" -Force | Out-Null
 	}
 	Set-ItemProperty -Path "HKLM:\SOFTWARE\Policies\Microsoft\Windows\Windows Search" -Name "DisableWebSearch" -Type DWord -Value 1
+
+	" Web Search has been disabled in Start Menu `n" >> "windows_configuration.xml"
 }
 # Enable Web Search in Start Menu
 Function EnableWebSearch {
@@ -197,6 +203,8 @@ Function EnableWebSearch {
 	Remove-ItemProperty -Path "HKCU:\SOFTWARE\Microsoft\Windows\CurrentVersion\Search" -Name "BingSearchEnabled" -ErrorAction SilentlyContinue
 	Set-ItemProperty -Path "HKCU:\SOFTWARE\Microsoft\Windows\CurrentVersion\Search" -Name "CortanaConsent" -Type DWord -Value 1
 	Remove-ItemProperty -Path "HKLM:\SOFTWARE\Policies\Microsoft\Windows\Windows Search" -Name "DisableWebSearch" -ErrorAction SilentlyContinue
+
+	" Web Search has been enabled in Start Menu `n" >> "windows_configuration.xml"
 }
 # Disable Application suggestions and automatic installation
 Function DisableAppSuggestions {
@@ -215,6 +223,8 @@ Function DisableAppSuggestions {
 		New-Item -Path "HKLM:\SOFTWARE\Policies\Microsoft\Windows\CloudContent" -Force | Out-Null
 	}
 	Set-ItemProperty -Path "HKLM:\SOFTWARE\Policies\Microsoft\Windows\CloudContent" -Name "DisableWindowsConsumerFeatures" -Type DWord -Value 1
+
+	" App Suggestion and automatic updates disabled `n" >> "windows_configuration.xml"
 }
 
 # Enable Application suggestions and automatic installation
@@ -231,6 +241,8 @@ Function EnableAppSuggestions {
 	Remove-ItemProperty -Path "HKCU:\Software\Microsoft\Windows\CurrentVersion\ContentDeliveryManager" -Name "SubscribedContent-338387Enabled" -ErrorAction SilentlyContinue
 	Remove-ItemProperty -Path "HKCU:\SOFTWARE\Microsoft\Windows\CurrentVersion\ContentDeliveryManager" -Name "SubscribedContent-353698Enabled" -ErrorAction SilentlyContinue
 	Remove-ItemProperty -Path "HKLM:\SOFTWARE\Policies\Microsoft\Windows\CloudContent" -Name "DisableWindowsConsumerFeatures" -ErrorAction SilentlyContinue
+
+	" App Suggestion and automatic updates enabled `n" >> "windows_configuration.xml"
 }
 # Disable Location Tracking
 Function DisableLocationTracking {
@@ -241,6 +253,8 @@ Function DisableLocationTracking {
 	Set-ItemProperty -Path "HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\CapabilityAccessManager\ConsentStore\location" -Name "Value" -Type String -Value "Deny"
 	Set-ItemProperty -Path "HKLM:\SOFTWARE\Microsoft\Windows NT\CurrentVersion\Sensor\Overrides\{BFA794E4-F964-4FDB-90F6-51056BFE4B44}" -Name "SensorPermissionState" -Type DWord -Value 0
 	Set-ItemProperty -Path "HKLM:\SYSTEM\CurrentControlSet\Services\lfsvc\Service\Configuration" -Name "Status" -Type DWord -Value 0
+
+	" Location tracking disabled `n" >> "windows_configuration.xml"
 }
 
 # Enable Location Tracking
@@ -252,6 +266,8 @@ Function EnableLocationTracking {
 	Set-ItemProperty -Path "HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\CapabilityAccessManager\ConsentStore\location" -Name "Value" -Type String -Value "Allow"
 	Set-ItemProperty -Path "HKLM:\SOFTWARE\Microsoft\Windows NT\CurrentVersion\Sensor\Overrides\{BFA794E4-F964-4FDB-90F6-51056BFE4B44}" -Name "SensorPermissionState" -Type DWord -Value 1
 	Set-ItemProperty -Path "HKLM:\SYSTEM\CurrentControlSet\Services\lfsvc\Service\Configuration" -Name "Status" -Type DWord -Value 1
+
+	" Location tracking enabled `n" >> "windows_configuration.xml"
 }
 # Disable Feedback
 Function DisableFeedback {
@@ -263,6 +279,8 @@ Function DisableFeedback {
 	Set-ItemProperty -Path "HKLM:\SOFTWARE\Policies\Microsoft\Windows\DataCollection" -Name "DoNotShowFeedbackNotifications" -Type DWord -Value 1
 	Disable-ScheduledTask -TaskName "Microsoft\Windows\Feedback\Siuf\DmClient" -ErrorAction SilentlyContinue | Out-Null
 	Disable-ScheduledTask -TaskName "Microsoft\Windows\Feedback\Siuf\DmClientOnScenarioDownload" -ErrorAction SilentlyContinue | Out-Null
+
+	" Feedback disabled `n" >> "windows_configuration.xml"
 }
 
 # Enable Feedback
@@ -272,6 +290,8 @@ Function EnableFeedback {
 	Remove-ItemProperty -Path "HKLM:\SOFTWARE\Policies\Microsoft\Windows\DataCollection" -Name "DoNotShowFeedbackNotifications" -ErrorAction SilentlyContinue
 	Enable-ScheduledTask -TaskName "Microsoft\Windows\Feedback\Siuf\DmClient" -ErrorAction SilentlyContinue | Out-Null
 	Enable-ScheduledTask -TaskName "Microsoft\Windows\Feedback\Siuf\DmClientOnScenarioDownload" -ErrorAction SilentlyContinue | Out-Null
+
+	" Feedback enabled `n" >> "windows_configuration.xml"
 }
 
 # Disable Tailored Experiences
@@ -281,12 +301,16 @@ Function DisableTailoredExperiences {
 		New-Item -Path "HKCU:\SOFTWARE\Policies\Microsoft\Windows\CloudContent" -Force | Out-Null
 	}
 	Set-ItemProperty -Path "HKCU:\SOFTWARE\Policies\Microsoft\Windows\CloudContent" -Name "DisableTailoredExperiencesWithDiagnosticData" -Type DWord -Value 1
+
+	" Tailored experiances disabled `n" >> "windows_configuration.xml"
 }
 
 # Enable Tailored Experiences
 Function EnableTailoredExperiences {
 	Write-Output "Enabling Tailored Experiences..."
 	Remove-ItemProperty -Path "HKCU:\SOFTWARE\Policies\Microsoft\Windows\CloudContent" -Name "DisableTailoredExperiencesWithDiagnosticData" -ErrorAction SilentlyContinue
+
+	" Tailored experiances enabled `n" >> "windows_configuration.xml"
 }
 
 # Disable Advertising ID
@@ -296,12 +320,16 @@ Function DisableAdvertisingID {
 		New-Item -Path "HKLM:\SOFTWARE\Policies\Microsoft\Windows\AdvertisingInfo" | Out-Null
 	}
 	Set-ItemProperty -Path "HKLM:\SOFTWARE\Policies\Microsoft\Windows\AdvertisingInfo" -Name "DisabledByGroupPolicy" -Type DWord -Value 1
+
+	" Advertising ID disabled `n" >> "windows_configuration.xml"
 }
 
 # Enable Advertising ID
 Function EnableAdvertisingID {
 	Write-Output "Enabling Advertising ID..."
 	Remove-ItemProperty -Path "HKLM:\SOFTWARE\Policies\Microsoft\Windows\AdvertisingInfo" -Name "DisabledByGroupPolicy" -ErrorAction SilentlyContinue
+
+	" Advertising ID enabled `n" >> "windows_configuration.xml"
 }
 
 # Disable Cortana
@@ -324,6 +352,8 @@ Function DisableCortana {
 		New-Item -Path "HKLM:\SOFTWARE\Policies\Microsoft\Windows\Windows Search" -Force | Out-Null
 	}
 	Set-ItemProperty -Path "HKLM:\SOFTWARE\Policies\Microsoft\Windows\Windows Search" -Name "AllowCortana" -Type DWord -Value 0
+
+	" Cortana disabled `n" >> "windows_configuration.xml"
 }
 
 # Enable Cortana
@@ -337,6 +367,8 @@ Function EnableCortana {
 	Set-ItemProperty -Path "HKCU:\SOFTWARE\Microsoft\InputPersonalization" -Name "RestrictImplicitInkCollection" -Type DWord -Value 0
 	Remove-ItemProperty -Path "HKCU:\SOFTWARE\Microsoft\InputPersonalization\TrainedDataStore" -Name "HarvestContacts" -ErrorAction SilentlyContinue
 	Remove-ItemProperty -Path "HKLM:\SOFTWARE\Policies\Microsoft\Windows\Windows Search" -Name "AllowCortana" -ErrorAction SilentlyContinue
+
+	" Cortana enabled `n" >> "windows_configuration.xml"
 }
 
 # Disable Error reporting
@@ -344,6 +376,8 @@ Function DisableErrorReporting {
 	Write-Output "Disabling Error reporting..."
 	Set-ItemProperty -Path "HKLM:\SOFTWARE\Microsoft\Windows\Windows Error Reporting" -Name "Disabled" -Type DWord -Value 1
 	Disable-ScheduledTask -TaskName "Microsoft\Windows\Windows Error Reporting\QueueReporting" | Out-Null
+
+	" Error reporting disabled `n" >> "windows_configuration.xml"
 }
 
 # Enable Error reporting
@@ -351,12 +385,16 @@ Function EnableErrorReporting {
 	Write-Output "Enabling Error reporting..."
 	Remove-ItemProperty -Path "HKLM:\SOFTWARE\Microsoft\Windows\Windows Error Reporting" -Name "Disabled" -ErrorAction SilentlyContinue
 	Enable-ScheduledTask -TaskName "Microsoft\Windows\Windows Error Reporting\QueueReporting" | Out-Null
+
+	" Error reporting enabled `n" >> "windows_configuration.xml"
 }
 # Stop and disable Diagnostics Tracking Service
 Function DisableDiagTrack {
 	Write-Output "Stopping and disabling Diagnostics Tracking Service..."
 	Stop-Service "DiagTrack" -WarningAction SilentlyContinue
 	Set-Service "DiagTrack" -StartupType Disabled
+
+	" Diagnostics disabled `n" >> "windows_configuration.xml"
 }
 
 # Enable and start Diagnostics Tracking Service
@@ -364,6 +402,8 @@ Function EnableDiagTrack {
 	Write-Output "Enabling and starting Diagnostics Tracking Service..."
 	Set-Service "DiagTrack" -StartupType Automatic
 	Start-Service "DiagTrack" -WarningAction SilentlyContinue
+
+	" Diagnostics enabled `n" >> "windows_configuration.xml"
 }
 # Enable Remote Desktop w/o Network Level Authentication
 Function EnableRemoteDesktop {
@@ -371,6 +411,8 @@ Function EnableRemoteDesktop {
 	Set-ItemProperty -Path "HKLM:\SYSTEM\CurrentControlSet\Control\Terminal Server" -Name "fDenyTSConnections" -Type DWord -Value 0
 	Set-ItemProperty -Path "HKLM:\SYSTEM\CurrentControlSet\Control\Terminal Server\WinStations\RDP-Tcp" -Name "UserAuthentication" -Type DWord -Value 0
 	Enable-NetFirewallRule -Name "RemoteDesktop*"
+
+	" Remote desktop enabled `n" >> "windows_configuration.xml"
 }
 
 # Disable Remote Desktop
@@ -379,46 +421,62 @@ Function DisableRemoteDesktop {
 	Set-ItemProperty -Path "HKLM:\SYSTEM\CurrentControlSet\Control\Terminal Server" -Name "fDenyTSConnections" -Type DWord -Value 1
 	Set-ItemProperty -Path "HKLM:\SYSTEM\CurrentControlSet\Control\Terminal Server\WinStations\RDP-Tcp" -Name "UserAuthentication" -Type DWord -Value 1
 	Disable-NetFirewallRule -Name "RemoteDesktop*"
+
+	" Remote desktop disabled `n" >> "windows_configuration.xml"
 }
 # Set BIOS time to UTC
 Function SetBIOSTimeUTC {
 	Write-Output "Setting BIOS time to UTC..."
 	Set-ItemProperty -Path "HKLM:\SYSTEM\CurrentControlSet\Control\TimeZoneInformation" -Name "RealTimeIsUniversal" -Type DWord -Value 1
+
+	" BIOS Time set to UTC `n" >> "windows_configuration.xml"
 }
 
 # Set BIOS time to local time
 Function SetBIOSTimeLocal {
 	Write-Output "Setting BIOS time to Local time..."
 	Remove-ItemProperty -Path "HKLM:\SYSTEM\CurrentControlSet\Control\TimeZoneInformation" -Name "RealTimeIsUniversal" -ErrorAction SilentlyContinue
+
+	" BIOS Time set to local `n" >> "windows_configuration.xml"
 }
 # Hide Taskbar Search icon / box
 Function HideTaskbarSearch {
 	Write-Output "Hiding Taskbar Search icon / box..."
 	Set-ItemProperty -Path "HKCU:\SOFTWARE\Microsoft\Windows\CurrentVersion\Search" -Name "SearchboxTaskbarMode" -Type DWord -Value 0
+
+	" Hidden taskbar search icon `n" >> "windows_configuration.xml"
 }
 
 # Show Taskbar Search icon
 Function ShowTaskbarSearchIcon {
 	Write-Output "Showing Taskbar Search icon..."
 	Set-ItemProperty -Path "HKCU:\SOFTWARE\Microsoft\Windows\CurrentVersion\Search" -Name "SearchboxTaskbarMode" -Type DWord -Value 1
+
+	" Show taskbar search icon `n" >> "windows_configuration.xml"
 }
 
 # Show Taskbar Search box
 Function ShowTaskbarSearchBox {
 	Write-Output "Showing Taskbar Search box..."
 	Set-ItemProperty -Path "HKCU:\SOFTWARE\Microsoft\Windows\CurrentVersion\Search" -Name "SearchboxTaskbarMode" -Type DWord -Value 2
+
+	" Show taskbar search box `n" >> "windows_configuration.xml"
 }
 
 # Hide Task View button
 Function HideTaskView {
 	Write-Output "Hiding Task View button..."
 	Set-ItemProperty -Path "HKCU:\SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer\Advanced" -Name "ShowTaskViewButton" -Type DWord -Value 0
+
+	" Hidden taskbar Task View icon `n" >> "windows_configuration.xml"
 }
 
 # Show Task View button
 Function ShowTaskView {
 	Write-Output "Showing Task View button..."
 	Remove-ItemProperty -Path "HKCU:\SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer\Advanced" -Name "ShowTaskViewButton" -ErrorAction SilentlyContinue
+
+	" Show taskbar Task View icon `n" >> "windows_configuration.xml"
 }
 # Hide Taskbar People icon
 Function HideTaskbarPeopleIcon {
@@ -427,12 +485,16 @@ Function HideTaskbarPeopleIcon {
 		New-Item -Path "HKCU:\SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer\Advanced\People" | Out-Null
 	}
 	Set-ItemProperty -Path "HKCU:\SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer\Advanced\People" -Name "PeopleBand" -Type DWord -Value 0
+
+	" Hidden task bar People icon `n" >> "windows_configuration.xml"
 }
 
 # Show Taskbar People icon
 Function ShowTaskbarPeopleIcon {
 	Write-Output "Showing People icon..."
 	Remove-ItemProperty -Path "HKCU:\SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer\Advanced\People" -Name "PeopleBand" -ErrorAction SilentlyContinue
+
+	" Hidden task bar People icon `n" >> "windows_configuration.xml"
 }
 # Set Control Panel view to Small icons (Classic)
 Function SetControlPanelSmallIcons {
@@ -442,6 +504,8 @@ Function SetControlPanelSmallIcons {
 	}
 	Set-ItemProperty -Path "HKCU:\Software\Microsoft\Windows\CurrentVersion\Explorer\ControlPanel" -Name "StartupPage" -Type DWord -Value 1
 	Set-ItemProperty -Path "HKCU:\Software\Microsoft\Windows\CurrentVersion\Explorer\ControlPanel" -Name "AllItemsIconView" -Type DWord -Value 1
+
+	" Control Panel icons set to small `n" >> "windows_configuration.xml"
 }
 
 # Set Control Panel view to Large icons (Classic)
@@ -452,6 +516,8 @@ Function SetControlPanelLargeIcons {
 	}
 	Set-ItemProperty -Path "HKCU:\Software\Microsoft\Windows\CurrentVersion\Explorer\ControlPanel" -Name "StartupPage" -Type DWord -Value 1
 	Set-ItemProperty -Path "HKCU:\Software\Microsoft\Windows\CurrentVersion\Explorer\ControlPanel" -Name "AllItemsIconView" -Type DWord -Value 0
+
+	" Control Panel icons set to large `n" >> "windows_configuration.xml"
 }
 # Enable NumLock after startup
 Function EnableNumlock {
@@ -465,6 +531,8 @@ Function EnableNumlock {
 		$wsh = New-Object -ComObject WScript.Shell
 		$wsh.SendKeys('{NUMLOCK}')
 	}
+
+	" Num lock enabled `n" >> "windows_configuration.xml"
 }
 
 # Disable NumLock after startup
@@ -479,6 +547,8 @@ Function DisableNumlock {
 		$wsh = New-Object -ComObject WScript.Shell
 		$wsh.SendKeys('{NUMLOCK}')
 	}
+
+	" Num lock disabled `n" >> "windows_configuration.xml"
 }
 ##########
 # Explorer UI Tweaks
@@ -488,30 +558,40 @@ Function DisableNumlock {
 Function ShowKnownExtensions {
 	Write-Output "Showing known file extensions..."
 	Set-ItemProperty -Path "HKCU:\SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer\Advanced" -Name "HideFileExt" -Type DWord -Value 0
+
+	" Show file extensions `n" >> "windows_configuration.xml"
 }
 
 # Hide known file extensions
 Function HideKnownExtensions {
 	Write-Output "Hiding known file extensions..."
 	Set-ItemProperty -Path "HKCU:\SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer\Advanced" -Name "HideFileExt" -Type DWord -Value 1
+
+	" Hide file extensions `n" >> "windows_configuration.xml"
 }
 
 # Show hidden files
 Function ShowHiddenFiles {
 	Write-Output "Showing hidden files..."
 	Set-ItemProperty -Path "HKCU:\SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer\Advanced" -Name "Hidden" -Type DWord -Value 1
+
+	" Show hidden files `n" >> "windows_configuration.xml"
 }
 
 # Hide hidden files
 Function HideHiddenFiles {
 	Write-Output "Hiding hidden files..."
 	Set-ItemProperty -Path "HKCU:\SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer\Advanced" -Name "Hidden" -Type DWord -Value 2
+
+	" Hide hidden items `n" >> "windows_configuration.xml"
 }
 # Hide recently and frequently used item shortcuts in Explorer
 Function HideRecentShortcuts {
 	Write-Output "Hiding recent shortcuts..."
 	Set-ItemProperty -Path "HKCU:\SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer" -Name "ShowRecent" -Type DWord -Value 0
 	Set-ItemProperty -Path "HKCU:\SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer" -Name "ShowFrequent" -Type DWord -Value 0
+
+	" Hide recent shortcuts in explorer `n" >> "windows_configuration.xml"
 }
 
 # Show recently and frequently used item shortcuts in Explorer
@@ -519,6 +599,8 @@ Function ShowRecentShortcuts {
 	Write-Output "Showing recent shortcuts..."
 	Remove-ItemProperty -Path "HKCU:\SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer" -Name "ShowRecent" -ErrorAction SilentlyContinue
 	Remove-ItemProperty -Path "HKCU:\SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer" -Name "ShowFrequent" -ErrorAction SilentlyContinue
+
+	" Show recent and frequent items in explorer  `n" >> "windows_configuration.xml"
 }
 # Hide 3D Objects icon from Explorer namespace - Hides the icon also from personal folders and open/save dialogs
 Function Hide3DObjectsFromExplorer {
@@ -531,6 +613,8 @@ Function Hide3DObjectsFromExplorer {
 		New-Item -Path "HKLM:\SOFTWARE\Wow6432Node\Microsoft\Windows\CurrentVersion\Explorer\FolderDescriptions\{31C0DD25-9439-4F12-BF41-7FF4EDA38722}\PropertyBag" -Force | Out-Null
 	}
 	Set-ItemProperty -Path "HKLM:\SOFTWARE\Wow6432Node\Microsoft\Windows\CurrentVersion\Explorer\FolderDescriptions\{31C0DD25-9439-4F12-BF41-7FF4EDA38722}\PropertyBag" -Name "ThisPCPolicy" -Type String -Value "Hide"
+
+	" Hide 3D Objects from Explorer `n" >> "windows_configuration.xml"
 }
 
 # Show 3D Objects icon in Explorer namespace
@@ -538,6 +622,8 @@ Function Show3DObjectsInExplorer {
 	Write-Output "Showing 3D Objects icon in Explorer namespace..."
 	Remove-ItemProperty -Path "HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer\FolderDescriptions\{31C0DD25-9439-4F12-BF41-7FF4EDA38722}\PropertyBag" -Name "ThisPCPolicy" -ErrorAction SilentlyContinue
 	Remove-ItemProperty -Path "HKLM:\SOFTWARE\Wow6432Node\Microsoft\Windows\CurrentVersion\Explorer\FolderDescriptions\{31C0DD25-9439-4F12-BF41-7FF4EDA38722}\PropertyBag" -Name "ThisPCPolicy" -ErrorAction SilentlyContinue
+
+	" Show 3D Objects from Explorer `n" >> "windows_configuration.xml"
 }
 ##########
 # Application Tweaks
@@ -550,12 +636,16 @@ Function DisableOneDrive {
 		New-Item -Path "HKLM:\SOFTWARE\Policies\Microsoft\Windows\OneDrive" | Out-Null
 	}
 	Set-ItemProperty -Path "HKLM:\SOFTWARE\Policies\Microsoft\Windows\OneDrive" -Name "DisableFileSyncNGSC" -Type DWord -Value 1
+
+	" Hide 3D Objects from Explorer `n" >> "windows_configuration.xml"
 }
 
 # Enable OneDrive
 Function EnableOneDrive {
 	Write-Output "Enabling OneDrive..."
 	Remove-ItemProperty -Path "HKLM:\SOFTWARE\Policies\Microsoft\Windows\OneDrive" -Name "DisableFileSyncNGSC" -ErrorAction SilentlyContinue
+
+	" OneDrive Enabled `n" >> "windows_configuration.xml"
 }
 
 # Uninstall OneDrive - Not applicable to Server
@@ -580,6 +670,8 @@ Function UninstallOneDrive {
 	}
 	Remove-Item -Path "HKCR:\CLSID\{018D5C66-4533-4307-9B53-224DE2ED1FE6}" -Recurse -ErrorAction SilentlyContinue
 	Remove-Item -Path "HKCR:\Wow6432Node\CLSID\{018D5C66-4533-4307-9B53-224DE2ED1FE6}" -Recurse -ErrorAction SilentlyContinue
+
+	" OneDrive uninstalled `n" >> "windows_configuration.xml"
 }
 
 # Install OneDrive - Not applicable to Server
@@ -590,11 +682,15 @@ Function InstallOneDrive {
 		$onedrive = "$env:SYSTEMROOT\System32\OneDriveSetup.exe"
 	}
 	Start-Process $onedrive -NoNewWindow
+
+	" OneDrive installed `n" >> "windows_configuration.xml"
 }
 # Uninstall all default apps excpet MS Store
 Function UninstallAllApps {
 	Write-Output "Uninstalling all default apps except MS Store..."
 	Get-AppxPackage -AllUsers | Where-Object {$_.name -notlike "*store*"} | Remove-AppxPackage
+
+	" All default MS apps uninstalled `n" >> "windows_configuration.xml"
 }
 # Uninstall default Microsoft applications
 Function UninstallMsftBloat {
@@ -651,6 +747,8 @@ Function UninstallMsftBloat {
 	}
 	Set-ItemProperty -Path "HKCU:\System\GameConfigStore" -Name "GameDVR_Enabled" -Type DWord -Value 0
 	Set-ItemProperty -Path "HKLM:\SOFTWARE\Policies\Microsoft\Windows\GameDVR" -Name "AllowGameDVR" -Type DWord -Value 0
+
+	" MS Bloatware removed `n" >> "windows_configuration.xml"
 }
 function UninstallThirdPartyBloat {
 	Write-Output "Uninstalling default third party applications..."
@@ -683,6 +781,8 @@ function UninstallThirdPartyBloat {
 	Get-AppxPackage "SpotifyAB.SpotifyMusic" | Remove-AppxPackage
 	Get-AppxPackage "WinZipComputing.WinZipUniversal" | Remove-AppxPackage
 	Get-AppxPackage "XINGAG.XING" | Remove-AppxPackage
+
+	" 3rd party bloatware removed `n" >> "windows_configuration.xml"
 }
 # Disable Xbox features
 Function DisableXboxFeatures {
@@ -697,6 +797,8 @@ Function DisableXboxFeatures {
 		New-Item -Path "HKLM:\SOFTWARE\Policies\Microsoft\Windows\GameDVR" | Out-Null
 	}
 	Set-ItemProperty -Path "HKLM:\SOFTWARE\Policies\Microsoft\Windows\GameDVR" -Name "AllowGameDVR" -Type DWord -Value 0
+
+	" Xbox features disabled `n" >> "windows_configuration.xml"
 }
 
 # Enable Xbox features
@@ -709,6 +811,8 @@ Function EnableXboxFeatures {
 	Get-AppxPackage -AllUsers "Microsoft.Xbox.TCUI" | ForEach {Add-AppxPackage -DisableDevelopmentMode -Register "$($_.InstallLocation)\AppXManifest.xml"}
 	Set-ItemProperty -Path "HKCU:\System\GameConfigStore" -Name "GameDVR_Enabled" -Type DWord -Value 1
 	Remove-ItemProperty -Path "HKLM:\SOFTWARE\Policies\Microsoft\Windows\GameDVR" -Name "AllowGameDVR" -ErrorAction SilentlyContinue
+
+	" Xbox features enabled `n" >> "windows_configuration.xml"
 }
 # Install Linux Subsystem - Applicable to 1607 or newer
 Function InstallLinuxSubsystem {
@@ -719,6 +823,8 @@ Function InstallLinuxSubsystem {
 		Set-ItemProperty -Path "HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\AppModelUnlock" -Name "AllowAllTrustedApps" -Type DWord -Value 1
 	}
 	Enable-WindowsOptionalFeature -Online -FeatureName "Microsoft-Windows-Subsystem-Linux" -NoRestart -WarningAction SilentlyContinue | Out-Null
+
+	" WSL Installed `n" >> "windows_configuration.xml"
 }
 # Install Hyper-V - Not applicable to Home
 Function InstallHyperV {
@@ -728,6 +834,8 @@ Function InstallHyperV {
 	} Else {
 		Enable-WindowsOptionalFeature -Online -FeatureName "Microsoft-Hyper-V-All" -NoRestart -WarningAction SilentlyContinue | Out-Null
 	}
+
+	" Hyper-V installed `n" >> "windows_configuration.xml"
 }
 ##########
 # Auxiliary Functions
