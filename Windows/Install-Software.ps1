@@ -91,6 +91,20 @@ Function Install-Software {
     " Node JS installed installed `n" >> "software_installation.log"
     " Nerd Hack Fonts installed `n" >> "software_installation.log"
 
+    $UnifiSearchUrl = "https://github.com/Crypto-Spartan/unifi-search-tool/releases/download/2.0.1/unifi-search-tool_v2.0.1.exe"
+    $UnifiSearchUrlOutpath = "unifi-search-tool.exe"
+
+    Invoke-WebRequest -Uri $UnifiSearchUrl -OutFile $UnifiSearchUrlOutpath
+    Write-Output "Downloading Crypto Spartan UniFi Search tool..."
+    .\unifi-search-tool.exe
+    
+    " unifi-search-tool installed `n" >> "software_installation.log"
+
+    Start-Sleep -Seconds 30
+    Remove-Item .\unifi-search-tool.exe -Force
+
+    Invoke-RestMethod get.scoop.sh | Invoke-Expression
+    " scoop isntalled `n" >> "software_installation.log"
 
     "############################################### SOFTWARE ISNTALLATION LOG ############################################### `n" >> "software_installation.log"
 }
