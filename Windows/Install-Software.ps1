@@ -1,11 +1,4 @@
-"############################################### SOFTWARE ISNTALLATION LOG ############################################### `n" >> "windows_configuration.log"
-
-
-
-
-
-
-
+"############################################### SOFTWARE ISNTALLATION LOG ############################################### `n" >> "software_installation.log"
 
 Function Install-Software {
 	# Bypass ExecutionPolicy and install Chocolatey if not installed
@@ -16,41 +9,88 @@ Function Install-Software {
 		" Installation of Chocolatey done `n" >> "software_installation.log"
 	}
     
-    choco install adobereader --version 2022.003.20282 -y
-    choco install googlechrome --version 108.0.5359.125 -y
-    choco install firefox --version 108.0.1 -y
-    choco install python3 --version 3.11.0 -y
-    choco install 7zip --version 22.1 -y
-    choco install vlc --version 3.0.18 -y
-    choco install notepadplusplus --version 8.4.8 -y
-    choco install git --version 2.39.0 -y
-    choco install vscode --version 1.74.2 -y
-    choco install putty --version 0.78 -y
-    choco install pdfcreator --version 5.0.3 -y
-    choco install spotify --version 1.2.0.1165 -y
-    choco install winscp --version 5.21.6 -y
-    choco install wireshark --version 4.0.2 -y
-    choco install nmap --version 7.93 -y
-    choco install azure-cli --version 2.43.0 -y
-    choco install terraform --version 1.3.6 -y
-    choco install kubernetes-cli --version 1.26.0 -y
-    choco install kubernetes-helm --version 3.10.3 -y
-    choco install docker-desktop --version 4.15.0 -y
-    choco install signal --version 6.1.0 -y
-    choco install microsoftazurestorageexplorer --version 1.25.1 -y
-    choco install whatsapp --version 2.2245.9 -y
-    choco install qbittorrent --version 4.5.0 -y
-    choco install fiddler --version 5.0.20211.51073 -y
-    choco install speedtest --version 1.1.1.1 -y
-    choco install cpu-z --version 2.3.0.20221125 -y
-    choco install starship --version 1.12.0 -y
-    choco install icloud --version 7.21.0.23 -y
-    choco install sysinternals --version 2022.11.28 -y
-    choco install powertoys --version 0.65.0 -y
-    choco install googledrive --version 68.0.2.0 -y
-    choco install google-workspace-sync --version 4.3.53.0 -y
-    choco install obsidian --version 1.1.9 -y
-    choco install rufus --version 3.21 -y
-    choco install advanced-ip-scanner --version 2.5.4594.1 -y
-    choco install brave --version 1.46.144 -y
+    choco install adobereader --params '"/UpdateMode:4"' -y
+    choco install googlechrome -y
+    choco install firefox --params '"/NoTaskbarShortcut /NoDesktopShortcut /RemoveDistributionDir"' -y
+    choco install python3 -y
+    choco install 7zip -y
+    choco install vlc -y
+    choco install notepadplusplus -y
+    choco install git --params '"/NoGitLfs /SChannel"' -y
+    choco install vscode --params '/NoDesktopIcon' -y
+    choco install putty -y
+    choco install pdfcreator --ia '"/NOICONS /TASKS=!winexplorer"' -y
+    choco install spotify -y
+    choco install winscp -y
+    choco install wireshark -y
+    choco install nmap -y
+    choco install azure-cli -y
+    choco install terraform -y
+    choco install kubernetes-cli -y
+    choco install kubernetes-helm -y
+    choco install dotnetfx --pre -y
+    choco install docker-desktop -y
+    choco install signal --params '"/NoTray /NoShortcut"' -y
+    choco install microsoftazurestorageexplorer -y
+    choco install whatsapp -y
+    choco install qbittorrent -y
+    choco install fiddler -y
+    choco install speedtest -y
+    choco install cpu-z -y
+    choco install starship -y
+    choco install icloud -y
+    choco install sysinternals -y
+    choco install powertoys -y
+    choco install googledrive -y
+    choco install google-workspace-sync -y
+    choco install obsidian -y
+    choco install rufus -y
+    choco install advanced-ip-scanner -y
+    choco install brave -y
+    choco install nodejs -y
+    choco install nerdfont-hack -y
+
+    " Adobe Reader installed `n" >> "software_installation.log"
+    " Google Chrome installed `n" >> "software_installation.log"
+    " Firefox browser installed `n" >> "software_installation.log"
+    " Python 3 `n" >> "software_installation.log"
+    " 7zip installed `n" >> "software_installation.log"
+    " VLC installed `n" >> "software_installation.log"
+    " Notepad++ installed `n" >> "software_installation.log"
+    " Git installed `n" >> "software_installation.log"
+    " VSCode installed `n" >> "software_installation.log"
+    " PuTTy installed `n" >> "software_installation.log"
+    " PDF Creator installed `n" >> "software_installation.log"
+    " Spotify installed `n" >> "software_installation.log"
+    " WinSCP installed `n" >> "software_installation.log"
+    " Wireshark installed `n" >> "software_installation.log"
+    " nmap installed `n" >> "software_installation.log"
+    " Azure CLI installed `n" >> "software_installation.log"
+    " Terraform installed `n" >> "software_installation.log"
+    " Kubectl installed `n" >> "software_installation.log"
+    " Helm installed `n" >> "software_installation.log"
+    " MS .NET Framework installed installed `n" >> "software_installation.log"
+    " Docker desktop installed `n" >> "software_installation.log"
+    " Signal installed `n" >> "software_installation.log"
+    " Azure Storage Explorer installed `n" >> "software_installation.log"
+    " Whatsapp installed `n" >> "software_installation.log"
+    " qBittorrent installed `n" >> "software_installation.log"
+    " Fiddler installed `n" >> "software_installation.log"
+    " Speedtest installed `n" >> "software_installation.log"
+    " CPU-Z installed `n" >> "software_installation.log"
+    " starship installed `n" >> "software_installation.log"
+    " iCloud installed `n" >> "software_installation.log"
+    " sysinternals installed `n" >> "software_installation.log"
+    " power toys installed `n" >> "software_installation.log"
+    " googledrive installed `n" >> "software_installation.log"
+    " google workspace sync installed `n" >> "software_installation.log"
+    " obsidian markdown installed `n" >> "software_installation.log"
+    " rufus installed `n" >> "software_installation.log"
+    " advanced IP scanner installed `n" >> "software_installation.log"
+    " brave browser installed `n" >> "software_installation.log"
+    " Node JS installed installed `n" >> "software_installation.log"
+    " Nerd Hack Fonts installed `n" >> "software_installation.log"
+
+
+    "############################################### SOFTWARE ISNTALLATION LOG ############################################### `n" >> "software_installation.log"
 }
