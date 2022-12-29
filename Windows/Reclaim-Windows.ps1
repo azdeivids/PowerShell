@@ -202,6 +202,8 @@ Function InstallSoftware {
     choco install brave -y
     choco install nodejs -y
     choco install nerdfont-hack -y
+	choco install rsat -y
+    choco install teamviewer9 -y
 
     " Adobe Reader installed `n" >> "software_installation.log"
     " Google Chrome installed `n" >> "software_installation.log"
@@ -243,6 +245,8 @@ Function InstallSoftware {
     " brave browser installed `n" >> "software_installation.log"
     " Node JS installed installed `n" >> "software_installation.log"
     " Nerd Hack Fonts installed `n" >> "software_installation.log"
+	" RSAT Tools installed `n" >> "software_installation.log"
+    " Team Viewer installed `n" >> "software_installation.log"
 
     $UnifiSearchUrl = "https://github.com/Crypto-Spartan/unifi-search-tool/releases/download/2.0.1/unifi-search-tool_v2.0.1.exe"
     $UnifiSearchUrlOutpath = "unifi-search-tool.exe"
