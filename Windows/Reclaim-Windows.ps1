@@ -41,7 +41,7 @@ $tweaks = @(
 	# "SetUACLow",                  	# "SetUACHigh",
 	# "EnableSharingMappedDrives",  	# "DisableSharingMappedDrives",
 	# "DisableAdminShares",           	# "EnableAdminShares",
-	# "DisableSMB1",                	# "EnableSMB1",
+	 "DisableSMB1",                		# "EnableSMB1",
 	# "DisableSMBServer",           	# "EnableSMBServer",
 	# "DisableLLMNR",               	# "EnableLLMNR",
 	# "SetCurrentNetworkPrivate",     	# "SetCurrentNetworkPublic",
@@ -51,9 +51,9 @@ $tweaks = @(
 	# "DisableFirewall",            	# "EnableFirewall",
 	# "DisableDefender",            	# "EnableDefender",
 	# "DisableDefenderCloud",       	# "EnableDefenderCloud",
-	# "EnableF8BootMenu",             	# "DisableF8BootMenu",
+	 "EnableF8BootMenu",             	# "DisableF8BootMenu",
 	# "SetDEPOptOut",                 	# "SetDEPOptIn",
-	# "EnableCIMemoryIntegrity",    	# "DisableCIMemoryIntegrity",
+	 "EnableCIMemoryIntegrity",    	# "DisableCIMemoryIntegrity",
 	# "DisableScriptHost",            	# "EnableScriptHost",
 	# "EnableDotNetStrongCrypto",     	# "DisableDotNetStrongCrypto",
 	# "EnableMeltdownCompatFlag"    	# "DisableMeltdownCompatFlag",
@@ -66,7 +66,7 @@ $tweaks = @(
 	# "DisableHomeGroups",          	# "EnableHomeGroups",
 	# "DisableSharedExperiences",     	# "EnableSharedExperiences",
 	# "DisableRemoteAssistance",      	# "EnableRemoteAssistance",
-	# "EnableRemoteDesktop",          	# "DisableRemoteDesktop",
+	 "EnableRemoteDesktop",          	# "DisableRemoteDesktop",
 	# "DisableAutoplay",              	# "EnableAutoplay",
 	# "DisableAutorun",               	# "EnableAutorun",
 	# "EnableStorageSense",         	# "DisableStorageSense",
@@ -97,7 +97,7 @@ $tweaks = @(
 	# "SetTaskbarCombineWhenFull",    	# "SetTaskbarCombineNever",     	# "SetTaskbarCombineAlways",
 	 "HideTaskbarPeopleIcon",        	# "ShowTaskbarPeopleIcon",
 	# "ShowTrayIcons",                	# "HideTrayIcons",
-	# "DisableSearchAppInStore",      	# "EnableSearchAppInStore",
+	 "DisableSearchAppInStore",      	# "EnableSearchAppInStore",
 	# "DisableNewAppPrompt",          	# "EnableNewAppPrompt",
 	# "SetControlPanelSmallIcons",  	# "SetControlPanelLargeIcons",  	# "SetControlPanelCategories",
 	# "SetVisualFXPerformance",       	# "SetVisualFXAppearance",
@@ -109,7 +109,7 @@ $tweaks = @(
 	 "ShowKnownExtensions",          	# "HideKnownExtensions",
 	 "ShowHiddenFiles",              	# "HideHiddenFiles",
 	# "HideSyncNotifications"         	# "ShowSyncNotifications",
-	# "HideRecentShortcuts",          	# "ShowRecentShortcuts",
+	 "HideRecentShortcuts",          	# "ShowRecentShortcuts",
 	# "SetExplorerThisPC",            	# "SetExplorerQuickAccess",
 	# "ShowThisPCOnDesktop",          	# "HideThisPCFromDesktop",
 	# "ShowUserFolderOnDesktop",    	# "HideUserFolderFromDesktop",
@@ -135,9 +135,9 @@ $tweaks = @(
 	# "DisableOneDrive",              	# "EnableOneDrive",
 	# "UninstallOneDrive",            	# "InstallOneDrive",
 	 "UninstallMsftBloat",           	# "InstallMsftBloat",
-	# "UninstallThirdPartyBloat",     	# "InstallThirdPartyBloat",
+	 "UninstallThirdPartyBloat",     	# "InstallThirdPartyBloat",
 	# "UninstallWindowsStore",      	# "InstallWindowsStore",
-	# "DisableXboxFeatures",          	# "EnableXboxFeatures",
+	 "DisableXboxFeatures",          	# "EnableXboxFeatures",
 	# "DisableAdobeFlash",            	# "EnableAdobeFlash",
 	# "UninstallMediaPlayer",       	# "InstallMediaPlayer",
 	# "UninstallInternetExplorer",  	# "InstallInternetExplorer",
@@ -149,6 +149,10 @@ $tweaks = @(
 	# "UninstallPDFPrinter",        	# "InstallPDFPrinter",
 	# "UninstallXPSPrinter",          	# "InstallXPSPrinter",
 	# "RemoveFaxPrinter",             	# "AddFaxPrinter",
+
+	#################		 Software Installation Tweaks		#################
+
+	# "InstallSoftware"					# "UpgradeSoftware"
 
 	#################		 Server Specific Tweaks		#################
 
