@@ -35,3 +35,6 @@ choco install obsidian --version 1.1.9 -y
 choco install rufus --version 3.21 -y
 choco install advanced-ip-scanner --version 2.5.4594.1 -y
 choco install brave --version 1.46.144 -y
+choco install dotnetfx --version 4.8.1.0-rtw --pre -y
+choco install nodejs --version 19.2.0 -y
+choco install nerdfont-hack --version 2.1.0 -y
