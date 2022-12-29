@@ -1,3 +1,14 @@
+<#
+.SYNOPSIS
+Reclaim windows and install software.
+.DESCRIPTION
+All credit for the script goes to: Ali Robertson; GitHub: alirobe/reclaimWindows.ps1
+
+All the functions used within this script are from his afromentioned script. I've only added some software to be installed and log files.
+There are also some more software added to the 3rd party bloatware function and MS Blaotware functions to be more relevant with Windows 11
+.EXAMPLE
+.Reclaim-Windows.ps1 -RequireAdmin -DisableWebSearch -DisableAppSuggestions -DisableLocationTracking -DisableFeedback -DisableTailoredExperiences -DisableAdvertisingID -DisableCortana -DisableErrorReporting -DisableDiagTrack -EnableRemoteDesktop -HideTaskbarSearch -HideTaskbarPeopleIcon -SetControlPanelLargeIcons -ShowKnownExtensions -ShowHiddenFiles -HideRecentShortcuts -UninstallMsftBloat -DisableXboxFeatures -InstallLinuxSubsystem -InstallHyperV
+#>
 "############################################### CONIGURATION LOG ############################################### `n" >> "windows_configuration.log"
 "############################################### SOFTWARE ISNTALLATION LOG ###################################### `n" >> "software_installation.log"
 # Default preset
@@ -6,55 +17,55 @@ $tweaks = @(
 	"RequireAdmin",
 
 	### Privacy Tweaks ###
-	"DisableTelemetry",             # "EnableTelemetry",
-	"DisableWiFiSense",             # "EnableWiFiSense",
-	"DisableSmartScreen",         # "EnableSmartScreen",
-	"DisableWebSearch",             # "EnableWebSearch",
-	"DisableAppSuggestions",        # "EnableAppSuggestions",
-	"DisableActivityHistory",       # "EnableActivityHistory",
-	#"DisableBackgroundApps",        # "EnableBackgroundApps",
-	"DisableLocationTracking",      # "EnableLocationTracking",
-	"DisableMapUpdates",            # "EnableMapUpdates",
-	"DisableFeedback",              # "EnableFeedback",
-	"DisableTailoredExperiences",   # "EnableTailoredExperiences",
-	"DisableAdvertisingID",         # "EnableAdvertisingID",
-	"DisableCortana",               # "EnableCortana",
-	"DisableErrorReporting",        # "EnableErrorReporting",
-	"SetP2PUpdateLocal",          # "SetP2PUpdateInternet",
-	"DisableDiagTrack",             # "EnableDiagTrack",
-	"DisableWAPPush",               # "EnableWAPPush",
+	# "DisableTelemetry",             # "EnableTelemetry",
+	# "DisableWiFiSense",             # "EnableWiFiSense",
+	# "DisableSmartScreen",         # "EnableSmartScreen",
+	 "DisableWebSearch",             # "EnableWebSearch",
+	 "DisableAppSuggestions",        # "EnableAppSuggestions",
+	# "DisableActivityHistory",       # "EnableActivityHistory",
+	# "DisableBackgroundApps",        # "EnableBackgroundApps",
+	 "DisableLocationTracking",      # "EnableLocationTracking",
+	# "DisableMapUpdates",            # "EnableMapUpdates",
+	 "DisableFeedback",              # "EnableFeedback",
+	 "DisableTailoredExperiences",   # "EnableTailoredExperiences",
+	 "DisableAdvertisingID",         # "EnableAdvertisingID",
+	 "DisableCortana",               # "EnableCortana",
+	 "DisableErrorReporting",        # "EnableErrorReporting",
+	# "SetP2PUpdateLocal",          # "SetP2PUpdateInternet",
+	 "DisableDiagTrack",             # "EnableDiagTrack",
+	# "DisableWAPPush",               # "EnableWAPPush",
 
 	### Security Tweaks ###
 	# "SetUACLow",                  # "SetUACHigh",
 	# "EnableSharingMappedDrives",  # "DisableSharingMappedDrives",
 	# "DisableAdminShares",           # "EnableAdminShares",
-	"DisableSMB1",                # "EnableSMB1",
+	# "DisableSMB1",                # "EnableSMB1",
 	# "DisableSMBServer",           # "EnableSMBServer",
 	# "DisableLLMNR",               # "EnableLLMNR",
-	"SetCurrentNetworkPrivate",     # "SetCurrentNetworkPublic",
+	# "SetCurrentNetworkPrivate",     # "SetCurrentNetworkPublic",
 	# "SetUnknownNetworksPrivate",  # "SetUnknownNetworksPublic",
 	# "DisableNetDevicesAutoInst",  # "EnableNetDevicesAutoInst",
 	# "EnableCtrldFolderAccess",    # "DisableCtrldFolderAccess",
 	# "DisableFirewall",            # "EnableFirewall",
 	# "DisableDefender",            # "EnableDefender",
 	# "DisableDefenderCloud",       # "EnableDefenderCloud",
-	"EnableF8BootMenu",             # "DisableF8BootMenu",
-	#"SetDEPOptOut",                 # "SetDEPOptIn",
+	# "EnableF8BootMenu",             # "DisableF8BootMenu",
+	# "SetDEPOptOut",                 # "SetDEPOptIn",
 	# "EnableCIMemoryIntegrity",    # "DisableCIMemoryIntegrity",
-	#"DisableScriptHost",            # "EnableScriptHost",
-	#"EnableDotNetStrongCrypto",     # "DisableDotNetStrongCrypto",
+	# "DisableScriptHost",            # "EnableScriptHost",
+	# "EnableDotNetStrongCrypto",     # "DisableDotNetStrongCrypto",
 	# "EnableMeltdownCompatFlag"    # "DisableMeltdownCompatFlag",
 
 	### Service Tweaks ###
 	# "DisableUpdateMSRT",          # "EnableUpdateMSRT",
 	# "DisableUpdateDriver",        # "EnableUpdateDriver",
-	"DisableUpdateRestart",         # "EnableUpdateRestart",
-	"DisableHomeGroups",          # "EnableHomeGroups",
+	# "DisableUpdateRestart",         # "EnableUpdateRestart",
+	# "DisableHomeGroups",          # "EnableHomeGroups",
 	# "DisableSharedExperiences",     # "EnableSharedExperiences",
 	# "DisableRemoteAssistance",      # "EnableRemoteAssistance",
 	# "EnableRemoteDesktop",          # "DisableRemoteDesktop",
-	"DisableAutoplay",              # "EnableAutoplay",
-	"DisableAutorun",               # "EnableAutorun",
+	# "DisableAutoplay",              # "EnableAutoplay",
+	# "DisableAutorun",               # "EnableAutorun",
 	# "EnableStorageSense",         # "DisableStorageSense",
 	# "DisableDefragmentation",     # "EnableDefragmentation",
 	# "DisableSuperfetch",          # "EnableSuperfetch",
@@ -72,15 +83,15 @@ $tweaks = @(
 	# "HideNetworkFromLockScreen",    # "ShowNetworkOnLockScreen",
 	# "HideShutdownFromLockScreen",   # "ShowShutdownOnLockScreen",
 	# "DisableStickyKeys",            # "EnableStickyKeys",
-	"ShowTaskManagerDetails"        # "HideTaskManagerDetails",
-	"ShowFileOperationsDetails",    # "HideFileOperationsDetails",
+	# "ShowTaskManagerDetails"        # "HideTaskManagerDetails",
+	# "ShowFileOperationsDetails",    # "HideFileOperationsDetails",
 	# "EnableFileDeleteConfirm",    # "DisableFileDeleteConfirm",
-	#"HideTaskbarSearch",
-	"ShowTaskbarSearchIcon",      # "ShowTaskbarSearchBox",
+	 "HideTaskbarSearch",
+	# "ShowTaskbarSearchIcon",      # "ShowTaskbarSearchBox",
 	# "HideTaskView",                 # "ShowTaskView",
 	# "ShowSmallTaskbarIcons",        # "ShowLargeTaskbarIcons",
 	# "SetTaskbarCombineWhenFull",    # "SetTaskbarCombineNever",     # "SetTaskbarCombineAlways",
-	# "HideTaskbarPeopleIcon",        # "ShowTaskbarPeopleIcon",
+	 "HideTaskbarPeopleIcon",        # "ShowTaskbarPeopleIcon",
 	# "ShowTrayIcons",                # "HideTrayIcons",
 	# "DisableSearchAppInStore",      # "EnableSearchAppInStore",
 	# "DisableNewAppPrompt",          # "EnableNewAppPrompt",
@@ -90,12 +101,12 @@ $tweaks = @(
 	# "EnableNumlock",              # "DisableNumlock",
 
 	### Explorer UI Tweaks ###
-	"ShowKnownExtensions",          # "HideKnownExtensions",
-	# "ShowHiddenFiles",              # "HideHiddenFiles",
+	 "ShowKnownExtensions",          # "HideKnownExtensions",
+	 "ShowHiddenFiles",              # "HideHiddenFiles",
 	# "HideSyncNotifications"         # "ShowSyncNotifications",
 	# "HideRecentShortcuts",          # "ShowRecentShortcuts",
-	"SetExplorerThisPC",            # "SetExplorerQuickAccess",
-	"ShowThisPCOnDesktop",          # "HideThisPCFromDesktop",
+	# "SetExplorerThisPC",            # "SetExplorerQuickAccess",
+	# "ShowThisPCOnDesktop",          # "HideThisPCFromDesktop",
 	# "ShowUserFolderOnDesktop",    # "HideUserFolderFromDesktop",
 	# "HideDesktopFromThisPC",        # "ShowDesktopInThisPC",
 	# "HideDesktopFromExplorer",    # "ShowDesktopInExplorer",
@@ -109,7 +120,7 @@ $tweaks = @(
 	# "HidePicturesFromExplorer",   # "ShowPicturesInExplorer",
 	# "HideVideosFromThisPC",         # "ShowVideosInThisPC",
 	# "HideVideosFromExplorer",     # "ShowVideosInExplorer",
-	"Hide3DObjectsFromThisPC",      # "Show3DObjectsInThisPC",
+	# "Hide3DObjectsFromThisPC",      # "Show3DObjectsInThisPC",
 	# "Hide3DObjectsFromExplorer",  # "Show3DObjectsInExplorer",
 	# "DisableThumbnails",          # "EnableThumbnails",
 	# "DisableThumbsDB",              # "EnableThumbsDB",
@@ -117,18 +128,18 @@ $tweaks = @(
 	### Application Tweaks ###
 	# "DisableOneDrive",              # "EnableOneDrive",
 	# "UninstallOneDrive",            # "InstallOneDrive",
-	# "UninstallMsftBloat",           # "InstallMsftBloat",
-	"UninstallThirdPartyBloat",     # "InstallThirdPartyBloat",
+	 "UninstallMsftBloat",           # "InstallMsftBloat",
+	# "UninstallThirdPartyBloat",     # "InstallThirdPartyBloat",
 	# "UninstallWindowsStore",      # "InstallWindowsStore",
 	# "DisableXboxFeatures",          # "EnableXboxFeatures",
 	# "DisableAdobeFlash",            # "EnableAdobeFlash",
 	# "UninstallMediaPlayer",       # "InstallMediaPlayer",
 	# "UninstallInternetExplorer",  # "InstallInternetExplorer",
 	# "UninstallWorkFolders",       # "InstallWorkFolders",
-	# "InstallLinuxSubsystem",      # "UninstallLinuxSubsystem",
-	# "InstallHyperV",              # "UninstallHyperV",
-	"SetPhotoViewerAssociation",    # "UnsetPhotoViewerAssociation",
-	"AddPhotoViewerOpenWith",       # "RemovePhotoViewerOpenWith",
+	 "InstallLinuxSubsystem",      # "UninstallLinuxSubsystem",
+	 "InstallHyperV",              # "UninstallHyperV",
+	# "SetPhotoViewerAssociation",    # "UnsetPhotoViewerAssociation",
+	# "AddPhotoViewerOpenWith",       # "RemovePhotoViewerOpenWith",
 	# "UninstallPDFPrinter",        # "InstallPDFPrinter",
 	# "UninstallXPSPrinter",          # "InstallXPSPrinter",
 	# "RemoveFaxPrinter",             # "AddFaxPrinter",
@@ -142,8 +153,8 @@ $tweaks = @(
 	# "EnableAudio",                # "DisableAudio",
 
 	### Unpinning ###
-	"UnpinStartMenuTiles",
-	#"UnpinTaskbarIcons",
+	# "UnpinStartMenuTiles",
+	# "UnpinTaskbarIcons",
 
 	### Auxiliary Functions ###
 	"WaitForKey"
@@ -247,6 +258,10 @@ Function InstallSoftware {
     " Nerd Hack Fonts installed `n" >> "software_installation.log"
 	" RSAT Tools installed `n" >> "software_installation.log"
     " Team Viewer installed `n" >> "software_installation.log"
+
+	Install-Module -Name posh-git
+	Install-Module -Name terminal-icons
+	Install-Module -Name Az
 
     $UnifiSearchUrl = "https://github.com/Crypto-Spartan/unifi-search-tool/releases/download/2.0.1/unifi-search-tool_v2.0.1.exe"
     $UnifiSearchUrlOutpath = "unifi-search-tool.exe"
