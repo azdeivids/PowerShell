@@ -1885,17 +1885,17 @@ Function UninstallMsftBloat {
 	Get-AppxPackage "Microsoft.YourPhone" | Remove-AppxPackage
 	Get-AppxPackage "Microsoft.ZuneMusic" | Remove-AppxPackage
 	Get-AppxPackage "Microsoft.ZuneVideo" | Remove-AppxPackage
-    Get-AppxPackage "Microsoft.XboxIdentityProvider" | Remove-AppxPackage
-    Get-AppxPackage "MicrosoftTeams" | Remove-AppxPackage
-    Get-AppxPackage "Microsoft.XboxGameCallableUI" | Remove-AppxPackage
-    Get-AppxPackage "Microsoft.PowerAutomateDesktop" | Remove-AppPackage
-    Get-AppxPackage "MicrosoftCorporationII.QuickAssist" | Remove-AppxPackage
-    Get-AppxPackage "Microsoft.XboxSpeechToTextOverlay" | Remove-AppxPackage
-    Get-AppxPackage "Microsoft.XboxGamingOverlay" | Remove-AppxPackage
-    Get-AppxPackage "Microsoft.XboxGameOverlay" | Remove-AppxPackage
-    Get-AppxPackage "Microsoft.Xbox.TCUI" | Remove-AppxPackage
-    Get-AppxPackage "Microsoft.GamingApp" | Remove-AppxPackage
-    Get-AppxPackage "Clipchamp.Clipchamp" | Remove-AppxPackage
+	Get-AppxPackage "Microsoft.XboxIdentityProvider" | Remove-AppxPackage
+	Get-AppxPackage "MicrosoftTeams" | Remove-AppxPackage
+	Get-AppxPackage "Microsoft.XboxGameCallableUI" | Remove-AppxPackage
+	Get-AppxPackage "Microsoft.PowerAutomateDesktop" | Remove-AppPackage
+	Get-AppxPackage "MicrosoftCorporationII.QuickAssist" | Remove-AppxPackage
+	Get-AppxPackage "Microsoft.XboxSpeechToTextOverlay" | Remove-AppxPackage
+	Get-AppxPackage "Microsoft.XboxGamingOverlay" | Remove-AppxPackage
+	Get-AppxPackage "Microsoft.XboxGameOverlay" | Remove-AppxPackage
+	Get-AppxPackage "Microsoft.Xbox.TCUI" | Remove-AppxPackage
+	Get-AppxPackage "Microsoft.GamingApp" | Remove-AppxPackage
+	Get-AppxPackage "Clipchamp.Clipchamp" | Remove-AppxPackage
 }
 
 # Uninstall default third party applications
