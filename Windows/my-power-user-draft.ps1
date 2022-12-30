@@ -896,7 +896,7 @@ Function EnableConnectionSharing {
 
 #######################################################################################################
 #
-# 		Network Tweaks
+# 		Windows Update Tweaks
 #
 #######################################################################################################
 
@@ -906,6 +906,8 @@ Function EnableConnectionSharing {
 Function EnableUpdateMSProducts {
 	Write-Output "Enabling updates for other Microsoft products..."
 	(New-Object -ComObject Microsoft.Update.ServiceManager).AddService2("7971f918-a847-4430-9279-4a52d1efe18d", 7, "") | Out-Null
+
+	" Receiving updates for MS Apps on `n" >> "windows_configuration.log"
 }
 
 # Disable receiving updates for other Microsoft products via Windows Update
@@ -914,6 +916,8 @@ Function DisableUpdateMSProducts {
 	If ((New-Object -ComObject Microsoft.Update.ServiceManager).Services | Where-Object { $_.ServiceID -eq "7971f918-a847-4430-9279-4a52d1efe18d"}) {
 		(New-Object -ComObject Microsoft.Update.ServiceManager).RemoveService("7971f918-a847-4430-9279-4a52d1efe18d") | Out-Null
 	}
+
+	" Receiving updates for MS Apps off `n" >> "windows_configuration.log"
 }
 
 # Disable nightly wake-up for Automatic Maintenance and Windows Updates
@@ -924,6 +928,8 @@ Function DisableMaintenanceWakeUp {
 	}
 	Set-ItemProperty -Path "HKLM:\SOFTWARE\Policies\Microsoft\Windows\WindowsUpdate\AU" -Name "AUPowerManagement" -Type DWord -Value 0
 	Set-ItemProperty -Path "HKLM:\SOFTWARE\Microsoft\Windows NT\CurrentVersion\Schedule\Maintenance" -Name "WakeUp" -Type DWord -Value 0
+
+	" Maintenance wake-up disabled `n" >> "windows_configuration.log"
 }
 
 # Enable nightly wake-up for Automatic Maintenance and Windows Updates
@@ -931,46 +937,83 @@ Function EnableMaintenanceWakeUp {
 	Write-Output "Enabling nightly wake-up for Automatic Maintenance..."
 	Remove-ItemProperty -Path "HKLM:\SOFTWARE\Policies\Microsoft\Windows\WindowsUpdate\AU" -Name "AUPowerManagement" -ErrorAction SilentlyContinue
 	Remove-ItemProperty -Path "HKLM:\SOFTWARE\Microsoft\Windows NT\CurrentVersion\Schedule\Maintenance" -Name "WakeUp" -ErrorAction SilentlyContinue
+
+	"Maintenance wake-up enabled `n" >> "windows_configuration.log"
 }
 
-# Disable Shared Experiences - Applicable since 1703. Not applicable to Server
-# This setting can be set also via GPO, however doing so causes reset of Start Menu cache. See https://github.com/Disassembler0/Win10-Initial-Setup-Script/issues/145 for details
-Function DisableSharedExperiences {
-	Write-Output "Disabling Shared Experiences..."
+# Set app sharing across devices off
+Function AppSharingOff {
+	Write-Output "Disabling app sharing across devices..."
 	If (!(Test-Path "HKCU:\Software\Microsoft\Windows\CurrentVersion\CDP")) {
 		New-Item -Path "HKCU:\Software\Microsoft\Windows\CurrentVersion\CDP" | Out-Null
 	}
-	Set-ItemProperty -Path "HKCU:\Software\Microsoft\Windows\CurrentVersion\CDP" -Name "RomeSdkChannelUserAuthzPolicy" -Type DWord -Value 0
+	Set-ItemProperty -Path "HKCU:\Software\Microsoft\Windows\CurrentVersion\CDP" -Name "CdpSessionUserAuthzPolicy" -Type DWord -Value 0
+
+	" app sharing across devices turned off `n" >> "windows_configuration.log"
 }
 
-# Enable Shared Experiences - Applicable since 1703. Not applicable to Server
-Function EnableSharedExperiences {
-	Write-Output "Enabling Shared Experiences..."
-	Set-ItemProperty -Path "HKCU:\Software\Microsoft\Windows\CurrentVersion\CDP" -Name "RomeSdkChannelUserAuthzPolicy" -Type DWord -Value 1
+# Set app sharing across devices to only my devices (MS Account connected)
+Function AppSharingMyDevices {
+	Write-Output "Enabling app sharing across my connected devices..."
+	Set-ItemProperty -Path "HKCU:\Software\Microsoft\Windows\CurrentVersion\CDP" -Name "CdpSessionUserAuthzPolicy" -Type DWord -Value 1
+
+	" app sharing set between my devices `n" >> "windows_configuration.log"
 }
 
-# Enable Clipboard History - Applicable since 1809. Not applicable to Server
+# Nearby sharing off
+Function NearbySharingOff {
+	Write-Output "Turning off nearby sharing..."
+	If (!(Test-Path "HKCU:\Software\Microsoft\Windows\CurrentVersion\CDP")) {
+		New-Item -Path "HKCU:\Software\Microsoft\Windows\CurrentVersion\CDP" | Out-Null
+	}
+	Set-ItemProperty -Path "HKCU:\Software\Microsoft\Windows\CurrentVersion\CDP" -Name "NearShareChannelUserAuthzPolicy" -Type DWord -Value 0
+	If (!(Test-Path "HKCU:\Software\Microsoft\Windows\CurrentVersion\CDP\SettingsPage")) {
+		New-Item -Path "HKCU:\Software\Microsoft\Windows\CurrentVersion\CDP\SettingsPage" | Out-Null
+	}
+	Set-ItemProperty -Path "HKCU:\Software\Microsoft\Windows\CurrentVersion\CDP\SettingsPage" -Name "BluetoothLastDisabledNearShare" -Type DWord -Value 0
+
+	" Sharing between nearby devices turned off `n" >> "windows_configuration.log"
+}
+
+# Nearby sharing
+Function NearbySharingMyDevices {
+	Write-Output "Enabling nearby sharing across my devices..."
+	Set-ItemProperty -Path "HKCU:\Software\Microsoft\Windows\CurrentVersion\CDP" -Name "NearShareChannelUserAuthzPolicy" -Type DWord -Value 1
+	Set-ItemProperty -Path "HKCU:\Software\Microsoft\Windows\CurrentVersion\CDP\SettingsPage" -Name "BluetoothLastDisabledNearShare" -Type DWord -Value 1
+
+	" Nearby sharing between my devices turned on `n" >> "windows_configuration.log"
+}
+
+# Enable Clipboard History
 Function EnableClipboardHistory {
 	Write-Output "Enabling Clipboard History..."
 	Set-ItemProperty -Path "HKCU:\Software\Microsoft\Clipboard" -Name "EnableClipboardHistory" -Type DWord -Value 1
+
+	" Clipboard history enabled `n" >> "windows_configuration.log"
 }
 
-# Disable Clipboard History - Applicable since 1809. Not applicable to Server
+# Disable Clipboard History
 Function DisableClipboardHistory {
 	Write-Output "Disabling Clipboard History..."
 	Remove-ItemProperty -Path "HKCU:\Software\Microsoft\Clipboard" -Name "EnableClipboardHistory" -ErrorAction SilentlyContinue
+
+	" Clipboard history disabled `n" >> "windows_configuration.log"
 }
 
 # Disable Autoplay
 Function DisableAutoplay {
 	Write-Output "Disabling Autoplay..."
 	Set-ItemProperty -Path "HKCU:\Software\Microsoft\Windows\CurrentVersion\Explorer\AutoplayHandlers" -Name "DisableAutoplay" -Type DWord -Value 1
+
+	" autoplay disabled `n" >> "windows_configuration.log"
 }
 
 # Enable Autoplay
 Function EnableAutoplay {
 	Write-Output "Enabling Autoplay..."
 	Set-ItemProperty -Path "HKCU:\Software\Microsoft\Windows\CurrentVersion\Explorer\AutoplayHandlers" -Name "DisableAutoplay" -Type DWord -Value 0
+
+	" autoplay enabled `n" >> "windows_configuration.log"
 }
 
 # Disable Autorun for all drives
@@ -980,14 +1023,17 @@ Function DisableAutorun {
 		New-Item -Path "HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\Policies\Explorer" | Out-Null
 	}
 	Set-ItemProperty -Path "HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\Policies\Explorer" -Name "NoDriveTypeAutoRun" -Type DWord -Value 255
+
+	" autorun disabled `n" >> "windows_configuration.log"
 }
 
 # Enable Autorun for removable drives
 Function EnableAutorun {
 	Write-Output "Enabling Autorun for all drives..."
 	Remove-ItemProperty -Path "HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\Policies\Explorer" -Name "NoDriveTypeAutoRun" -ErrorAction SilentlyContinue
-}
 
+	" autorun disabled `n" >> "windows_configuration.log"
+}
 
 # Disable System Restore for system drive - Not applicable to Server
 # Note: This does not delete already existing restore points as the deletion of restore points is irreversible. In order to do that, run also following command.
@@ -995,6 +1041,8 @@ Function EnableAutorun {
 Function DisableRestorePoints {
 	Write-Output "Disabling System Restore for system drive..."
 	Disable-ComputerRestore -Drive "$env:SYSTEMDRIVE"
+
+	" restore points disabled `n" >> "windows_configuration.log"
 }
 
 # Enable System Restore for system drive - Not applicable to Server
@@ -1003,9 +1051,11 @@ Function DisableRestorePoints {
 Function EnableRestorePoints {
 	Write-Output "Enabling System Restore for system drive..."
 	Enable-ComputerRestore -Drive "$env:SYSTEMDRIVE"
+
+	" resotre points enabled `n" >> "windows_configuration.log"
 }
 
-# Enable Storage Sense - automatic disk cleanup - Applicable since 1703
+# Enable Storage Sense - automatic disk cleanup
 Function EnableStorageSense {
 	Write-Output "Enabling Storage Sense..."
 	If (!(Test-Path "HKCU:\Software\Microsoft\Windows\CurrentVersion\StorageSense\Parameters\StoragePolicy")) {
@@ -1013,38 +1063,50 @@ Function EnableStorageSense {
 	}
 	Set-ItemProperty -Path "HKCU:\Software\Microsoft\Windows\CurrentVersion\StorageSense\Parameters\StoragePolicy" -Name "01" -Type DWord -Value 1
 	Set-ItemProperty -Path "HKCU:\Software\Microsoft\Windows\CurrentVersion\StorageSense\Parameters\StoragePolicy" -Name "StoragePoliciesNotified" -Type DWord -Value 1
+
+	" automatic disk clean ups enabled `n" >> "windows_configuration.log"
 }
 
 # Disable Storage Sense - Applicable since 1703
 Function DisableStorageSense {
 	Write-Output "Disabling Storage Sense..."
 	Remove-Item -Path "HKCU:\Software\Microsoft\Windows\CurrentVersion\StorageSense\Parameters\StoragePolicy" -Recurse -ErrorAction SilentlyContinue
+
+	" automatic disk cleanups disabled `n" >> "windows_configuration.log"
 }
 
-# Stop and disable Superfetch service
+# Stop and disable Superfetch service - Might be more applicable to older devices so free up some RAM.
 Function DisableSuperfetch {
 	Write-Output "Stopping and disabling Superfetch service..."
 	Stop-Service "SysMain" -WarningAction SilentlyContinue
 	Set-Service "SysMain" -StartupType Disabled
+
+	" SysMain service disabled `n" >> "windows_configuration.log"
 }
 
-# Start and enable Superfetch service
+# Start and enable Superfetch service - Enabled by default
 Function EnableSuperfetch {
 	Write-Output "Starting and enabling Superfetch service..."
 	Set-Service "SysMain" -StartupType Automatic
 	Start-Service "SysMain" -WarningAction SilentlyContinue
+
+	" SysMain service enabled `n" >> "windows_configuration.log"
 }
 
 # Set BIOS time to UTC
 Function SetBIOSTimeUTC {
 	Write-Output "Setting BIOS time to UTC..."
 	Set-ItemProperty -Path "HKLM:\SYSTEM\CurrentControlSet\Control\TimeZoneInformation" -Name "RealTimeIsUniversal" -Type DWord -Value 1
+
+	" BIOS Time set to UTC `n" >> "windows_configuration.log"
 }
 
 # Set BIOS time to local time
 Function SetBIOSTimeLocal {
 	Write-Output "Setting BIOS time to Local time..."
 	Remove-ItemProperty -Path "HKLM:\SYSTEM\CurrentControlSet\Control\TimeZoneInformation" -Name "RealTimeIsUniversal" -ErrorAction SilentlyContinue
+
+	"BIOS time set to local `n" >> "windows_configuration.log"
 }
 
 # Disable display and sleep mode timeouts
@@ -1054,44 +1116,61 @@ Function DisableSleepTimeout {
 	powercfg /X monitor-timeout-dc 0
 	powercfg /X standby-timeout-ac 0
 	powercfg /X standby-timeout-dc 0
+
+	" Sleep time disabled (powercfg) `n" >> "windows_configuration.log"
 }
 
 # Enable display and sleep mode timeouts
 Function EnableSleepTimeout {
 	Write-Output "Enabling display and sleep mode timeouts..."
-	powercfg /X monitor-timeout-ac 10
-	powercfg /X monitor-timeout-dc 5
-	powercfg /X standby-timeout-ac 30
-	powercfg /X standby-timeout-dc 15
+	powercfg /X monitor-timeout-ac 45
+	powercfg /X monitor-timeout-dc 10
+	powercfg /X standby-timeout-ac 0
+	powercfg /X standby-timeout-dc 0
+
+	" Custom sleep timers applied (powercfg) `n" >> "windows_configuration.log"
 }
 
 # Disable Fast Startup
 Function DisableFastStartup {
 	Write-Output "Disabling Fast Startup..."
 	Set-ItemProperty -Path "HKLM:\SYSTEM\CurrentControlSet\Control\Session Manager\Power" -Name "HiberbootEnabled" -Type DWord -Value 0
+
+	" Fast start-up disabled `n" >> "windows_configuration.log"
 }
 
-# Enable Fast Startup
+# Enable Fast Startup (Often enabled by default)
 Function EnableFastStartup {
 	Write-Output "Enabling Fast Startup..."
 	Set-ItemProperty -Path "HKLM:\SYSTEM\CurrentControlSet\Control\Session Manager\Power" -Name "HiberbootEnabled" -Type DWord -Value 1
+
+	" Fast start-up enabled `n" >> "windows_configuration.log"
 }
 
-# Disable automatic reboot on crash (BSOD)
+# Disable automatic reboot on crash (BSOD) (Often the default setting)
 Function DisableAutoRebootOnCrash {
 	Write-Output "Disabling automatic reboot on crash (BSOD)..."
 	Set-ItemProperty -Path "HKLM:\SYSTEM\CurrentControlSet\Control\CrashControl" -Name "AutoReboot" -Type DWord -Value 0
+
+	" Disable auto re-boot on crash `n" >> "windows_configuration.log"
 }
 
 # Enable automatic reboot on crash (BSOD)
 Function EnableAutoRebootOnCrash {
 	Write-Output "Enabling automatic reboot on crash (BSOD)..."
 	Set-ItemProperty -Path "HKLM:\SYSTEM\CurrentControlSet\Control\CrashControl" -Name "AutoReboot" -Type DWord -Value 1
+
+	" Enable auto re-boot on crash `n" >> "windows_configuration.log"
 }
 
-###############################################
-#################### UI Tweaks
-########################################
+
+
+#######################################################################################################
+#
+# 		User Interface (UI) Tweaks
+#
+#######################################################################################################
+
 
 
 # Adjusts visual effects for performance - Disables animations, transparency etc. but leaves font smoothing and miniatures enabled
