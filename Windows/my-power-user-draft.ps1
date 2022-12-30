@@ -758,12 +758,16 @@ Function EnableOnlineSpeechRecognition {
 Function SetCurrentNetworkPrivate {
 	Write-Output "Setting current network profile to private..."
 	Set-NetConnectionProfile -NetworkCategory Private
+
+	" Network profile set to private `n" >> "windows_configuration.log"
 }
 
 # Set current network profile to public (deny file sharing, device discovery, etc.)
 Function SetCurrentNetworkPublic {
 	Write-Output "Setting current network profile to public..."
 	Set-NetConnectionProfile -NetworkCategory Public
+
+	" Network profile set to public `n" >> "windows_configuration.log"
 }
 
 # Set unknown networks profile to private (allow file sharing, device discovery, etc.)
@@ -773,12 +777,16 @@ Function SetUnknownNetworksPrivate {
 		New-Item -Path "HKLM:\SOFTWARE\Policies\Microsoft\Windows NT\CurrentVersion\NetworkList\Signatures\010103000F0000F0010000000F0000F0C967A3643C3AD745950DA7859209176EF5B87C875FA20DF21951640E807D7C24" -Force | Out-Null
 	}
 	Set-ItemProperty -Path "HKLM:\SOFTWARE\Policies\Microsoft\Windows NT\CurrentVersion\NetworkList\Signatures\010103000F0000F0010000000F0000F0C967A3643C3AD745950DA7859209176EF5B87C875FA20DF21951640E807D7C24" -Name "Category" -Type DWord -Value 1
+
+	" Unknown network set to private `n" >> "windows_configuration.log"
 }
 
 # Set unknown networks profile to public (deny file sharing, device discovery, etc.)
 Function SetUnknownNetworksPublic {
 	Write-Output "Setting unknown networks profile to public..."
 	Remove-ItemProperty -Path "HKLM:\SOFTWARE\Policies\Microsoft\Windows NT\CurrentVersion\NetworkList\Signatures\010103000F0000F0010000000F0000F0C967A3643C3AD745950DA7859209176EF5B87C875FA20DF21951640E807D7C24" -Name "Category" -ErrorAction SilentlyContinue
+
+	" Unknown network set to public `n" >> "windows_configuration.log"
 }
 
 # Disable automatic installation of network devices
@@ -788,36 +796,48 @@ Function DisableNetDevicesAutoInst {
 		New-Item -Path "HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\NcdAutoSetup\Private" -Force | Out-Null
 	}
 	Set-ItemProperty -Path "HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\NcdAutoSetup\Private" -Name "AutoSetup" -Type DWord -Value 0
+
+	" Automatic installation of net devices disabled `n" >> "windows_configuration.log"
 }
 
 # Enable automatic installation of network devices
 Function EnableNetDevicesAutoInst {
 	Write-Output "Enabling automatic installation of network devices..."
 	Remove-ItemProperty -Path "HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\NcdAutoSetup\Private" -Name "AutoSetup" -ErrorAction SilentlyContinue
+
+	" Automatic installation of net devices enabled `n" >> "windows_configuration.log"
 }
 
 # Disable obsolete SMB 1.0 protocol - Disabled by default since 1709
 Function DisableSMB1 {
 	Write-Output "Disabling SMB 1.0 protocol..."
 	Set-SmbServerConfiguration -EnableSMB1Protocol $false -Force
+
+	" SMB1 protocol disabled `n" >> "windows_configuration.log"
 }
 
 # Enable obsolete SMB 1.0 protocol - Disabled by default since 1709
 Function EnableSMB1 {
 	Write-Output "Enabling SMB 1.0 protocol..."
 	Set-SmbServerConfiguration -EnableSMB1Protocol $true -Force
+
+	" SMB1 Protocol enabled `n" >> "windows_configuration.log"
 }
 
 # Disable NetBIOS over TCP/IP on all currently installed network interfaces
 Function DisableNetBIOS {
 	Write-Output "Disabling NetBIOS over TCP/IP..."
 	Set-ItemProperty "HKLM:\SYSTEM\CurrentControlSet\services\NetBT\Parameters\Interfaces\Tcpip*" -Name "NetbiosOptions" -Type DWord -Value 2
+
+	" NetBIOS disabled `n" >> "windows_configuration.log"
 }
 
 # Enable NetBIOS over TCP/IP on all currently installed network interfaces
 Function EnableNetBIOS {
 	Write-Output "Enabling NetBIOS over TCP/IP..."
 	Set-ItemProperty "HKLM:\SYSTEM\CurrentControlSet\services\NetBT\Parameters\Interfaces\Tcpip*" -Name "NetbiosOptions" -Type DWord -Value 0
+
+	" NetBIOS enabled `n" >> "windows_configuration.log"
 }
 
 # Disable Remote Assistance - Not applicable to Server (unless Remote Assistance is explicitly installed)
@@ -825,6 +845,8 @@ Function DisableRemoteAssistance {
 	Write-Output "Disabling Remote Assistance..."
 	Set-ItemProperty -Path "HKLM:\SYSTEM\CurrentControlSet\Control\Remote Assistance" -Name "fAllowToGetHelp" -Type DWord -Value 0
 	Get-WindowsCapability -Online | Where-Object { $_.Name -like "App.Support.QuickAssist*" } | Remove-WindowsCapability -Online | Out-Null
+
+	" Remote assistance disabled `n" >> "windows_configuration.log"
 }
 
 # Enable Remote Assistance - Not applicable to Server (unless Remote Assistance is explicitly installed)
@@ -832,6 +854,8 @@ Function EnableRemoteAssistance {
 	Write-Output "Enabling Remote Assistance..."
 	Set-ItemProperty -Path "HKLM:\SYSTEM\CurrentControlSet\Control\Remote Assistance" -Name "fAllowToGetHelp" -Type DWord -Value 1
 	Get-WindowsCapability -Online | Where-Object { $_.Name -like "App.Support.QuickAssist*" } | Add-WindowsCapability -Online | Out-Null
+
+	" Remote assistance enabled `n" >> "windows_configuration.log"
 }
 
 # Enable Remote Desktop
@@ -839,6 +863,8 @@ Function EnableRemoteDesktop {
 	Write-Output "Enabling Remote Desktop..."
 	Set-ItemProperty -Path "HKLM:\SYSTEM\CurrentControlSet\Control\Terminal Server" -Name "fDenyTSConnections" -Type DWord -Value 0
 	Enable-NetFirewallRule -Name "RemoteDesktop*"
+
+	" Remote desktop enabled `n" >> "windows_configuration.log"
 }
 
 # Disable Remote Desktop
@@ -846,11 +872,35 @@ Function DisableRemoteDesktop {
 	Write-Output "Disabling Remote Desktop..."
 	Set-ItemProperty -Path "HKLM:\SYSTEM\CurrentControlSet\Control\Terminal Server" -Name "fDenyTSConnections" -Type DWord -Value 1
 	Disable-NetFirewallRule -Name "RemoteDesktop*"
+
+	" Remote desktop disabled `n" >> "windows_configuration.log"
 }
 
-###########################################
-#### Windows Update Tweaks
-###################################################
+# Disable Internet Connection Sharing (e.g. mobile hotspot)
+Function DisableConnectionSharing {
+	Write-Output "Disabling Internet Connection Sharing..."
+	Set-ItemProperty -Path "HKLM:\SOFTWARE\Policies\Microsoft\Windows\Network Connections" -Name "NC_ShowSharedAccessUI" -Type DWord -Value 0
+
+	" Hotspot disabled `n" >> "windows_configuration.log"
+}
+
+# Enable Internet Connection Sharing (e.g. mobile hotspot)
+Function EnableConnectionSharing {
+	Write-Output "Enabling Internet Connection Sharing..."
+	Remove-ItemProperty -Path "HKLM:\SOFTWARE\Policies\Microsoft\Windows\Network Connections" -Name "NC_ShowSharedAccessUI" -ErrorAction SilentlyContinue
+
+	" Hotspot enabled `n" >> "windows_configuration.log"
+}
+
+
+
+#######################################################################################################
+#
+# 		Network Tweaks
+#
+#######################################################################################################
+
+
 
 # Enable receiving updates for other Microsoft products via Windows Update
 Function EnableUpdateMSProducts {
