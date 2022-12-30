@@ -1022,7 +1022,7 @@ Function DisableAutorun {
 	If (!(Test-Path "HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\Policies\Explorer")) {
 		New-Item -Path "HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\Policies\Explorer" | Out-Null
 	}
-	Set-ItemProperty -Path "HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\Policies\Explorer" -Name "NoDriveTypeAutoRun" -Type DWord -Value 255
+	Set-ItemProperty -Path "HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\Policies\Explorer" -Name "NoDriveTypeAutoRun" -Type DWord -Value 255 #value [91]
 
 	" autorun disabled `n" >> "windows_configuration.log"
 }
@@ -1186,6 +1186,8 @@ Function SetVisualFXPerformance {
 	Set-ItemProperty -Path "HKCU:\Software\Microsoft\Windows\CurrentVersion\Explorer\Advanced" -Name "TaskbarAnimations" -Type DWord -Value 0
 	Set-ItemProperty -Path "HKCU:\Software\Microsoft\Windows\CurrentVersion\Explorer\VisualEffects" -Name "VisualFXSetting" -Type DWord -Value 3
 	Set-ItemProperty -Path "HKCU:\Software\Microsoft\Windows\DWM" -Name "EnableAeroPeek" -Type DWord -Value 0
+
+	" Visual effects adjusted for performance `n" >> "windows_configuration.log"
 }
 
 # Adjusts visual effects for appearance
@@ -1201,150 +1203,56 @@ Function SetVisualFXAppearance {
 	Set-ItemProperty -Path "HKCU:\Software\Microsoft\Windows\CurrentVersion\Explorer\Advanced" -Name "TaskbarAnimations" -Type DWord -Value 1
 	Set-ItemProperty -Path "HKCU:\Software\Microsoft\Windows\CurrentVersion\Explorer\VisualEffects" -Name "VisualFXSetting" -Type DWord -Value 3
 	Set-ItemProperty -Path "HKCU:\Software\Microsoft\Windows\DWM" -Name "EnableAeroPeek" -Type DWord -Value 1
+
+	" Visual effect adjusted for appearance `n" >> "windows_configuration.log"
 }
 
 # Hide network options from Lock Screen
 Function HideNetworkFromLockScreen {
 	Write-Output "Hiding network options from Lock Screen..."
 	Set-ItemProperty -Path "HKLM:\SOFTWARE\Policies\Microsoft\Windows\System" -Name "DontDisplayNetworkSelectionUI" -Type DWord -Value 1
+
+	" Network hidden from lock screen `n" >> "windows_configuration.log"
 }
 
 # Show network options on lock screen
 Function ShowNetworkOnLockScreen {
 	Write-Output "Showing network options on Lock Screen..."
 	Remove-ItemProperty -Path "HKLM:\SOFTWARE\Policies\Microsoft\Windows\System" -Name "DontDisplayNetworkSelectionUI" -ErrorAction SilentlyContinue
+
+	" Network icon enabled on lock screen `n" >> "windows_configuration.log"
 }
 
 # Hide shutdown options from Lock Screen
 Function HideShutdownFromLockScreen {
 	Write-Output "Hiding shutdown options from Lock Screen..."
 	Set-ItemProperty -Path "HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\Policies\System" -Name "ShutdownWithoutLogon" -Type DWord -Value 0
+
+	" Shutdown removed from lock screen `n" >> "windows_configuration.log"
 }
 
 # Show shutdown options on lock screen
 Function ShowShutdownOnLockScreen {
 	Write-Output "Showing shutdown options on Lock Screen..."
 	Set-ItemProperty -Path "HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\Policies\System" -Name "ShutdownWithoutLogon" -Type DWord -Value 1
+
+	" Shutdown enabled from lock screen `n" >> "windows_configuration.log"
 }
 
 # Disable Lock screen Blur - Applicable since 1903
 Function DisableLockScreenBlur {
 	Write-Output "Disabling Lock screen Blur..."
 	Set-ItemProperty -Path "HKLM:\SOFTWARE\Policies\Microsoft\Windows\System" -Name "DisableAcrylicBackgroundOnLogon" -Type DWord -Value 1
+
+	" Lock screen blur disabled `n" >> "windows_configuration.log"
 }
 
 # Enable Lock screen Blur - Applicable since 1903
 Function EnableLockScreenBlur {
 	Write-Output "Enabling Lock screen Blur..."
 	Remove-ItemProperty -Path "HKLM:\SOFTWARE\Policies\Microsoft\Windows\System" -Name "DisableAcrylicBackgroundOnLogon" -ErrorAction SilentlyContinue
-}
 
-# Center Align Taskbar icons
-Function CenterAlignTaskbar {
-	Write-Output "Aligning Taskabr icons to the center..."
-	If (!(Test-Path "HKCU:\Software\Microsoft\Windows\CurrentVersion\Explorer\Advanced\TaskbarAl")) {
-		New-Item -Path "HKCU:\Software\Microsoft\Windows\CurrentVersion\Explorer\Advanced\TaskbarAl" | Out-Null
-	}
-	Set-ItemProperty -Path "HKCU:\Software\Microsoft\Windows\CurrentVersion\Explorer\Advanced" -Name "TaskbarAl" -Type DWord -Value 1
-}
-
-# Left Align Taskbar icons
-Function LeftAlignTaskbar {
-	Write-Output "Aligning Taskbar icons to the left..."
-	Remove-ItemProperty -Path "HKCU:\Software\Microsoft\Windows\CurrentVersion\Explorer\Advanced" -Name "TaskbarAl" -ErrorAction SilentlyContinue
-}
-
-# Show all tray icons
-Function ShowTrayIcons {
-	Write-Output "Showing all tray icons..."
-	If (!(Test-Path "HKCU:\Software\Microsoft\Windows\CurrentVersion\Policies\Explorer")) {
-		New-Item -Path "HKCU:\Software\Microsoft\Windows\CurrentVersion\Policies\Explorer" | Out-Null
-	}
-	Set-ItemProperty -Path "HKCU:\Software\Microsoft\Windows\CurrentVersion\Policies\Explorer" -Name "NoAutoTrayNotify" -Type DWord -Value 1
-}
-
-# Hide tray icons as needed
-Function HideTrayIcons {
-	Write-Output "Hiding tray icons..."
-	Remove-ItemProperty -Path "HKCU:\Software\Microsoft\Windows\CurrentVersion\Policies\Explorer" -Name "NoAutoTrayNotify" -ErrorAction SilentlyContinue
-}
-
-# Hide Taskbar Search icon / box
-Function HideTaskbarSearch {
-	Write-Output "Hiding Taskbar Search icon / box..."
-	Set-ItemProperty -Path "HKCU:\Software\Microsoft\Windows\CurrentVersion\Search" -Name "SearchboxTaskbarMode" -Type DWord -Value 0
-}
-
-# Show Taskbar Search icon
-Function ShowTaskbarSearchIcon {
-	Write-Output "Showing Taskbar Search icon..."
-	Set-ItemProperty -Path "HKCU:\Software\Microsoft\Windows\CurrentVersion\Search" -Name "SearchboxTaskbarMode" -Type DWord -Value 1
-}
-
-# Hide Task View button
-Function HideTaskView {
-	Write-Output "Hiding Task View button..."
-	Set-ItemProperty -Path "HKCU:\Software\Microsoft\Windows\CurrentVersion\Explorer\Advanced" -Name "ShowTaskViewButton" -Type DWord -Value 0
-}
-
-# Show Task View button
-Function ShowTaskView {
-	Write-Output "Showing Task View button..."
-	Remove-ItemProperty -Path "HKCU:\Software\Microsoft\Windows\CurrentVersion\Explorer\Advanced" -Name "ShowTaskViewButton" -ErrorAction SilentlyContinue
-}
-
-# Set taskbar buttons to show labels and combine when taskbar is full
-Function SetTaskbarCombineWhenFull {
-	Write-Output "Setting taskbar buttons to combine when taskbar is full..."
-	Set-ItemProperty -Path "HKCU:\Software\Microsoft\Windows\CurrentVersion\Explorer\Advanced" -Name "TaskbarGlomLevel" -Type DWord -Value 1
-	Set-ItemProperty -Path "HKCU:\Software\Microsoft\Windows\CurrentVersion\Explorer\Advanced" -Name "MMTaskbarGlomLevel" -Type DWord -Value 1
-}
-
-# Set taskbar buttons to show labels and never combine
-Function SetTaskbarCombineNever {
-	Write-Output "Setting taskbar buttons to never combine..."
-	Set-ItemProperty -Path "HKCU:\Software\Microsoft\Windows\CurrentVersion\Explorer\Advanced" -Name "TaskbarGlomLevel" -Type DWord -Value 2
-	Set-ItemProperty -Path "HKCU:\Software\Microsoft\Windows\CurrentVersion\Explorer\Advanced" -Name "MMTaskbarGlomLevel" -Type DWord -Value 2
-}
-
-# Set taskbar buttons to always combine and hide labels
-Function SetTaskbarCombineAlways {
-	Write-Output "Setting taskbar buttons to always combine, hide labels..."
-	Remove-ItemProperty -Path "HKCU:\Software\Microsoft\Windows\CurrentVersion\Explorer\Advanced" -Name "TaskbarGlomLevel" -ErrorAction SilentlyContinue
-	Remove-ItemProperty -Path "HKCU:\Software\Microsoft\Windows\CurrentVersion\Explorer\Advanced" -Name "MMTaskbarGlomLevel" -ErrorAction SilentlyContinue
-}
-
-# Hide Widget icon
-Function HideWidgetsIcon {
-    Write-Output "Hiding Widget icon..."
-    If (!(Test-Path "HKLM:\Software\Policies\Microsoft\Dsh")) {
-        New-Item -Path "HKLM:\Software\Policies\Microsoft\Dsh" | Out-Null
-    }
-    Set-ItemProperty -Path "HKLM:\Software\Policies\Microsoft\Dsh" -Name "AllowNewsAndInterests" -Type DWORD -Value 0 
-}
-
-# Show Widget icon
-Function ShowWidgetsIcon {
-    Write-Output "Show Widget icon..."
-    If (!(Test-Path "HKLM:\Software\Policies\Microsoft\Dsh")) {
-        New-Item -Path "HKLM:\Software\Policies\Microsoft\Dsh" | Out-Null
-    }
-    Set-ItemProperty -Path "HKLM:\Software\Policies\Microsoft\Dsh" -Name "AllowNewsAndInterests" -Type DWORD -Value 1 
-}
-
-# Hide Taskbar Chat icon
-Function HideTaskbarChatIcon {
-	Write-Output "Hiding Chat icon..."
-	If (!(Test-Path "HKCU:\Software\Microsoft\Windows\CurrentVersion\Explorer\Advanced")) {
-		New-Item -Path "HKCU:\Software\Microsoft\Windows\CurrentVersion\Explorer\Advanced" | Out-Null
-	}
-	Set-ItemProperty -Path "HKCU:\Software\Microsoft\Windows\CurrentVersion\Explorer\Advanced" -Name "TaskbarMn" -Type DWord -Value 0
-}
-
-# Show Taskbar People icon
-Function ShowTaskbarChatIcon {
-	Write-Output "Showing Chat icon..."
-	Remove-ItemProperty -Path "HKCU:\Software\Microsoft\Windows\CurrentVersion\Explorer\Advanced" -Name "TaskbarMn" -ErrorAction SilentlyContinue
+	" Lock screen blur enabled `n" >> "windows_configuration.log"
 }
 
 # Disable search for app in store for unknown extensions
@@ -1354,69 +1262,54 @@ Function DisableSearchAppInStore {
 		New-Item -Path "HKLM:\SOFTWARE\Policies\Microsoft\Windows\Explorer" | Out-Null
 	}
 	Set-ItemProperty -Path "HKLM:\SOFTWARE\Policies\Microsoft\Windows\Explorer" -Name "NoUseStoreOpenWith" -Type DWord -Value 1
+
+	" Do not search for app in store `n" >> "windows_configuration.log"
 }
 
 # Enable search for app in store for unknown extensions
 Function EnableSearchAppInStore {
 	Write-Output "Enabling search for app in store for unknown extensions..."
 	Remove-ItemProperty -Path "HKLM:\SOFTWARE\Policies\Microsoft\Windows\Explorer" -Name "NoUseStoreOpenWith" -ErrorAction SilentlyContinue
+
+	" Search for apps in MS store `n" >> "windows_configuration.log"
 }
 
-# Hide 'Recently added' list from the Start Menu
+# Hide recently added apps in Start Menu (Disable setting)
 Function HideRecentlyAddedApps {
-	Write-Output "Hiding 'Recently added' list from the Start Menu..."
+	Write-Output "Hiding recently added apps in the start menu (Disabled)..."
 	If (!(Test-Path "HKLM:\SOFTWARE\Policies\Microsoft\Windows\Explorer")) {
 		New-Item -Path "HKLM:\SOFTWARE\Policies\Microsoft\Windows\Explorer" | Out-Null
 	}
 	Set-ItemProperty -Path "HKLM:\SOFTWARE\Policies\Microsoft\Windows\Explorer" -Name "HideRecentlyAddedApps" -Type DWord -Value 1
+
+	" Recently added apps setting disabled (hiude) `n" >> "windows_configuration.log"
 }
 
-# Show 'Recently added' list in the Start Menu
+# Show 'recently added apps in Start Menu (Disable setting)
 Function ShowRecentlyAddedApps {
-	Write-Output "Showing 'Recently added' list in the Start Menu..."
+	Write-Output "Showing recently added apps in start menu (disabled)..."
 	Remove-ItemProperty -Path "HKLM:\SOFTWARE\Policies\Microsoft\Windows\Explorer" -Name "HideRecentlyAddedApps" -ErrorAction SilentlyContinue
+
+	" Recently added apps setting disabled (show) `n" >> "windows_configuration.log"
 }
 
-# Hide 'Most used' apps list from the Start Menu - Applicable until 1703 (hidden by default since then)
+# Hide most used apps in star menu (Disable setting)
 Function HideMostUsedApps {
-	Write-Output "Hiding 'Most used' apps list from the Start Menu..."
+	Write-Output "Hiding most used apps in start menu (Disabled)..."
 	If (!(Test-Path "HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\Policies\Explorer")) {
 		New-Item -Path "HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\Policies\Explorer" | Out-Null
 	}
 	Set-ItemProperty -Path "HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\Policies\Explorer" -Name "NoStartMenuMFUprogramsList" -Type DWord -Value 1
+
+	" Most used apps setting disabled (Hidden) `n" >> "windows_configuration.log"
 }
 
-# Show 'Most used' apps list in the Start Menu - Applicable until 1703 (GPO broken since then)
+# Show show most used apps in start menu (Disable setting)
 Function ShowMostUsedApps {
-	Write-Output "Showing 'Most used' apps list in the Start Menu..."
+	Write-Output "Showing most used app in start menu (Disbaled)..."
 	Remove-ItemProperty -Path "HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\Policies\Explorer" -Name "NoStartMenuMFUprogramsList" -ErrorAction SilentlyContinue
-}
 
-# Set start menu to show even amount of recomendations and pins
-Function ShowMorePinsInStartMenu {
-    Write-Output "Showing more even amount of recommendations and pins in Start menu..."
-    If (!(Test-Path "HKCU:\Software\Microsoft\Windows\CurrentVersion\Explorer\Advanced")) {
-        New-Item "HKCU:\Software\Microsoft\Windows\CurrentVersion\Explorer\Advanced" | Out-Null
-    }
-    Set-ItemProperty -Path "HKCU:\Software\Microsoft\Windows\CurrentVersion\Explorer\Advanced" -Name "Start_Layout" -Type DWord -Value 0
-}
-
-# Set start menu to show more pins
-Function ShowMorePinsInStartMenu {
-    Write-Output "Showing more pins in Start menu..."
-    If (!(Test-Path "HKCU:\Software\Microsoft\Windows\CurrentVersion\Explorer\Advanced")) {
-        New-Item "HKCU:\Software\Microsoft\Windows\CurrentVersion\Explorer\Advanced" | Out-Null
-    }
-    Set-ItemProperty -Path "HKCU:\Software\Microsoft\Windows\CurrentVersion\Explorer\Advanced" -Name "Start_Layout" -Type DWord -Value 1
-}
-
-# Set start menu to show more recomendations
-Function ShowMorePinsInStartMenu {
-    Write-Output "Showing more recommendations in Start menu..."
-    If (!(Test-Path "HKCU:\Software\Microsoft\Windows\CurrentVersion\Explorer\Advanced")) {
-        New-Item "HKCU:\Software\Microsoft\Windows\CurrentVersion\Explorer\Advanced" | Out-Null
-    }
-    Set-ItemProperty -Path "HKCU:\Software\Microsoft\Windows\CurrentVersion\Explorer\Advanced" -Name "Start_Layout" -Type DWord -Value 2
+	" Most used apps setting disabled (Visible) `n" >> "windows_configuration.log"
 }
 
 # Set Control Panel view to Small icons (Classic)
@@ -1427,6 +1320,8 @@ Function SetControlPanelSmallIcons {
 	}
 	Set-ItemProperty -Path "HKCU:\Software\Microsoft\Windows\CurrentVersion\Explorer\ControlPanel" -Name "StartupPage" -Type DWord -Value 1
 	Set-ItemProperty -Path "HKCU:\Software\Microsoft\Windows\CurrentVersion\Explorer\ControlPanel" -Name "AllItemsIconView" -Type DWord -Value 1
+
+	" Small icons in control panel `n" >> "windows_configuration.log"
 }
 
 # Set Control Panel view to Large icons (Classic)
@@ -1437,6 +1332,8 @@ Function SetControlPanelLargeIcons {
 	}
 	Set-ItemProperty -Path "HKCU:\Software\Microsoft\Windows\CurrentVersion\Explorer\ControlPanel" -Name "StartupPage" -Type DWord -Value 1
 	Set-ItemProperty -Path "HKCU:\Software\Microsoft\Windows\CurrentVersion\Explorer\ControlPanel" -Name "AllItemsIconView" -Type DWord -Value 0
+
+	" Large icons in control panel `n" >> "windows_configuration.log"
 }
 
 # Set Control Panel view to categories
@@ -1444,30 +1341,40 @@ Function SetControlPanelCategories {
 	Write-Output "Setting Control Panel view to categories..."
 	Remove-ItemProperty -Path "HKCU:\Software\Microsoft\Windows\CurrentVersion\Explorer\ControlPanel" -Name "StartupPage" -ErrorAction SilentlyContinue
 	Remove-ItemProperty -Path "HKCU:\Software\Microsoft\Windows\CurrentVersion\Explorer\ControlPanel" -Name "AllItemsIconView" -ErrorAction SilentlyContinue
+
+	" Categories in control panel `n" >> "windows_configuration.log"
 }
 
 # Set Dark Mode for Applications
 Function SetAppsDarkMode {
 	Write-Output "Setting Dark Mode for Applications..."
 	Set-ItemProperty -Path "HKCU:\Software\Microsoft\Windows\CurrentVersion\Themes\Personalize" -Name "AppsUseLightTheme" -Type DWord -Value 0
+
+	" App dark mode set `n" >> "windows_configuration.log"
 }
 
 # Set Light Mode for Applications
 Function SetAppsLightMode {
 	Write-Output "Setting Light Mode for Applications..."
 	Set-ItemProperty -Path "HKCU:\Software\Microsoft\Windows\CurrentVersion\Themes\Personalize" -Name "AppsUseLightTheme" -Type DWord -Value 1
+
+	" App light mode set `n" >> "windows_configuration.log"
 }
 
 # Set Light Mode for System - Applicable since 1903
 Function SetSystemLightMode {
 	Write-Output "Setting Light Mode for System..."
 	Set-ItemProperty -Path "HKCU:\Software\Microsoft\Windows\CurrentVersion\Themes\Personalize" -Name "SystemUsesLightTheme" -Type DWord -Value 1
+
+	" System light mode set `n" >> "windows_configuration.log"
 }
 
 # Set Dark Mode for System - Applicable since 1903
 Function SetSystemDarkMode {
 	Write-Output "Setting Dark Mode for System..."
 	Set-ItemProperty -Path "HKCU:\Software\Microsoft\Windows\CurrentVersion\Themes\Personalize" -Name "SystemUsesLightTheme" -Type DWord -Value 0
+
+	" System dark mode set `n" >> "windows_configuration.log"
 }
 
 # Enable NumLock after startup
@@ -1482,6 +1389,8 @@ Function EnableNumlock {
 		$wsh = New-Object -ComObject WScript.Shell
 		$wsh.SendKeys('{NUMLOCK}')
 	}
+
+	" Num lock enabled (default) `n" >> "windows_configuration.log"
 }
 
 # Disable NumLock after startup
@@ -1496,6 +1405,8 @@ Function DisableNumlock {
 		$wsh = New-Object -ComObject WScript.Shell
 		$wsh.SendKeys('{NUMLOCK}')
 	}
+
+	" Num lock disabled (default) `n" >> "windows_configuration.log"
 }
 
 # Disable enhanced pointer precision
@@ -1504,6 +1415,8 @@ Function DisableEnhPointerPrecision {
 	Set-ItemProperty -Path "HKCU:\Control Panel\Mouse" -Name "MouseSpeed" -Type String -Value "0"
 	Set-ItemProperty -Path "HKCU:\Control Panel\Mouse" -Name "MouseThreshold1" -Type String -Value "0"
 	Set-ItemProperty -Path "HKCU:\Control Panel\Mouse" -Name "MouseThreshold2" -Type String -Value "0"
+
+	" Enhanced mouse pointer disabled `n" >> "windows_configuration.log"
 }
 
 # Enable enhanced pointer precision
@@ -1512,6 +1425,8 @@ Function EnableEnhPointerPrecision {
 	Set-ItemProperty -Path "HKCU:\Control Panel\Mouse" -Name "MouseSpeed" -Type String -Value "1"
 	Set-ItemProperty -Path "HKCU:\Control Panel\Mouse" -Name "MouseThreshold1" -Type String -Value "6"
 	Set-ItemProperty -Path "HKCU:\Control Panel\Mouse" -Name "MouseThreshold2" -Type String -Value "10"
+
+	" Enhanced mouse pointed enabled `n" >> "windows_configuration.log"
 }
 # Enable verbose startup/shutdown status messages
 Function EnableVerboseStatus {
@@ -1521,6 +1436,8 @@ Function EnableVerboseStatus {
 	} Else {
 		Remove-ItemProperty -Path "HKLM:\Software\Microsoft\Windows\CurrentVersion\Policies\System" -Name "VerboseStatus" -ErrorAction SilentlyContinue
 	}
+
+	" Verbose logon enabled `n" >> "windows_configuration.log"
 }
 
 # Disable verbose startup/shutdown status messages
@@ -1531,6 +1448,8 @@ Function DisableVerboseStatus {
 	} Else {
 		Set-ItemProperty -Path "HKLM:\Software\Microsoft\Windows\CurrentVersion\Policies\System" -Name "VerboseStatus" -Type DWord -Value 0
 	}
+
+	" Verbose logon disabled `n" >> "windows_configuration.log"
 }
 
 # Disable F1 Help key in Explorer and on the Desktop
@@ -1544,17 +1463,182 @@ Function DisableF1HelpKey {
 		New-Item -Path "HKCU:\Software\Classes\TypeLib\{8cec5860-07a1-11d9-b15e-000d56bfe6ee}\1.0\0\win64" -Force | Out-Null
 	}
 	Set-ItemProperty -Path "HKCU:\Software\Classes\TypeLib\{8cec5860-07a1-11d9-b15e-000d56bfe6ee}\1.0\0\win64" -Name "(Default)" -Type "String" -Value ""
+
+	" F1 Key (Help) disabled `n" >> "windows_configuration.log"
 }
 
 # Enable F1 Help key in Explorer and on the Desktop
 Function EnableF1HelpKey {
 	Write-Output "Enabling F1 Help key..."
 	Remove-Item "HKCU:\Software\Classes\TypeLib\{8cec5860-07a1-11d9-b15e-000d56bfe6ee}\1.0\0" -Recurse -ErrorAction SilentlyContinue
+
+	" F1 Key (Help) enabled `n" >> "windows_configuration.log"
 }
 
-##################
-######### Explorer UI Tweaks
-##################
+################################################################################################################
+####################################### Windows 11 22H2 Tweaks #################################################
+
+# Center Align Taskbar icons
+Function CenterAlignTaskbar {
+	Write-Output "Aligning Taskabr icons to the center..."
+	If (!(Test-Path "HKCU:\Software\Microsoft\Windows\CurrentVersion\Explorer\Advanced\TaskbarAl")) {
+		New-Item -Path "HKCU:\Software\Microsoft\Windows\CurrentVersion\Explorer\Advanced\TaskbarAl" | Out-Null
+	}
+	Set-ItemProperty -Path "HKCU:\Software\Microsoft\Windows\CurrentVersion\Explorer\Advanced" -Name "TaskbarAl" -Type DWord -Value 1
+
+	" Taskbar icons aligned in center `n" >> "windows_configuration.log"
+}
+
+# Left Align Taskbar icons
+Function LeftAlignTaskbar {
+	Write-Output "Aligning Taskbar icons to the left..."
+	Remove-ItemProperty -Path "HKCU:\Software\Microsoft\Windows\CurrentVersion\Explorer\Advanced" -Name "TaskbarAl" -ErrorAction SilentlyContinue
+
+	" Taskbar icons aligned to the left `n" >> "windows_configuration.log"
+}
+
+# Hide Taskbar Search icon / box
+Function HideTaskbarSearch {
+	Write-Output "Hiding Taskbar Search icon / box..."
+	Set-ItemProperty -Path "HKCU:\Software\Microsoft\Windows\CurrentVersion\Search" -Name "SearchboxTaskbarMode" -Type DWord -Value 0
+
+	" Taskbar search icon hidden `n" >> "windows_configuration.log"
+}
+
+# Show Taskbar Search icon
+Function ShowTaskbarSearch {
+	Write-Output "Showing Taskbar Search icon..."
+	Set-ItemProperty -Path "HKCU:\Software\Microsoft\Windows\CurrentVersion\Search" -Name "SearchboxTaskbarMode" -Type DWord -Value 1
+
+	" Taskabr search icon visible `n" >> "windows_configuration.log"
+}
+
+# Hide Task View button
+Function HideTaskView {
+	Write-Output "Hiding Task View button..."
+	Set-ItemProperty -Path "HKCU:\Software\Microsoft\Windows\CurrentVersion\Explorer\Advanced" -Name "ShowTaskViewButton" -Type DWord -Value 0
+
+	" Task view button hidden `n" >> "windows_configuration.log"
+}
+
+# Show Task View button
+Function ShowTaskView {
+	Write-Output "Showing Task View button..."
+	Remove-ItemProperty -Path "HKCU:\Software\Microsoft\Windows\CurrentVersion\Explorer\Advanced" -Name "ShowTaskViewButton" -ErrorAction SilentlyContinue
+
+	" Task view button visible `n" >> "windows_configuration.log"
+}
+
+# Set taskbar buttons to show labels and combine when taskbar is full
+Function SetTaskbarCombineWhenFull {
+	Write-Output "Setting taskbar buttons to combine when taskbar is full..."
+	Set-ItemProperty -Path "HKCU:\Software\Microsoft\Windows\CurrentVersion\Explorer\Advanced" -Name "TaskbarGlomLevel" -Type DWord -Value 1
+	Set-ItemProperty -Path "HKCU:\Software\Microsoft\Windows\CurrentVersion\Explorer\Advanced" -Name "MMTaskbarGlomLevel" -Type DWord -Value 1
+
+	" Combine labels when taskbar is full `n" >> "windows_configuration.log"
+}
+
+# Set taskbar buttons to show labels and never combine
+Function SetTaskbarCombineNever {
+	Write-Output "Setting taskbar buttons to never combine..."
+	Set-ItemProperty -Path "HKCU:\Software\Microsoft\Windows\CurrentVersion\Explorer\Advanced" -Name "TaskbarGlomLevel" -Type DWord -Value 2
+	Set-ItemProperty -Path "HKCU:\Software\Microsoft\Windows\CurrentVersion\Explorer\Advanced" -Name "MMTaskbarGlomLevel" -Type DWord -Value 2
+
+	" Never combine task bar labels `n" >> "windows_configuration.log"
+}
+
+# Set taskbar buttons to always combine and hide labels
+Function SetTaskbarCombineAlways {
+	Write-Output "Setting taskbar buttons to always combine, hide labels..."
+	Remove-ItemProperty -Path "HKCU:\Software\Microsoft\Windows\CurrentVersion\Explorer\Advanced" -Name "TaskbarGlomLevel" -ErrorAction SilentlyContinue
+	Remove-ItemProperty -Path "HKCU:\Software\Microsoft\Windows\CurrentVersion\Explorer\Advanced" -Name "MMTaskbarGlomLevel" -ErrorAction SilentlyContinue
+
+	" Always combine taskbar labels `n" >> "windows_configuration.log"
+}
+
+# Hide Widget icon
+Function HideWidgetsIcon {
+    Write-Output "Hiding Widget icon..."
+    If (!(Test-Path "HKLM:\Software\Policies\Microsoft\Dsh")) {
+        New-Item -Path "HKLM:\Software\Policies\Microsoft\Dsh" | Out-Null
+    }
+    Set-ItemProperty -Path "HKLM:\Software\Policies\Microsoft\Dsh" -Name "AllowNewsAndInterests" -Type DWORD -Value 0
+
+	" Remove the widgets icon `n" >> "windows_configuration.log"
+}
+
+# Show Widget icon
+Function ShowWidgetsIcon {
+    Write-Output "Show Widget icon..."
+    If (!(Test-Path "HKLM:\Software\Policies\Microsoft\Dsh")) {
+        New-Item -Path "HKLM:\Software\Policies\Microsoft\Dsh" | Out-Null
+    }
+    Set-ItemProperty -Path "HKLM:\Software\Policies\Microsoft\Dsh" -Name "AllowNewsAndInterests" -Type DWORD -Value 1 
+
+	" Enable widgets icon `n" >> "windows_configuration.log"
+}
+
+# Hide Taskbar Chat icon
+Function HideTaskbarChatIcon {
+	Write-Output "Hiding Chat icon..."
+	If (!(Test-Path "HKCU:\Software\Microsoft\Windows\CurrentVersion\Explorer\Advanced")) {
+		New-Item -Path "HKCU:\Software\Microsoft\Windows\CurrentVersion\Explorer\Advanced" | Out-Null
+	}
+	Set-ItemProperty -Path "HKCU:\Software\Microsoft\Windows\CurrentVersion\Explorer\Advanced" -Name "TaskbarMn" -Type DWord -Value 0
+
+	" Chat icon hidden `n" >> "windows_configuration.log"
+}
+
+# Show Taskbar Chat icon
+Function ShowTaskbarChatIcon {
+	Write-Output "Showing Chat icon..."
+	Remove-ItemProperty -Path "HKCU:\Software\Microsoft\Windows\CurrentVersion\Explorer\Advanced" -Name "TaskbarMn" -ErrorAction SilentlyContinue
+
+	" Chat icon visible `n" >> "windows_configuration.log"
+}
+
+# Set start menu to show even amount of recommendations and pins
+Function EvenStartMenu {
+    Write-Output "Showing even amount of recommendations and pins in Start menu..."
+    If (!(Test-Path "HKCU:\Software\Microsoft\Windows\CurrentVersion\Explorer\Advanced")) {
+        New-Item "HKCU:\Software\Microsoft\Windows\CurrentVersion\Explorer\Advanced" | Out-Null
+    }
+    Set-ItemProperty -Path "HKCU:\Software\Microsoft\Windows\CurrentVersion\Explorer\Advanced" -Name "Start_Layout" -Type DWord -Value 0
+
+	" Event the odds (start menu) `n" >> "windows_configuration.log"
+}
+
+# Set start menu to show more pins
+Function ShowMorePinsInStartMenu {
+    Write-Output "Showing more pins in Start menu..."
+    If (!(Test-Path "HKCU:\Software\Microsoft\Windows\CurrentVersion\Explorer\Advanced")) {
+        New-Item "HKCU:\Software\Microsoft\Windows\CurrentVersion\Explorer\Advanced" | Out-Null
+    }
+    Set-ItemProperty -Path "HKCU:\Software\Microsoft\Windows\CurrentVersion\Explorer\Advanced" -Name "Start_Layout" -Type DWord -Value 1
+
+	" More pins in start menu `n" >> "windows_configuration.log"
+}
+
+# Set start menu to show more recomendations
+Function ShowMoreRecommendationsInStartMenu {
+    Write-Output "Showing more recommendations in Start menu..."
+    If (!(Test-Path "HKCU:\Software\Microsoft\Windows\CurrentVersion\Explorer\Advanced")) {
+        New-Item "HKCU:\Software\Microsoft\Windows\CurrentVersion\Explorer\Advanced" | Out-Null
+    }
+    Set-ItemProperty -Path "HKCU:\Software\Microsoft\Windows\CurrentVersion\Explorer\Advanced" -Name "Start_Layout" -Type DWord -Value 2
+
+	" More recommendations in start menu `n" >> "windows_configuration.log"
+}
+
+
+
+#######################################################################################################
+#
+# 		Explorer (UI) Tweaks
+#
+#######################################################################################################
+
+
 
 # Show compact view in File Explorer
 Function UseCompactMode {
@@ -1694,9 +1778,15 @@ Function ShowNetworkInExplorer {
 	Remove-ItemProperty -Path "HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\Policies\NonEnum" -Name "{F02C1A0D-BE21-4350-88B0-7367FC96EF3C}" -ErrorAction SilentlyContinue
 }
 
-#############################################
-#### Application Tweaks
-#######################################################
+
+
+#######################################################################################################
+#
+# 		Application Tweaks
+#
+#######################################################################################################
+
+
 
 # Disable OneDrive
 Function DisableOneDrive {
@@ -1711,6 +1801,8 @@ Function DisableOneDrive {
 Function EnableOneDrive {
 	Write-Output "Enabling OneDrive..."
 	Remove-ItemProperty -Path "HKLM:\SOFTWARE\Policies\Microsoft\Windows\OneDrive" -Name "DisableFileSyncNGSC" -ErrorAction SilentlyContinue
+
+	" OneDrive has been disabled `n" >> "windows_configuration.log"
 }
 
 # Uninstall OneDrive - Not applicable to Server
@@ -1737,6 +1829,8 @@ Function UninstallOneDrive {
 	}
 	Remove-Item -Path "HKCR:\CLSID\{018D5C66-4533-4307-9B53-224DE2ED1FE6}" -Recurse -ErrorAction SilentlyContinue
 	Remove-Item -Path "HKCR:\Wow6432Node\CLSID\{018D5C66-4533-4307-9B53-224DE2ED1FE6}" -Recurse -ErrorAction SilentlyContinue
+
+	" OneDrive has been enabled `n" >> "windows_configuration.log"
 }
 
 # Install OneDrive - Not applicable to Server
@@ -1747,10 +1841,11 @@ Function InstallOneDrive {
 		$onedrive = "$env:SYSTEMROOT\System32\OneDriveSetup.exe"
 	}
 	Start-Process $onedrive -NoNewWindow
+
+	" OneDrive installed `n" >> "windows_configuration.log"
 }
 
 # Uninstall default Microsoft applications
-
 Function UninstallMsftBloat {
 	Write-Output "Uninstalling default Microsoft applications..."
 	Get-AppxPackage "Microsoft.BingFinance" | Remove-AppxPackage
@@ -1866,6 +1961,8 @@ Function DisableXboxFeatures {
 		New-Item -Path "HKLM:\SOFTWARE\Policies\Microsoft\Windows\GameDVR" | Out-Null
 	}
 	Set-ItemProperty -Path "HKLM:\SOFTWARE\Policies\Microsoft\Windows\GameDVR" -Name "AllowGameDVR" -Type DWord -Value 0
+
+	" Xbox features disbaled `n" >> "windows_configuration.log"
 }
 
 # Enable Xbox features - Not applicable to Server
@@ -1880,38 +1977,24 @@ Function EnableXboxFeatures {
 	Remove-ItemProperty -Path "HKCU:\Software\Microsoft\GameBar" -Name "AutoGameModeEnabled" -ErrorAction SilentlyContinue
 	Set-ItemProperty -Path "HKCU:\System\GameConfigStore" -Name "GameDVR_Enabled" -Type DWord -Value 1
 	Remove-ItemProperty -Path "HKLM:\SOFTWARE\Policies\Microsoft\Windows\GameDVR" -Name "AllowGameDVR" -ErrorAction SilentlyContinue
-}
 
-# Disable Edge preload after Windows startup - Applicable since Win10 1809
-Function DisableEdgePreload {
-	Write-Output "Disabling Edge preload..."
-	If (!(Test-Path "HKLM:\SOFTWARE\Policies\Microsoft\MicrosoftEdge\Main")) {
-		New-Item -Path "HKLM:\SOFTWARE\Policies\Microsoft\MicrosoftEdge\Main" -Force | Out-Null
-	}
-	Set-ItemProperty -Path "HKLM:\SOFTWARE\Policies\Microsoft\MicrosoftEdge\Main" -Name "AllowPrelaunch" -Type DWord -Value 0
-	If (!(Test-Path "HKLM:\SOFTWARE\Policies\Microsoft\MicrosoftEdge\TabPreloader")) {
-		New-Item -Path "HKLM:\SOFTWARE\Policies\Microsoft\MicrosoftEdge\TabPreloader" -Force | Out-Null
-	}
-	Set-ItemProperty -Path "HKLM:\SOFTWARE\Policies\Microsoft\MicrosoftEdge\TabPreloader" -Name "AllowTabPreloading" -Type DWord -Value 0
-}
-
-# Enable Edge preload after Windows startup
-Function EnableEdgePreload {
-	Write-Output "Enabling Edge preload..."
-	Remove-ItemProperty -Path "HKLM:\SOFTWARE\Policies\Microsoft\MicrosoftEdge\Main" -Name "AllowPrelaunch" -ErrorAction SilentlyContinue
-	Remove-ItemProperty -Path "HKLM:\SOFTWARE\Policies\Microsoft\MicrosoftEdge\TabPreloader" -Name "AllowTabPreloading" -ErrorAction SilentlyContinue
+	" Xbox features enabled `n" >> "windows_configuration.log"
 }
 
 # Disable "Hi!" First Logon Animation (it will be replaced by "Preparing Windows" message)
 Function DisableFirstLogonAnimation {
 	Write-Output "Disabling First Logon Animation..."
 	Set-ItemProperty -Path "HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\Policies\System" -Name "EnableFirstLogonAnimation" -Type DWord -Value 0
+
+	" First logon message disabled `n" >> "windows_configuration.log"
 }
 
 # Enable "Hi!" First Logon Animation
 Function EnableFirstLogonAnimation {
 	Write-Output "Enabling First Logon Animation..."
 	Remove-ItemProperty -Path "HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\Policies\System" -Name "EnableFirstLogonAnimation" -ErrorAction SilentlyContinue
+
+	" First logon message enabled `n" >> "windows_configuration.log"
 }
 
 # Enable Developer Mode
@@ -1919,6 +2002,8 @@ Function EnableDeveloperMode {
 	Write-Output "Enabling Developer Mode..."
 	Set-ItemProperty -Path "HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\AppModelUnlock" -Name "AllowDevelopmentWithoutDevLicense" -Type DWord -Value 1
 	Set-ItemProperty -Path "HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\AppModelUnlock" -Name "AllowAllTrustedApps" -Type DWord -Value 1
+
+	" Enabled developer mode `n" >> "windows_configuration.log"
 }
 
 # Disable Developer Mode
@@ -1926,23 +2011,27 @@ Function DisableDeveloperMode {
 	Write-Output "Disabling Developer Mode..."
 	Remove-ItemProperty -Path "HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\AppModelUnlock" -Name "AllowDevelopmentWithoutDevLicense" -ErrorAction SilentlyContinue
 	Remove-ItemProperty -Path "HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\AppModelUnlock" -Name "AllowAllTrustedApps" -ErrorAction SilentlyContinue
+
+	" Disabled developer mode `n" >> "windows_configuration.log"
 }
 
-# Install Linux Subsystem - Applicable since Win10 1607 and Server 1709
-# Note: 1607 requires also EnableDevelopmentMode for WSL to work
-# For automated Linux distribution installation, see https://docs.microsoft.com/en-us/windows/wsl/install-on-server
+# Install Linux Subsystem
 Function InstallLinuxSubsystem {
 	Write-Output "Installing Linux Subsystem..."
-	Get-WindowsOptionalFeature -Online | Where-Object { $_.FeatureName -eq "Microsoft-Windows-Subsystem-Linux" } | Enable-WindowsOptionalFeature -Online -NoRestart -WarningAction SilentlyContinue | Out-Null
+	install --wsl
+
+	" WSL2 Installed `n" >> "windows_configuration.log"
 }
 
-# Uninstall Linux Subsystem - Applicable since Win10 1607 and Server 1709
+# Uninstall Linux Subsystem
 Function UninstallLinuxSubsystem {
 	Write-Output "Uninstalling Linux Subsystem..."
-	Get-WindowsOptionalFeature -Online | Where-Object { $_.FeatureName -eq "Microsoft-Windows-Subsystem-Linux" } | Disable-WindowsOptionalFeature -Online -NoRestart -WarningAction SilentlyContinue | Out-Null
+	wsl --unregister *
+
+	" WSL2 Unregistred `n" >> "windows_configuration.log"
 }
 
-# Install Hyper-V - Not applicable to Home
+# Install Hyper-V
 Function InstallHyperV {
 	Write-Output "Installing Hyper-V..."
 	If ((Get-CimInstance -Class "Win32_OperatingSystem").ProductType -eq 1) {
@@ -1950,6 +2039,8 @@ Function InstallHyperV {
 	} Else {
 		Install-WindowsFeature -Name "Hyper-V" -IncludeManagementTools -WarningAction SilentlyContinue | Out-Null
 	}
+
+	" Hyper-V installed (All tools) `n" >> "windows_configuration.log"
 }
 
 # Uninstall Hyper-V - Not applicable to Home
@@ -1960,30 +2051,40 @@ Function UninstallHyperV {
 	} Else {
 		Uninstall-WindowsFeature -Name "Hyper-V" -IncludeManagementTools -WarningAction SilentlyContinue | Out-Null
 	}
+
+	" Hyper-V uninstalled (All tools) `n" >> "windows_configuration.log"
 }
 
 # Uninstall Microsoft XPS Document Writer
 Function UninstallXPSPrinter {
 	Write-Output "Uninstalling Microsoft XPS Document Writer..."
 	Get-WindowsOptionalFeature -Online | Where-Object { $_.FeatureName -eq "Printing-XPSServices-Features" } | Disable-WindowsOptionalFeature -Online -NoRestart -WarningAction SilentlyContinue | Out-Null
+
+	" XPS Doc writer unisntalled `n" >> "windows_configuration.log"
 }
 
 # Install Microsoft XPS Document Writer
 Function InstallXPSPrinter {
 	Write-Output "Installing Microsoft XPS Document Writer..."
 	Get-WindowsOptionalFeature -Online | Where-Object { $_.FeatureName -eq "Printing-XPSServices-Features" } | Enable-WindowsOptionalFeature -Online -NoRestart -WarningAction SilentlyContinue | Out-Null
+
+	" XPS Doc writer installed `n" >> "windows_configuration.log"
 }
 
 # Remove Default Fax Printer
 Function RemoveFaxPrinter {
 	Write-Output "Removing Default Fax Printer..."
 	Remove-Printer -Name "Fax" -ErrorAction SilentlyContinue
+
+	" Fax printer removed `n" >> "windows_configuration.log"
 }
 
 # Add Default Fax Printer
 Function AddFaxPrinter {
 	Write-Output "Adding Default Fax Printer..."
 	Add-Printer -Name "Fax" -DriverName "Microsoft Shared Fax Driver" -PortName "SHRFAX:" -ErrorAction SilentlyContinue
+
+	" Fax printer added `n" >> "windows_configuration.log"
 }
 
 # Uninstall Windows Fax and Scan Services - Not applicable to Server
@@ -1991,6 +2092,8 @@ Function UninstallFaxAndScan {
 	Write-Output "Uninstalling Windows Fax and Scan Services..."
 	Get-WindowsOptionalFeature -Online | Where-Object { $_.FeatureName -eq "FaxServicesClientPackage" } | Disable-WindowsOptionalFeature -Online -NoRestart -WarningAction SilentlyContinue | Out-Null
 	Get-WindowsCapability -Online | Where-Object { $_.Name -like "Print.Fax.Scan*" } | Remove-WindowsCapability -Online | Out-Null
+
+	" fax and scan services uninstalled `n" >> "windows_configuration.log"
 }
 
 # Install Windows Fax and Scan Services - Not applicable to Server
@@ -1998,11 +2101,19 @@ Function InstallFaxAndScan {
 	Write-Output "Installing Windows Fax and Scan Services..."
 	Get-WindowsOptionalFeature -Online | Where-Object { $_.FeatureName -eq "FaxServicesClientPackage" } | Enable-WindowsOptionalFeature -Online -NoRestart -WarningAction SilentlyContinue | Out-Null
 	Get-WindowsCapability -Online | Where-Object { $_.Name -like "Print.Fax.Scan*" } | Add-WindowsCapability -Online | Out-Null
+
+	" fax and scan services isntalled `n" >> "windows_configuration.log"
 }
 
-##########
-#region Server specific Tweaks
-##########
+
+
+#######################################################################################################
+#
+# 		Windows Server Tweaks
+#
+#######################################################################################################
+
+
 
 # Hide Server Manager after login
 Function HideServerManagerOnLogin {
@@ -2094,9 +2205,15 @@ Function DisableAudio {
 	Set-Service "Audiosrv" -StartupType Manual
 }
 
-######################################
-### Unpining Tweaks
-#############
+
+
+#######################################################################################################
+#
+# 		Unpin icons Tweaks
+#
+#######################################################################################################
+
+
 
 # Unpin all Start Menu tiles
 # Note: This function has no counterpart. You have to pin the tiles back manually.
@@ -2124,9 +2241,15 @@ Function UnpinTaskbarIcons {
 	Remove-ItemProperty -Path "HKCU:\Software\Microsoft\Windows\CurrentVersion\Explorer\Taskband" -Name "FavoritesResolve" -ErrorAction SilentlyContinue
 }
 
-##########
-#region Auxiliary Functions
-##########
+
+
+#######################################################################################################
+#
+# 		Auxilary Functions
+#
+#######################################################################################################
+
+
 
 # Wait for key press
 Function WaitForKey {
@@ -2140,11 +2263,5 @@ Function Restart {
 	Restart-Computer
 }
 
-##########
-#endregion Auxiliary Functions
-##########
-
-
-
-# Export functions
+############# Export functions ###############
 Export-ModuleMember -Function *
