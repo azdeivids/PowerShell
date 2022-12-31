@@ -13,6 +13,26 @@
 
 
 
+# Disable recent files lists
+# Stops creating most recently used (MRU) items lists such as 'Recent Items' menu on the Start menu, jump lists, and shortcuts at the bottom of the 'File' menu in applications.
+Function DisableRecentFiles {
+	Write-Output "Disabling recent files lists..."
+	If (!(Test-Path "HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\Policies\Explorer")) {
+		New-Item -Path "HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\Policies\Explorer" | Out-Null
+	}
+	Set-ItemProperty -Path "HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\Policies\Explorer" -Name "NoRecentDocsHistory" -Type DWord -Value 1
+
+	" Disabled recent files (start menu) `n" >> "windows_configuration.log"
+}
+
+# Enable recent files lists
+Function EnableRecentFiles {
+	Write-Output "Enabling recent files lists..."
+	Remove-ItemProperty -Path "HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\Policies\Explorer" -Name "NoRecentDocsHistory" -ErrorAction SilentlyContinue
+
+	" Enabled recent files (start menu) `n" >> "windows_configuration.log"
+}
+
 # Disable cloud content search entierly
 Function DisableCloudContentSearch {
 	Write-Output "Cloud content search being disabled..."
