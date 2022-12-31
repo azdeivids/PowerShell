@@ -579,7 +579,7 @@ Function EnableAdminShares {
 	" Disabled administrative shares `n" >> "windows_configuration.log"
 }
 
-# Enable Core Isolation Memory Integrity - Part of Windows Defender System Guard virtualization-based security - Applicable since 1803
+# Enable Core Isolation Memory Integrity - Part of Windows Defender System Guard virtualization-based security.
 # Warning: This may cause old applications and drivers to crash or even cause BSOD
 # Problems were confirmed with old video drivers (Intel HD Graphics for 2nd gen., Radeon HD 6850), and old antivirus software (Kaspersky Endpoint Security 10.2, 11.2)
 Function EnableCIMemoryIntegrity {
@@ -743,6 +743,122 @@ Function EnableOnlineSpeechRecognition {
 
 	" Online speech recognition enabled `n" >> "windows_configuration.log"
 }
+
+# Turn on Inking and Typing
+# The HKLM Key 'AllowLinguisticDataCollection' will disbale the setting entierly for all users; it's part of Disable/Enable Telemetry function already.
+Function TurnOnTIPC {
+	Write-Output "Turning on Inking and Typing..."
+	If (!(Test-Path "HKCU:\Software\Microsoft\Input\TIPC")) {
+		New-Item -Path "HKCU:\Software\Microsoft\Input\TIPC" | Out-Null
+	}
+	Set-ItemProperty -Path "HKCU:\Software\Microsoft\Input\TIPC" -Name "Enabled" -Type DWord -Value 1
+
+	" Inking and Typing disabled `n" >> "windows_configuration.log"
+}
+
+# Turn off Inking and Typing
+Function TurnOffTIPC {
+	Write-Output "Turning off Inking and Typing..."
+	Remove-ItemProperty -Path "HKCU:\Software\Microsoft\Input\TIPC" -Name "Enabled" -ErrorAction SilentlyContinue
+
+	" Inking and Typing disabled `n" >> "windows_configuration.log"
+}
+
+# Turn on cloud content search for current user
+Function TurnOnMSASearch {
+	Write-Output "Turning on cloud content search for current MS Account..."
+	If (!(Test-Path "HKCU:\Software\Microsoft\Windows\CurrentVersion\SearchSettings")) {
+		New-Item -Path "HKCU:\Software\Microsoft\Windows\CurrentVersion\SearchSettings" | Out-Null
+	}
+	Set-ItemProperty -Path "HKCU:\Software\Microsoft\Windows\CurrentVersion\SearchSettings" -Name "IsMSACloudSearchEnabled" -Type DWord -Value 1
+
+	" MS Account sarch tuned on `n" >> "windows_configuration.log"
+}
+
+# Turn off cloud contet seach for current user
+Function TurnOffMSASearch {
+	Write-Output "Turning off cloud contetn seach for current MS Account..."
+	Remove-ItemProperty -Path "HKCU:\Software\Microsoft\Windows\CurrentVersion\SearchSettings" -Name "IsMSACloudSearchEnabled" -ErrorAction SilentlyContinue
+
+	" MS Account search tuner off `n" >> "windows_configuration.log"
+}
+
+# Turn on cloud content search for AAD work account
+Function TurnOnAADSearch {
+	Write-Output "Turning on cloud content search for current AD Account..."
+	If (!(Test-Path "HKCU:\Software\Microsoft\Windows\CurrentVersion\SearchSettings")) {
+		New-Item -Path "HKCU:\Software\Microsoft\Windows\CurrentVersion\SearchSettings" | Out-Null
+	}
+	Set-ItemProperty -Path "HKCU:\Software\Microsoft\Windows\CurrentVersion\SearchSettings" -Name "IsAADCloudSearchEnabled" -Type DWord -Value 1
+
+	" AAD Work account seach turned on `n" >> "windows_configuration.log"
+}
+
+# Turn off cloud contet seach for AAD work account
+Function TurnOffAADSearch {
+	Write-Output "Turning off cloud contetn seach for current AD Account..."
+	Remove-ItemProperty -Path "HKCU:\Software\Microsoft\Windows\CurrentVersion\SearchSettings" -Name "IsAADCloudSearchEnabled" -ErrorAction SilentlyContinue
+
+	" AAD Work account search turned off `n" >> "windows_configuration.log"
+}
+
+# Disable cloud content search entierly
+Function DisableCloudContentSearch {
+	Write-Output "Cloud content search being disabled..."
+	If (!(Test-Path "HKLM:\SOFTWARE\Policies\Microsoft\Windows\Windows Search")) {
+		New-Item -Path "HKLM:\SOFTWARE\Policies\Microsoft\Windows\Windows Search" | Out-Null
+	}
+	Set-ItemProperty -Path "HKLM:\SOFTWARE\Policies\Microsoft\Windows\Windows Search" -Name "AllowCloudSearch" -Type DWord -Value 0
+
+	" Cloud content search disabled `n" >> "windows_configuration.log"
+}
+
+# Let user configure cloud content search
+Function UserCloudContentSearch {
+	Write-Output "Cloud content search left to user choice..."
+	Remove-ItemProperty -Path "HKLM:\SOFTWARE\Policies\Microsoft\Windows\Windows Search" -Name "AllowCloudSearch" -ErrorAction SilentlyContinue
+
+	" Cloud contetnt search set to default `n" >> "windows_configuration.log"
+}
+
+# Turn off Search Highlight
+Function TurnOffSearchHighlights {
+	Write-Output "Turning off search highlights..."
+	Remove-ItemProperty -Path "HKCU:\Software\Microsoft\Windows\CurrentVersion\SearchSettings" -Name "IsDeviceSearchHistoryEnabled" -ErrorAction SilentlyContinue
+
+	" Search highlights turned off `n" >> "windows_configuration.log"
+}
+
+# Turn on Seach Highlights
+Function TurnOnSearchHighlights {
+	Write-Output "Turning on search highlights..."
+	If (!(Test-Path "HKCU:\Software\Microsoft\Windows\CurrentVersion\SearchSettings")) {
+		New-Item -Path "HKCU:\Software\Microsoft\Windows\CurrentVersion\SearchSettings" | Out-Null
+	}
+	Set-ItemProperty -Path "HKCU:\Software\Microsoft\Windows\CurrentVersion\SearchSettings" -Name "IsDeviceSearchHistoryEnabled" -Type DWord -Value 1
+
+	" Searcg highlights turned on `n" >> "windows_configuration.log"
+}
+
+# Enable Search Highlight
+Function EnableSearchHighlights {
+	Write-Output "Enabling search highlights..."
+	Remove-ItemProperty -Path "HKLM:SOFTWARE\Policies\Microsoft\Windows\Windows Search" -Name "EnableDynamicContentInWSB" -ErrorAction SilentlyContinue
+
+	" Search highlights enbaled `n" >> "windows_configuration.log"
+}
+
+# Disable Seach Highlights
+Function DisableSearchHighlights {
+	Write-Output "Turning on search highlights..."
+	If (!(Test-Path "HKLM:SOFTWARE\Policies\Microsoft\Windows\Windows Search")) {
+		New-Item -Path "HKLM:SOFTWARE\Policies\Microsoft\Windows\Windows Search" | Out-Null
+	}
+	Set-ItemProperty -Path "HKLM:SOFTWARE\Policies\Microsoft\Windows\Windows Search" -Name "EnableDynamicContentInWSB" -Type DWord -Value 0
+
+	" Search highlights disabled `n" >> "windows_configuration.log"
+}
+
 
 
 
@@ -2302,7 +2418,7 @@ Function UnpinTaskbarIcons {
 
 
 
-# Wait for key press
+# Wait for key to be presses and proceed
 Function WaitForKey {
 	Write-Output "`nPress any key to continue..."
 	[Console]::ReadKey($true) | Out-Null
