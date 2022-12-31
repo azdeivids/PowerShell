@@ -1647,72 +1647,96 @@ Function UseCompactMode {
 		New-Item -Path "HKCU:\Software\Microsoft\Windows\CurrentVersion\Explorer\Advanced" | Out-Null
 	}
 	Set-ItemProperty -Path "HKCU:\Software\Microsoft\Windows\CurrentVersion\Explorer\Advanced" -Name "UseCompactMode" -Type DWord -Value 1
+
+	" Compact mode set in file explorer `n" >> "windows_configuration.log"
 }
 
 # Show expanded view in file explorer
 Function UseExpandedMode {
 	Write-Output "Changing to expanded view in file explorer..."
 	Remove-ItemProperty -Path "HKCU:\Software\Microsoft\Windows\CurrentVersion\Explorer\Advanced" -Name "UseCompactMode" -ErrorAction SilentlyContinue
+
+	" Expanded mode set in file explorer `n" >> "windows_configuration.log"
 }
 
 # Show known file extensions
 Function ShowKnownExtensions {
 	Write-Output "Showing known file extensions..."
 	Set-ItemProperty -Path "HKCU:\Software\Microsoft\Windows\CurrentVersion\Explorer\Advanced" -Name "HideFileExt" -Type DWord -Value 0
+
+	" Show file extensions `n" >> "windows_configuration.log"
 }
 
 # Hide known file extensions
 Function HideKnownExtensions {
 	Write-Output "Hiding known file extensions..."
 	Set-ItemProperty -Path "HKCU:\Software\Microsoft\Windows\CurrentVersion\Explorer\Advanced" -Name "HideFileExt" -Type DWord -Value 1
+
+	" Hide file extensions `n" >> "windows_configuration.log"
 }
 
 # Show hidden files
 Function ShowHiddenFiles {
 	Write-Output "Showing hidden files..."
 	Set-ItemProperty -Path "HKCU:\Software\Microsoft\Windows\CurrentVersion\Explorer\Advanced" -Name "Hidden" -Type DWord -Value 1
+
+	" Show hidden files `n" >> "windows_configuration.log"
 }
 
 # Hide hidden files
 Function HideHiddenFiles {
 	Write-Output "Hiding hidden files..."
 	Set-ItemProperty -Path "HKCU:\Software\Microsoft\Windows\CurrentVersion\Explorer\Advanced" -Name "Hidden" -Type DWord -Value 2
+
+	" Hide hidden files `n" >> "windows_configuration.log"
 }
 
 # Show protected operating system files
 Function ShowSuperHiddenFiles {
 	Write-Output "Showing protected operating system files..."
 	Set-ItemProperty -Path "HKCU:\Software\Microsoft\Windows\CurrentVersion\Explorer\Advanced" -Name "ShowSuperHidden" -Type DWord -Value 1
+
+	" Show protected system files `n" >> "windows_configuration.log"
 }
 
 # Hide protected operating system files
 Function HideSuperHiddenFiles {
 	Write-Output "Hiding protected operating system files..."
 	Set-ItemProperty -Path "HKCU:\Software\Microsoft\Windows\CurrentVersion\Explorer\Advanced" -Name "ShowSuperHidden" -Type DWord -Value 0
+
+	" Hide protected system files `n" >> "windows_configuration.log"
 }
 
 # Show empty drives (with no media)
 Function ShowEmptyDrives {
 	Write-Output "Showing empty drives (with no media)..."
 	Set-ItemProperty -Path "HKCU:\Software\Microsoft\Windows\CurrentVersion\Explorer\Advanced" -Name "HideDrivesWithNoMedia" -Type DWord -Value 0
+
+	" Show empty driver `n" >> "windows_configuration.log"
 }
 
 # Hide empty drives (with no media)
 Function HideEmptyDrives {
 	Write-Output "Hiding empty drives (with no media)..."
 	Remove-ItemProperty -Path "HKCU:\Software\Microsoft\Windows\CurrentVersion\Explorer\Advanced" -Name "HideDrivesWithNoMedia" -ErrorAction SilentlyContinue
+
+	" Hide empty drives `n" >> "windows_configuration.log"
 }
 
 # Show coloring of encrypted or compressed NTFS files (green for encrypted, blue for compressed)
 Function ShowEncCompFilesColor {
 	Write-Output "Showing coloring of encrypted or compressed NTFS files..."
 	Set-ItemProperty -Path "HKCU:\Software\Microsoft\Windows\CurrentVersion\Explorer\Advanced" -Name "ShowEncryptCompressedColor" -Type DWord -Value 1
+
+	" Show encrypted file coloring `n" >> "windows_configuration.log"
 }
 
 # Hide coloring of encrypted or compressed NTFS files
 Function HideEncCompFilesColor {
 	Write-Output "Hiding coloring of encrypted or compressed NTFS files..."
 	Remove-ItemProperty -Path "HKCU:\Software\Microsoft\Windows\CurrentVersion\Explorer\Advanced" -Name "ShowEncryptCompressedColor" -ErrorAction SilentlyContinue
+
+	" Hide encrypted file coloring `n" >> "windows_configuration.log"
 }
 
 # Hide recently and frequently used item shortcuts in Explorer
@@ -1721,6 +1745,8 @@ Function HideRecentShortcuts {
 	Write-Output "Hiding recent shortcuts in Explorer..."
 	Set-ItemProperty -Path "HKCU:\Software\Microsoft\Windows\CurrentVersion\Explorer" -Name "ShowRecent" -Type DWord -Value 0
 	Set-ItemProperty -Path "HKCU:\Software\Microsoft\Windows\CurrentVersion\Explorer" -Name "ShowFrequent" -Type DWord -Value 0
+
+	" Hide shortcuts in explorer `n" >> "windows_configuration.log"
 }
 
 # Show recently and frequently used item shortcuts in Explorer
@@ -1728,56 +1754,73 @@ Function ShowRecentShortcuts {
 	Write-Output "Showing recent shortcuts in Explorer..."
 	Remove-ItemProperty -Path "HKCU:\Software\Microsoft\Windows\CurrentVersion\Explorer" -Name "ShowRecent" -ErrorAction SilentlyContinue
 	Remove-ItemProperty -Path "HKCU:\Software\Microsoft\Windows\CurrentVersion\Explorer" -Name "ShowFrequent" -ErrorAction SilentlyContinue
+
+	" Show shortcuts in explorer `n" >> "windows_configuration.log"
 }
 
 # Change default Explorer view to This PC
 Function SetExplorerThisPC {
 	Write-Output "Changing default Explorer view to This PC..."
 	Set-ItemProperty -Path "HKCU:\Software\Microsoft\Windows\CurrentVersion\Explorer\Advanced" -Name "LaunchTo" -Type DWord -Value 1
+
+	" Open 'This PC' in explorer `n" >> "windows_configuration.log"
 }
 
-# Change default Explorer view to Home Folder
+# Change default Explorer view to Home Folder (Default in 22H2)
 Function SetExplorerHomeFolder {
 	Write-Output "Changing default Explorer view to Home Folder..."
 	Remove-ItemProperty -Path "HKCU:\Software\Microsoft\Windows\CurrentVersion\Explorer\Advanced" -Name "LaunchTo" -ErrorAction SilentlyContinue
+
+	" Open 'Home' in explorer `n" >> "windows_configuration.log"
 }
 
 # Hide all icons from desktop
 Function HideDesktopIcons {
 	Write-Output "Hiding all icons from desktop..."
 	Set-ItemProperty -Path "HKCU:\Software\Microsoft\Windows\CurrentVersion\Explorer\Advanced" -Name "HideIcons" -Value 1
+
+	" Desktop icons hidden `n" >> "windows_configuration.log"
 }
 
 # Show all icons on desktop
 Function ShowDesktopIcons {
 	Write-Output "Showing all icons on desktop..."
 	Set-ItemProperty -Path "HKCU:\Software\Microsoft\Windows\CurrentVersion\Explorer\Advanced" -Name "HideIcons" -Value 0
+
+	" Desktop icons visible `n" >> "windows_configuration.log"
 }
 
 # Show Windows build number and Windows edition (Home/Pro/Enterprise) from bottom right of desktop
 Function ShowBuildNumberOnDesktop {
 	Write-Output "Showing Windows build number on desktop..."
 	Set-ItemProperty -Path "HKCU:\Control Panel\Desktop" -Name "PaintDesktopVersion" -Type DWord -Value 1
+
+	" Build number added to desktop `n" >> "windows_configuration.log"
 }
 
 # Remove Windows build number and Windows edition (Home/Pro/Enterprise) from bottom right of desktop
 Function HideBuildNumberFromDesktop {
 	Write-Output "Hiding Windows build number from desktop..."
 	Set-ItemProperty -Path "HKCU:\Control Panel\Desktop" -Name "PaintDesktopVersion" -Type DWord -Value 0
+
+	" Build number removed from desktop `n" >> "windows_configuration.log"
 }
 
-# Hide Network icon from Explorer namespace - Hides the icon also from personal folders and open/save dialogs
-Function HideNetworkFromExplorer {
-	Write-Output "Hiding Network icon from Explorer namespace..."
-	Set-ItemProperty -Path "HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\Policies\NonEnum" -Name "{F02C1A0D-BE21-4350-88B0-7367FC96EF3C}" -Type DWord -Value 1
+# Show cloud files in Explorer quick access
+Function ShowCloudFiles {
+	Write-Output "Showing cloud files in Explorer..."
+	Set-ItemProperty -Path "HKCU:\Software\Microsoft\Windows\CurrentVersion\Explorer" -Name "ShowCloudFilesInQuickAccess" -Type DWord -Value 1
+
+	" Cloud files added to exolorer `n" >> "windows_configuration.log"
 }
 
-# Show Network icon in Explorer namespace
-Function ShowNetworkInExplorer {
-	Write-Output "Showing Network icon in Explorer namespace..."
-	Remove-ItemProperty -Path "HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\Policies\NonEnum" -Name "{F02C1A0D-BE21-4350-88B0-7367FC96EF3C}" -ErrorAction SilentlyContinue
-}
+# Hide cloud files in Explorer quick access
+Function HideCloudFiles {
+	Write-Output "Hiding cloud files in Explorer..."
+	Set-ItemProperty -Path "HKCU:\Software\Microsoft\Windows\CurrentVersion\Explorer" -Name "ShowCloudFilesInQuickAccess" -Type DWord -Value 0
 
+	" Cloud files hidden from exolorer `n" >> "windows_configuration.log"
+}
 
 
 #######################################################################################################
