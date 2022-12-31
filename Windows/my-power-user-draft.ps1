@@ -1888,6 +1888,14 @@ Function InstallOneDrive {
 	" OneDrive installed `n" >> "windows_configuration.log"
 }
 
+# Remove all Apps except MS Store
+Function UninstallAllApps {
+	Write-Output "Uninstalling all default apps except MS Store..."
+	Get-AppxPackage -AllUsers | Where-Object {$_.name -notlike "*store*"} | Remove-AppxPackage
+
+	" All default MS apps uninstalled `n" >> "windows_configuration.log"
+}
+
 # Uninstall default Microsoft applications
 Function UninstallMsftBloat {
 	Write-Output "Uninstalling default Microsoft applications..."
