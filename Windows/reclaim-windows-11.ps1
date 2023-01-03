@@ -545,130 +545,6 @@ Function EnableRecentFiles {
 
 	" Enabled recent files (start menu) `n" >> "windows_configuration.log"
 }
-
-# Enable sharing mapped drives between users
-Function EnableSharingMappedDrives {
-	Write-Output "Enabling sharing mapped drives between users..."
-	Set-ItemProperty -Path "HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\Policies\System" -Name "EnableLinkedConnections" -Type DWord -Value 1
-
-	" Enabled mapped drive sharing `n" >> "windows_configuration.log"
-}
-
-# Disable sharing mapped drives between users
-Function DisableSharingMappedDrives {
-	Write-Output "Disabling sharing mapped drives between users..."
-	Remove-ItemProperty -Path "HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\Policies\System" -Name "EnableLinkedConnections" -ErrorAction SilentlyContinue
-
-	" Disabled mapped drive sharing `n" >> "windows_configuration.log"
-}
-
-# Disable implicit administrative shares
-Function DisableAdminShares {
-	Write-Output "Disabling implicit administrative shares..."
-	Set-ItemProperty -Path "HKLM:\SYSTEM\CurrentControlSet\Services\LanmanServer\Parameters" -Name "AutoShareServer" -Type DWord -Value 0
-	Set-ItemProperty -Path "HKLM:\SYSTEM\CurrentControlSet\Services\LanmanServer\Parameters" -Name "AutoShareWks" -Type DWord -Value 0
-
-	" Enabled administrative shares `n" >> "windows_configuration.log"
-}
-
-# Enable implicit administrative shares
-Function EnableAdminShares {
-	Write-Output "Enabling implicit administrative shares..."
-	Remove-ItemProperty -Path "HKLM:\SYSTEM\CurrentControlSet\Services\LanmanServer\Parameters" -Name "AutoShareServer" -ErrorAction SilentlyContinue
-	Remove-ItemProperty -Path "HKLM:\SYSTEM\CurrentControlSet\Services\LanmanServer\Parameters" -Name "AutoShareWks" -ErrorAction SilentlyContinue
-
-	" Disabled administrative shares `n" >> "windows_configuration.log"
-}
-
-# Enable Core Isolation Memory Integrity - Part of Windows Defender System Guard virtualization-based security.
-# Warning: This may cause old applications and drivers to crash or even cause BSOD
-# Problems were confirmed with old video drivers (Intel HD Graphics for 2nd gen., Radeon HD 6850), and old antivirus software (Kaspersky Endpoint Security 10.2, 11.2)
-Function EnableCIMemoryIntegrity {
-	Write-Output "Enabling Core Isolation Memory Integrity..."
-	If (!(Test-Path "HKLM:\SYSTEM\CurrentControlSet\Control\DeviceGuard\Scenarios\HypervisorEnforcedCodeIntegrity")) {
-		New-Item -Path "HKLM:\SYSTEM\CurrentControlSet\Control\DeviceGuard\Scenarios\HypervisorEnforcedCodeIntegrity" -Force | Out-Null
-	}
-	Set-ItemProperty -Path "HKLM:\SYSTEM\CurrentControlSet\Control\DeviceGuard\Scenarios\HypervisorEnforcedCodeIntegrity" -Name "Enabled" -Type DWord -Value 1
-
-	" Enabled CIM memory (Windows Defender) `n" >> "windows_configuration.log"
-}
-
-# Disable Core Isolation Memory Integrity - Applicable since 1803
-Function DisableCIMemoryIntegrity {
-	Write-Output "Disabling Core Isolation Memory Integrity..."
-	Remove-ItemProperty -Path "HKLM:\SYSTEM\CurrentControlSet\Control\DeviceGuard\Scenarios\HypervisorEnforcedCodeIntegrity" -Name "Enabled" -ErrorAction SilentlyContinue
-
-	" Disabled CIM memory `n" >> "windows_configuration.log"
-}
-
-# Hide Account Protection warning in Defender about not using a Microsoft account
-Function HideAccountProtectionWarn {
-	Write-Output "Hiding Account Protection warning..."
-	If (!(Test-Path "HKCU:\Software\Microsoft\Windows Security Health\State")) {
-		New-Item -Path "HKCU:\Software\Microsoft\Windows Security Health\State" -Force | Out-Null
-	}
-	Set-ItemProperty "HKCU:\Software\Microsoft\Windows Security Health\State" -Name "AccountProtection_MicrosoftAccount_Disconnected" -Type DWord -Value 1
-
-	" Account protection warning disabled `n" >> "windows_configuration.log"
-}
-
-# Show Account Protection warning in Defender
-Function ShowAccountProtectionWarn {
-	Write-Output "Showing Account Protection warning..."
-	Remove-ItemProperty "HKCU:\Software\Microsoft\Windows Security Health\State" -Name "AccountProtection_MicrosoftAccount_Disconnected" -ErrorAction SilentlyContinue
-
-	" Account protection warning enabled `n" >> "windows_configuration.log"
-}
-
-# Disable Windows Script Host (execution of *.vbs scripts and alike)
-Function DisableScriptHost {
-	Write-Output "Disabling Windows Script Host..."
-	Set-ItemProperty -Path "HKLM:\SOFTWARE\Microsoft\Windows Script Host\Settings" -Name "Enabled" -Type DWord -Value 0
-
-	" Windows Scripting host (wscript) disabled `n" >> "windows_configuration.log"
-}
-
-# Enable Windows Script Host
-Function EnableScriptHost {
-	Write-Output "Enabling Windows Script Host..."
-	Remove-ItemProperty -Path "HKLM:\SOFTWARE\Microsoft\Windows Script Host\Settings" -Name "Enabled" -ErrorAction SilentlyContinue
-
-	" Windows scripting host (wscript) enabled `n" >> "windows_configuration.log"
-}
-
-# Enable F8 boot menu options
-Function EnableF8BootMenu {
-	Write-Output "Enabling F8 boot menu options..."
-	bcdedit /set `{current`} BootMenuPolicy Legacy | Out-Null
-
-	" F8 boot menu enbaled `n" >> "windows_configuration.log"
-}
-
-# Disable F8 boot menu options
-Function DisableF8BootMenu {
-	Write-Output "Disabling F8 boot menu options..."
-	bcdedit /set `{current`} BootMenuPolicy Standard | Out-Null
-
-	" F8 boot menu disabled `n" >> "windows_configuration.log"
-}
-
-# Disable System Recovery and Factory reset
-# Warning: This tweak completely removes the option to enter the system recovery during boot and the possibility to perform a factory reset
-Function DisableRecoveryAndReset {
-	Write-Output "Disabling System Recovery and Factory reset..."
-	reagentc /disable 2>&1 | Out-Null
-
-	" System recovery and reset disbaled `n" >> "windows_configuration.log"
-}
-
-# Enable System Recovery and Factory reset
-Function EnableRecoveryAndReset {
-	Write-Output "Enabling System Recovery and Factory reset..."
-	reagentc /enable 2>&1 | Out-Null
-
-	" System recovery and reset enabled `n" >> "windows_configuration.log"
-}
-
 ########################## Windows 11 22H2 Tweaks ##################################
 
 # Disable Windows Safe Search
@@ -894,6 +770,153 @@ Function EnableAdsWin11 {
 
 
 
+#######################################################################################################
+#
+# 		Security Tweaks
+#
+#######################################################################################################
+
+
+
+# Lower UAC level (disabling it completely would break apps)
+Function SetUACLow {
+	Write-Output "Lowering UAC level..."
+	Set-ItemProperty -Path "HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\Policies\System" -Name "ConsentPromptBehaviorAdmin" -Type DWord -Value 0
+	Set-ItemProperty -Path "HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\Policies\System" -Name "PromptOnSecureDesktop" -Type DWord -Value 0
+}
+
+# Raise UAC level
+Function SetUACHigh {
+	Write-Output "Raising UAC level..."
+	Set-ItemProperty -Path "HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\Policies\System" -Name "ConsentPromptBehaviorAdmin" -Type DWord -Value 5
+	Set-ItemProperty -Path "HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\Policies\System" -Name "PromptOnSecureDesktop" -Type DWord -Value 1
+}
+
+# Enable sharing mapped drives between users
+Function EnableSharingMappedDrives {
+	Write-Output "Enabling sharing mapped drives between users..."
+	Set-ItemProperty -Path "HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\Policies\System" -Name "EnableLinkedConnections" -Type DWord -Value 1
+
+	" Enabled mapped drive sharing `n" >> "windows_configuration.log"
+}
+
+# Disable sharing mapped drives between users
+Function DisableSharingMappedDrives {
+	Write-Output "Disabling sharing mapped drives between users..."
+	Remove-ItemProperty -Path "HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\Policies\System" -Name "EnableLinkedConnections" -ErrorAction SilentlyContinue
+
+	" Disabled mapped drive sharing `n" >> "windows_configuration.log"
+}
+
+# Disable implicit administrative shares
+Function DisableAdminShares {
+	Write-Output "Disabling implicit administrative shares..."
+	Set-ItemProperty -Path "HKLM:\SYSTEM\CurrentControlSet\Services\LanmanServer\Parameters" -Name "AutoShareServer" -Type DWord -Value 0
+	Set-ItemProperty -Path "HKLM:\SYSTEM\CurrentControlSet\Services\LanmanServer\Parameters" -Name "AutoShareWks" -Type DWord -Value 0
+
+	" Enabled administrative shares `n" >> "windows_configuration.log"
+}
+
+# Enable implicit administrative shares
+Function EnableAdminShares {
+	Write-Output "Enabling implicit administrative shares..."
+	Remove-ItemProperty -Path "HKLM:\SYSTEM\CurrentControlSet\Services\LanmanServer\Parameters" -Name "AutoShareServer" -ErrorAction SilentlyContinue
+	Remove-ItemProperty -Path "HKLM:\SYSTEM\CurrentControlSet\Services\LanmanServer\Parameters" -Name "AutoShareWks" -ErrorAction SilentlyContinue
+
+	" Disabled administrative shares `n" >> "windows_configuration.log"
+}
+
+# Enable Core Isolation Memory Integrity - Part of Windows Defender System Guard virtualization-based security.
+# Warning: This may cause old applications and drivers to crash or even cause BSOD
+# Problems were confirmed with old video drivers (Intel HD Graphics for 2nd gen., Radeon HD 6850), and old antivirus software (Kaspersky Endpoint Security 10.2, 11.2)
+Function EnableCIMemoryIntegrity {
+	Write-Output "Enabling Core Isolation Memory Integrity..."
+	If (!(Test-Path "HKLM:\SYSTEM\CurrentControlSet\Control\DeviceGuard\Scenarios\HypervisorEnforcedCodeIntegrity")) {
+		New-Item -Path "HKLM:\SYSTEM\CurrentControlSet\Control\DeviceGuard\Scenarios\HypervisorEnforcedCodeIntegrity" -Force | Out-Null
+	}
+	Set-ItemProperty -Path "HKLM:\SYSTEM\CurrentControlSet\Control\DeviceGuard\Scenarios\HypervisorEnforcedCodeIntegrity" -Name "Enabled" -Type DWord -Value 1
+
+	" Enabled CIM memory (Windows Defender) `n" >> "windows_configuration.log"
+}
+
+# Disable Core Isolation Memory Integrity - Applicable since 1803
+Function DisableCIMemoryIntegrity {
+	Write-Output "Disabling Core Isolation Memory Integrity..."
+	Remove-ItemProperty -Path "HKLM:\SYSTEM\CurrentControlSet\Control\DeviceGuard\Scenarios\HypervisorEnforcedCodeIntegrity" -Name "Enabled" -ErrorAction SilentlyContinue
+
+	" Disabled CIM memory `n" >> "windows_configuration.log"
+}
+
+# Hide Account Protection warning in Defender about not using a Microsoft account
+Function HideAccountProtectionWarn {
+	Write-Output "Hiding Account Protection warning..."
+	If (!(Test-Path "HKCU:\Software\Microsoft\Windows Security Health\State")) {
+		New-Item -Path "HKCU:\Software\Microsoft\Windows Security Health\State" -Force | Out-Null
+	}
+	Set-ItemProperty "HKCU:\Software\Microsoft\Windows Security Health\State" -Name "AccountProtection_MicrosoftAccount_Disconnected" -Type DWord -Value 1
+
+	" Account protection warning disabled `n" >> "windows_configuration.log"
+}
+
+# Show Account Protection warning in Defender
+Function ShowAccountProtectionWarn {
+	Write-Output "Showing Account Protection warning..."
+	Remove-ItemProperty "HKCU:\Software\Microsoft\Windows Security Health\State" -Name "AccountProtection_MicrosoftAccount_Disconnected" -ErrorAction SilentlyContinue
+
+	" Account protection warning enabled `n" >> "windows_configuration.log"
+}
+
+# Disable Windows Script Host (execution of *.vbs scripts and alike)
+Function DisableScriptHost {
+	Write-Output "Disabling Windows Script Host..."
+	Set-ItemProperty -Path "HKLM:\SOFTWARE\Microsoft\Windows Script Host\Settings" -Name "Enabled" -Type DWord -Value 0
+
+	" Windows Scripting host (wscript) disabled `n" >> "windows_configuration.log"
+}
+
+# Enable Windows Script Host
+Function EnableScriptHost {
+	Write-Output "Enabling Windows Script Host..."
+	Remove-ItemProperty -Path "HKLM:\SOFTWARE\Microsoft\Windows Script Host\Settings" -Name "Enabled" -ErrorAction SilentlyContinue
+
+	" Windows scripting host (wscript) enabled `n" >> "windows_configuration.log"
+}
+
+# Enable F8 boot menu options
+Function EnableF8BootMenu {
+	Write-Output "Enabling F8 boot menu options..."
+	bcdedit /set `{current`} BootMenuPolicy Legacy | Out-Null
+
+	" F8 boot menu enbaled `n" >> "windows_configuration.log"
+}
+
+# Disable F8 boot menu options
+Function DisableF8BootMenu {
+	Write-Output "Disabling F8 boot menu options..."
+	bcdedit /set `{current`} BootMenuPolicy Standard | Out-Null
+
+	" F8 boot menu disabled `n" >> "windows_configuration.log"
+}
+
+# Disable System Recovery and Factory reset
+# Warning: This tweak completely removes the option to enter the system recovery during boot and the possibility to perform a factory reset
+Function DisableRecoveryAndReset {
+	Write-Output "Disabling System Recovery and Factory reset..."
+	reagentc /disable 2>&1 | Out-Null
+
+	" System recovery and reset disbaled `n" >> "windows_configuration.log"
+}
+
+# Enable System Recovery and Factory reset
+Function EnableRecoveryAndReset {
+	Write-Output "Enabling System Recovery and Factory reset..."
+	reagentc /enable 2>&1 | Out-Null
+
+	" System recovery and reset enabled `n" >> "windows_configuration.log"
+}
+
+
+
 
 #######################################################################################################
 #
@@ -1045,7 +1068,7 @@ Function EnableConnectionSharing {
 
 #######################################################################################################
 #
-# 		Windows Update Tweaks
+# 		Windows Service Tweaks
 #
 #######################################################################################################
 
