@@ -87,8 +87,40 @@ Function DefaultEdgeEfficiencyMode {
     " MS Edge Efficiency mode left to default `n" >> "windows_configuration.log"
 }
 
-# Add Azure to excluded sleeping tabs
-Function EdgeExcludeAzureFromSleep {
+# Add sites to excluded sleeping tabs
+Function EdgeExcludeSitesFromSleep {
     Write-Output "Excluding portal.azure.com from tab inactivity policy..."
-    If
+    If (!(Test-Path "HKLM:\SOFTWARE\Policies\Microsoft\Edge\SleepingTabsBlockedForUrls")) {
+        New-Item -Path "HKLM:\SOFTWARE\Policies\Microsoft\Edge\SleepingTabsBlockedForUrls" | Out-Null
+    }
+    Set-ItemProperty -Path "HKLM:\SOFTWARE\Policies\Microsoft\Edge\SleepingTabsBlockedForUrls" -Name 1 -Type String -Value "https://portal.azure.com/"
+
+    " Added portal.azure.com to exlude from tab sleep `n" >> "windows_configuration.log"
+}
+
+# Remove sites to exclude sleeping tabs
+Function EdgeRemoveExcludedSitesFromSleep {
+    Write-Output "Remove sites from exluded sleeping tab list."
+    Remove-ItemProperty -Path "HKLM:\SOFTWARE\Policies\Microsoft\Edge\SleepingTabsBlockedForUrls" -ErrorAction SilentlyContinue
+
+    " Removed sites from excluded sleeping tab list `n" >> "windows_configuration.log"
+}
+
+# Ask Before Closing multiple tabs on exit in MS Edge
+Function EnableAskBeforeCloseEdge {
+    Write-Output "Setting 'Ask before closing tabs' in MS Edge..."
+    If (!(Test-Path "HKLM:\SOFTWARE\Policies\Microsoft\Edge")) {
+        New-Item -Path "HKLM:\SOFTWARE\Policies\Microsoft\Edge" | Out-Null
+    }
+    Set-ItemProperty -Path "HKLM:\SOFTWARE\Policies\Microsoft\Edge" -Name "AskBeforeCloseEnabled" -Type DWord -Value 1
+
+    " MS Edge 'Ask before close' tabs enabled `n" >> "windows_configuration.log"
+}
+
+# Do not ask before closing multiple tabs in MS Edge
+Function DefaultAskBeforeCloseEdge {
+    Write-Output "Default behavior when closing multiple MS Edge tabs..."
+    Remove-ItemProperty -Path "HKLM:\SOFTWARE\Policies\Microsoft\Edge" -Name "AskBeforeCloseEnabled" -ErrorAction SilentlyContinue
+
+    " MS Edge 'Ask before close' default choice `n" >> "windows_configuration.log"
 }
