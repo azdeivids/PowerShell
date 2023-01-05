@@ -169,27 +169,6 @@ Function EnableWiFiSense {
 	" WiFi Sense enabled `n" >> "windows_configuration.log"
 }
 
-# Disable SmartScreen Filter
-Function DisableSmartScreen {
-	Write-Output "Disabling SmartScreen Filter..."
-	Set-ItemProperty -Path "HKLM:\SOFTWARE\Policies\Microsoft\Windows\System" -Name "EnableSmartScreen" -Type DWord -Value 0
-	If (!(Test-Path "HKLM:\SOFTWARE\Policies\Microsoft\MicrosoftEdge\PhishingFilter")) {
-		New-Item -Path "HKLM:\SOFTWARE\Policies\Microsoft\MicrosoftEdge\PhishingFilter" -Force | Out-Null
-	}
-	Set-ItemProperty -Path "HKLM:\SOFTWARE\Policies\Microsoft\MicrosoftEdge\PhishingFilter" -Name "EnabledV9" -Type DWord -Value 0
-
-	" Smart screeen disabled `n" >> "windows_configuration.log"
-}
-
-# Enable SmartScreen Filter
-Function EnableSmartScreen {
-	Write-Output "Enabling SmartScreen Filter..."
-	Remove-ItemProperty -Path "HKLM:\SOFTWARE\Policies\Microsoft\Windows\System" -Name "EnableSmartScreen" -ErrorAction SilentlyContinue
-	Remove-ItemProperty -Path "HKLM:\SOFTWARE\Policies\Microsoft\MicrosoftEdge\PhishingFilter" -Name "EnabledV9" -ErrorAction SilentlyContinue
-
-	" Smart screen enabled `n" >> "windows_configuration.log"
-}
-
 # Disable Web Search in Start Menu
 Function DisableWebSearch {
 	Write-Output "Disabling Bing Search in Start Menu..."
@@ -545,9 +524,11 @@ Function EnableRecentFiles {
 
 	" Enabled recent files (start menu) `n" >> "windows_configuration.log"
 }
-########################## Windows 11 22H2 Tweaks ##################################
 
-# Disable Windows Safe Search
+##################################################################################################################
+############################################ Windows 11 22H2 Tweaks ##############################################
+
+# Disable Windows Safe Search (Bing)
 Function SafeSearchDisabled {
 	Write-Output "Disabling SafeSearch..."
 	If (!(Test-Path "HKLM:\SOFTWARE\Policies\Microsoft\Windows\Windows Search")) {
@@ -558,7 +539,7 @@ Function SafeSearchDisabled {
 	" SafeSearch disabled `n" >> "windows_configuration.log"
 }
 
-# Moderate Windows Safe Search
+# Moderate Windows Safe Search (Bing)
 Function SafeSearchModerate {
 	Write-Output "Setting SafeSearch to moderate..."
 	If (!(Test-Path "HKLM:\SOFTWARE\Policies\Microsoft\Windows\Windows Search")) {
@@ -605,6 +586,10 @@ Function DeviceLocalSearchEnabled {
 # Disable Online Speech Recognition
 Function DisableOnlineSpeechRecognition {
 	Write-Output "Disabling Online speech recognition..."
+	If (!(Test-Path "HKCU:\Software\Microsoft\Speech_OneCore\Settings\OnlineSpeecLogging")) {
+		New-Item -Path "HKCU:\Software\Microsoft\Speech_OneCore\Setting\OnlineSpeechLogging"
+	}
+	Set-ItemProperty -Path "HKCU:\Software\Microsoft\Speech_OneCore\Settings\OnlineSpeecLogging" -Type DWord -Value 0
 	Remove-ItemProperty -Path "HKCU:\Software\Microsoft\Speech_OneCore\Settings\OnlineSpeechPrivacy" -Name "HasAccepted" -ErrorAction SilentlyContinue
 
 	" Online speech recognition disabled `n" >> "windows_configuration.log"
@@ -616,14 +601,18 @@ Function EnableOnlineSpeechRecognition {
 	If (!(Test-Path "HKCU:\Software\Microsoft\Speech_OneCore\Settings\OnlineSpeechPrivacy")) {
 		New-Item -Path "HKCU:\Software\Microsoft\Speech_OneCore\Settings\OnlineSpeechPrivacy" -Force | Out-Null
 	}
+	If (!(Test-Path "HKCU:\Software\Microsoft\Speech_OneCore\Settings\OnlineSpeechLogging")) {
+		New-Item -Path "HKCU:\Software\Microsoft\Speech_OneCore\Settings\OnlineSpeechLogging" -Force | Out-Null
+	}
 	Set-ItemProperty -Path "HKCU:\Software\Microsoft\Speech_OneCore\Settings\OnlineSpeechPrivacy" -Name "HasAccepted" -Type DWord -Value 1
+	Set-ItemProperty -Path "HKCU:\Software\Microsoft\Speech_OneCore\Settings\OnlineSpeechLogging" -Name "LoggingAllowed" -Type DWord -Value 1
 
 	" Online speech recognition enabled `n" >> "windows_configuration.log"
 }
 
 # Turn on Inking and Typing
 # The HKLM Key 'AllowLinguisticDataCollection' will disbale the setting entierly for all users; it's part of Disable/Enable Telemetry function already.
-Function TurnOnTIPC {
+Function EnableTIPC {
 	Write-Output "Turning on Inking and Typing..."
 	If (!(Test-Path "HKCU:\Software\Microsoft\Input\TIPC")) {
 		New-Item -Path "HKCU:\Software\Microsoft\Input\TIPC" | Out-Null
@@ -634,7 +623,7 @@ Function TurnOnTIPC {
 }
 
 # Turn off Inking and Typing
-Function TurnOffTIPC {
+Function DisableTIPC {
 	Write-Output "Turning off Inking and Typing..."
 	Remove-ItemProperty -Path "HKCU:\Software\Microsoft\Input\TIPC" -Name "Enabled" -ErrorAction SilentlyContinue
 
@@ -768,6 +757,32 @@ Function EnableAdsWin11 {
 	" Lock screen tips and tricks enabled `n" >> "windows_configuration.log"
 }
 
+# Disable let app communicate with Unpaired devices
+Function DisablePairingWithApps {
+	Write-Output "Disable app communication with unpaired devices..."
+	If (!(Test-Path "HKCU:\Software\Microsoft\Windows\CurrentVersion\Privacy")) {
+		New-item -Path "HKCU:\Software\Microsoft\Windows\CurrentVersion\Privacy" | Out-Null
+	}
+	If (!(Test-Path "HKLM:\SOFTWARE\Policies\Microsoft\Windows\AppPrivacy")) {
+		New-Item -Path "HKLM:\SOFTWARE\Policies\Microsoft\Windows\AppPrivacy" | Out-Null
+	}
+	Set-ItemProperty -Path "HKCU:\Software\Microsoft\Windows\CurrentVersion\Privacy" -Name "TailoredExperiencesWithDiagnosticDataEnabled" -Type DWord -Value 0
+	Set-ItemProperty -Path "HKLM:\SOFTWARE\Policies\Microsoft\Windows\AppPrivacy" -Name "LetAppsSyncWithDevices" -Type DWord -Value 2
+
+	" App pairing disabled `n" >> "windows_configuration.log"
+}
+
+# Enable let app communicate with unpaired devices
+Function EnablePairingWithApps {
+	Write-Output "Enable app communication with unpaired devices..."
+	If (!(Test-Path "HKCU:\Software\Microsoft\Windows\CurrentVersion\Privacy")) {
+		New-item -Path "HKCU:\Software\Microsoft\Windows\CurrentVersion\Privacy" | Out-Null
+	}
+	Set-ItemProperty -Path "HKCU:\Software\Microsoft\Windows\CurrentVersion\Privacy" -Name "TailoredExperiencesWithDiagnosticDataEnabled" -Type DWord -Value 1
+	Remove-ItemProperty -Path "HKLM:\SOFTWARE\Policies\Microsoft\Windows\AppPrivacy" -Name "LetAppsSyncWithDevices" -ErrorAction SilentlyContinue
+
+	" App pairing disabled `n" >> "windows_configuration.log"
+}
 
 
 #######################################################################################################
@@ -828,7 +843,7 @@ Function EnableAdminShares {
 
 # Enable Core Isolation Memory Integrity - Part of Windows Defender System Guard virtualization-based security.
 # Warning: This may cause old applications and drivers to crash or even cause BSOD
-# Problems were confirmed with old video drivers (Intel HD Graphics for 2nd gen., Radeon HD 6850), and old antivirus software (Kaspersky Endpoint Security 10.2, 11.2)
+# https://learn.microsoft.com/en-us/windows/security/threat-protection/device-guard/enable-virtualization-based-protection-of-code-integrity
 Function EnableCIMemoryIntegrity {
 	Write-Output "Enabling Core Isolation Memory Integrity..."
 	If (!(Test-Path "HKLM:\SYSTEM\CurrentControlSet\Control\DeviceGuard\Scenarios\HypervisorEnforcedCodeIntegrity")) {
@@ -914,6 +929,106 @@ Function EnableRecoveryAndReset {
 
 	" System recovery and reset enabled `n" >> "windows_configuration.log"
 }
+
+###############################################################################################################
+###################################### Windows 11 22H2 Tweaks #################################################
+
+# Turn off Smart App Control (SAC)
+# NOTE: If you disabled Smart App control, you will have to preform a clean install of Windows 11 to re-enable the settings.
+# If you choose to leave the setting untouched it will default to evaluation mode which will decided wether to enable or disable SAC
+Function DisableSAC {
+	Write-Output "Turning off Smart App Control..."
+	If (!(Test-Path "HKLM:\SYSTEM\CurrentControlSet\Control\CI\Policy")) {
+		New-Item -Path "HKLM:\SYSTEM\CurrentControlSet\Control\CI\Policy" | Out-Null
+	}
+	Set-ItemProperty -Path "HKLM:\SYSTEM\CurrentControlSet\Control\CI\Policy" -Name "VerifiedAndReputablePolicyState" -Type DWord -Value 0
+
+	" SAC Disbaled `n" >> "windows_configuration.log"
+}
+
+# Enable Smart App Control (SAC)
+Function EnableSAC {
+	Write-Output "Turning on Smart App Control..."
+	If (!(Test-Path "HKLM:\SYSTEM\CurrentControlSet\Control\CI\Policy")) {
+		New-Item -Path "HKLM:\SYSTEM\CurrentControlSet\Control\CI\Policy" | Out-Null
+	}
+	Set-ItemProperty -Path "HKLM:\SYSTEM\CurrentControlSet\Control\CI\Policy" -Name "VerifiedAndReputablePolicyState" -Type DWord -Value 1
+
+	" SAC Enabled `n" >> "windows_configuration.log"
+}
+
+# Enable Local Security Authority (LSA)
+Function EnableLSA {
+	Write-Output "Enabling Local Security Authority..."
+	If (!(Test-Path "HKLM:\SYSTEM\CurrentControlSet\Control\Lsa")) {
+		New-Item -Path "HKLM:\SYSTEM\CurrentControlSet\Control\Lsa" | Out-Null
+	}
+	Set-ItemProperty -Path "HKLM:\SYSTEM\CurrentControlSet\Control\Lsa" -Name "RunAsPPL" -Type DWord -Value 2
+	Set-ItemProperty -Path "HKLM:\SYSTEM\CurrentControlSet\Control\Lsa" -Name "RunAsPPLBoot" -Type DWord -Value 2
+
+	" LSA Enabled `n" >> "windows_configuration.log"
+}
+
+# Disable Local Security Authority (LSA)
+Function DisableLSA {
+	Write-Output "Disabling Local Security Authority..."
+	If (!(Test-Path "HKLM:\SYSTEM\CurrentControlSet\Control\Lsa")) {
+		New-Item -Path "HKLM:\SYSTEM\CurrentControlSet\Control\Lsa" | Out-Null
+	}
+	Set-ItemProperty -Path "HKLM:\SYSTEM\CurrentControlSet\Control\Lsa" -Name "RunAsPPL" -Type DWord -Value 0
+	Set-ItemProperty -Path "HKLM:\SYSTEM\CurrentControlSet\Control\Lsa" -Name "RunAsPPLBoot" -Type DWord -Value 0
+
+	" LSA Disabled `n" >> "windows_configuration.log"
+}
+
+# Enable Local Security Authority (LSA) iwth UEFI Lock for additional security
+Function EnableLSAWithUEFI {
+	Write-Output "Disabling Local Security Authority..."
+	If (!(Test-Path "HKLM:\SYSTEM\CurrentControlSet\Control\Lsa")) {
+		New-Item -Path "HKLM:\SYSTEM\CurrentControlSet\Control\Lsa" | Out-Null
+	}
+	Set-ItemProperty -Path "HKLM:\SYSTEM\CurrentControlSet\Control\Lsa" -Name "RunAsPPL" -Type DWord -Value 1
+
+	" LSA Enabled with UEFI Lock `n" >> "windows_configuration.log"
+}
+
+# Turn on Controlled Folder Access
+Function EnableControlledFolderAccess {
+	Write-Output "Enabling controlled folder access..."
+	Set-MpPreference -EnableControlledFolderAccess Enable
+
+	" Controller Folder Access enabled `n" >> "windows_configuration.log"
+}
+
+# Turn off Controlled Folder Access
+Function DisableControlledFolderAccess {
+	Write-Output "Disabling controlled folder access..."
+	Set-MpPreference -EnableControlledFolderAccess Disable
+
+	"Controlled Folder Access disabled `n" >> "windows_configuration.log"
+}
+
+# Disable SmartScreen Filter
+Function DisableSmartScreen {
+	Write-Output "Disabling SmartScreen Filter..."
+	Set-ItemProperty -Path "HKLM:\SOFTWARE\Policies\Microsoft\Windows\System" -Name "EnableSmartScreen" -Type DWord -Value 0
+	If (!(Test-Path "HKLM:\SOFTWARE\Policies\Microsoft\MicrosoftEdge\PhishingFilter")) {
+		New-Item -Path "HKLM:\SOFTWARE\Policies\Microsoft\MicrosoftEdge\PhishingFilter" -Force | Out-Null
+	}
+	Set-ItemProperty -Path "HKLM:\SOFTWARE\Policies\Microsoft\MicrosoftEdge\PhishingFilter" -Name "EnabledV9" -Type DWord -Value 0
+
+	" Smart screeen disabled `n" >> "windows_configuration.log"
+}
+
+# Enable SmartScreen Filter
+Function EnableSmartScreen {
+	Write-Output "Enabling SmartScreen Filter..."
+	Remove-ItemProperty -Path "HKLM:\SOFTWARE\Policies\Microsoft\Windows\System" -Name "EnableSmartScreen" -ErrorAction SilentlyContinue
+	Remove-ItemProperty -Path "HKLM:\SOFTWARE\Policies\Microsoft\MicrosoftEdge\PhishingFilter" -Name "EnabledV9" -ErrorAction SilentlyContinue
+
+	" Smart screen enabled `n" >> "windows_configuration.log"
+}
+
 
 
 
