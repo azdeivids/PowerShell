@@ -313,22 +313,6 @@ Function EnableLocation {
 	" Location features enabled `n" >> "windows_configuration.log"
 }
 
-# Disable automatic Maps updates
-Function DisableMapUpdates {
-	Write-Output "Disabling automatic Maps updates..."
-	Set-ItemProperty -Path "HKLM:\SYSTEM\Maps" -Name "AutoUpdateEnabled" -Type DWord -Value 0
-
-	" Map updates disabled `n" >> "windows_configuration.log"
-}
-
-# Enable automatic Maps updates
-Function EnableMapUpdates {
-	Write-Output "Enable automatic Maps updates..."
-	Remove-ItemProperty -Path "HKLM:\SYSTEM\Maps" -Name "AutoUpdateEnabled" -ErrorAction SilentlyContinue
-
-	"Map updates enabled `n" >> "windows_configuration.log"
-}
-
 # Disable Feedback
 Function DisableFeedback {
 	Write-Output "Disabling Feedback..."
@@ -1029,6 +1013,24 @@ Function EnableSmartScreen {
 	" Smart screen enabled `n" >> "windows_configuration.log"
 }
 
+# Set innactivity time to lock screen
+Function EnableLockAcc {
+	Write-Output "Setting user innactivity timeout for lock screen to 5 minutes..."
+	If (!(Test-Path "HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\Policies\System")) {
+		New-item -Path "HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\Policies\System" | Out-Null
+	}
+	Set-ItemProperty -Path "HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\Policies\System" -Name "InactivityTimeoutSecs" -Type DWord -Value 300
+
+	" Inactivity timeout set to 5 minutes `n" >> "windows_configuration.log"
+}
+
+# Disable innactivity timeout
+Function DisableLockAcc {
+	Write-Output "Removing user innactivity timeout for lock screen..."
+	Remove-ItemProperty -Path "HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\Policies\System" -Name "InactivityTimeoutSecs" -ErrorAction SilentlyContinue
+
+	" Inactivity timeout removed not set `n" >> "windows_configuration.log"
+}
 
 
 
@@ -1149,6 +1151,8 @@ Function EnableRemoteAssistance {
 Function EnableRemoteDesktop {
 	Write-Output "Enabling Remote Desktop..."
 	Set-ItemProperty -Path "HKLM:\SYSTEM\CurrentControlSet\Control\Terminal Server" -Name "fDenyTSConnections" -Type DWord -Value 0
+	Set-ItemProperty -Path "HKLM:\SYSTEM\CurrentControlSet\Control\Terminal Server" -Name "updateRDStatus" -Type DWord -Value 1
+	Set-ItemProperty -Path "HKLM:\SYSTEM\CurrentControlSet\Control\Terminal Server\WinStations\RDP-Tcp" -Type DWord -Value 0
 	Enable-NetFirewallRule -Name "RemoteDesktop*"
 
 	" Remote desktop enabled `n" >> "windows_configuration.log"
@@ -1158,6 +1162,7 @@ Function EnableRemoteDesktop {
 Function DisableRemoteDesktop {
 	Write-Output "Disabling Remote Desktop..."
 	Set-ItemProperty -Path "HKLM:\SYSTEM\CurrentControlSet\Control\Terminal Server" -Name "fDenyTSConnections" -Type DWord -Value 1
+	Set-ItemProperty -Path "HKLM:\SYSTEM\CurrentControlSet\Control\Terminal Server" -Name "updateRDStatus" -Type DWord -Value 0
 	Disable-NetFirewallRule -Name "RemoteDesktop*"
 
 	" Remote desktop disabled `n" >> "windows_configuration.log"
@@ -1177,6 +1182,26 @@ Function EnableConnectionSharing {
 	Remove-ItemProperty -Path "HKLM:\SOFTWARE\Policies\Microsoft\Windows\Network Connections" -Name "NC_ShowSharedAccessUI" -ErrorAction SilentlyContinue
 
 	" Hotspot enabled `n" >> "windows_configuration.log"
+}
+
+# Disable shared experiances (cross-device experiance).
+# Share across devices
+Function DisableSharedExperiance {
+	Write-Output "Disabling cross-device experiance..."
+	If (!(Test-Path "HKLM:\SOFTWARE\Policies\Microsoft\Windows\System")) {
+		New-Item -Path "HKLM:\SOFTWARE\Policies\Microsoft\Windows\System" | Out-Null
+	}
+	Set-ItemProperty -Path "HKLM:\SOFTWARE\Policies\Microsoft\Windows\System" -Name "EnableCdp" -Type DWord -Value 0
+
+	" Shared experiances disbaled `n" >> "windows_configuration.log"
+}
+
+# Enbale shared experiances
+Function EnableSharedExperiaces {
+	Write-Output "Enabling shared experiances..."
+	Remove-ItemProperty -Path "HKLM:\SOFTWARE\Policies\Microsoft\Windows\System" -Name "EnableCdp" -ErrorAction SilentlyContinue
+
+	" Shared experiances enabled `n" >> "windows_configuration.log"
 }
 
 
@@ -1228,25 +1253,6 @@ Function EnableMaintenanceWakeUp {
 	"Maintenance wake-up enabled `n" >> "windows_configuration.log"
 }
 
-# Set app sharing across devices off
-Function AppSharingOff {
-	Write-Output "Disabling app sharing across devices..."
-	If (!(Test-Path "HKCU:\Software\Microsoft\Windows\CurrentVersion\CDP")) {
-		New-Item -Path "HKCU:\Software\Microsoft\Windows\CurrentVersion\CDP" | Out-Null
-	}
-	Set-ItemProperty -Path "HKCU:\Software\Microsoft\Windows\CurrentVersion\CDP" -Name "CdpSessionUserAuthzPolicy" -Type DWord -Value 0
-
-	" app sharing across devices turned off `n" >> "windows_configuration.log"
-}
-
-# Set app sharing across devices to only my devices (MS Account connected)
-Function AppSharingMyDevices {
-	Write-Output "Enabling app sharing across my connected devices..."
-	Set-ItemProperty -Path "HKCU:\Software\Microsoft\Windows\CurrentVersion\CDP" -Name "CdpSessionUserAuthzPolicy" -Type DWord -Value 1
-
-	" app sharing set between my devices `n" >> "windows_configuration.log"
-}
-
 # Nearby sharing off
 Function NearbySharingOff {
 	Write-Output "Turning off nearby sharing..."
@@ -1254,6 +1260,7 @@ Function NearbySharingOff {
 		New-Item -Path "HKCU:\Software\Microsoft\Windows\CurrentVersion\CDP" | Out-Null
 	}
 	Set-ItemProperty -Path "HKCU:\Software\Microsoft\Windows\CurrentVersion\CDP" -Name "NearShareChannelUserAuthzPolicy" -Type DWord -Value 0
+	Set-ItemProperty -Path "HKCU:\Software\Microsoft\Windows\CurrentVersion\CDP" -Name "CdpSessionUserAuthzPolic" -Type DWord -Value 1
 	If (!(Test-Path "HKCU:\Software\Microsoft\Windows\CurrentVersion\CDP\SettingsPage")) {
 		New-Item -Path "HKCU:\Software\Microsoft\Windows\CurrentVersion\CDP\SettingsPage" | Out-Null
 	}
@@ -1262,10 +1269,11 @@ Function NearbySharingOff {
 	" Sharing between nearby devices turned off `n" >> "windows_configuration.log"
 }
 
-# Nearby sharing
+# Nearby sharing for my devices only
 Function NearbySharingMyDevices {
 	Write-Output "Enabling nearby sharing across my devices..."
 	Set-ItemProperty -Path "HKCU:\Software\Microsoft\Windows\CurrentVersion\CDP" -Name "NearShareChannelUserAuthzPolicy" -Type DWord -Value 1
+	Set-ItemProperty -Path "HKCU:\Software\Microsoft\Windows\CurrentVersion\CDP" -Name "CdpSessionUserAuthzPolic" -Type DWord -Value 1
 	Set-ItemProperty -Path "HKCU:\Software\Microsoft\Windows\CurrentVersion\CDP\SettingsPage" -Name "BluetoothLastDisabledNearShare" -Type DWord -Value 1
 
 	" Nearby sharing between my devices turned on `n" >> "windows_configuration.log"
@@ -1298,7 +1306,7 @@ Function DisableAutoplay {
 # Enable Autoplay
 Function EnableAutoplay {
 	Write-Output "Enabling Autoplay..."
-	Set-ItemProperty -Path "HKCU:\Software\Microsoft\Windows\CurrentVersion\Explorer\AutoplayHandlers" -Name "DisableAutoplay" -Type DWord -Value 0
+	Remove-ItemProperty -Path "HKCU:\Software\Microsoft\Windows\CurrentVersion\Explorer\AutoplayHandlers" -Name "DisableAutoplay" -ErrorAction SilentlyContinue
 
 	" autoplay enabled `n" >> "windows_configuration.log"
 }
@@ -1450,6 +1458,58 @@ Function EnableAutoRebootOnCrash {
 	" Enable auto re-boot on crash `n" >> "windows_configuration.log"
 }
 
+###########################################################################################################
+#################################	Windows 11 22H2 Tweaks 	###############################################
+
+# Enable Dynamic Lock (Lock the screen as you step away from the computer)
+Function EnableDynamicLock {
+	Write-Output "Enabling dynamic lock..."
+	If (!(Test-Path "HKLM:\SOFTWARE\Microsoft\Windows NT\CurrentVersion\Winlogon")) {
+		New-Item -Path "HKLM:\SOFTWARE\Microsoft\Windows NT\CurrentVersion\Winlogon" | Out-Null
+	}
+	Set-ItemProperty -Path "HKLM:\SOFTWARE\Microsoft\Windows NT\CurrentVersion\Winlogon" -Name "EnableGoodbye" -Type DWord -Value 1
+
+	" Dynamic lock enabled `n" >> "windows_configuration.log"
+}
+
+# Disable Dynamic Lock (Default)
+Function DisableDynamicLock {
+	Write-Output "Disabling dynamic lock..."
+	Set-ItemProperty -Path "HKLM:\SOFTWARE\Microsoft\Windows NT\CurrentVersion\Winlogon" -Name "EnableGoodbye" -Type DWord -Value 0
+
+	" Dynamic lock disabled `n" >> "windows_configuration.log"
+}
+
+# Disable projecting to this PC
+Function DisableProjectingToPC {
+	Write-Output "Disabling 'Projecting to this PC' settings..."
+	If (!(Test-Path "HKLM:\SOFTWARE\Microsoft\MiracastReceiver")) {
+		New-Item -Path "HKLM:\SOFTWARE\Microsoft\MiracastReceiver" | Out-Null
+	}
+	If (!(Test-Path "HKLM:\SOFTWARE\Microsoft\PlayToReceiver")) {
+		New-Item -Path "HKLM:\SOFTWARE\Microsoft\PlayToReceiver" | Out-Null
+	}
+	Set-ItemProperty -Path "HKLM:\SOFTWARE\Microsoft\MiracastReceiver" -Name "NetworkQualificationEnabled" -Type DWord -Value 0
+	Set-ItemProperty -Path "HKLM:\SOFTWARE\Microsoft\PlayToReceiver" -Name "AutoEnabled" -Type DWord -Value 0
+
+	" projecting to this PC disabled `n" >> "windows_configuration.log"
+}
+
+# Enable projecting to this PC only from secure network (And always promt when projecting)
+Function EnableProjectingToPC {
+	Write-Output "Enabling 'Project tothis PC' only from secure networks..."
+	If (!(Test-Path "HKLM:\SOFTWARE\Microsoft\MiracastReceiver")) {
+		New-Item -Path "HKLM:\SOFTWARE\Microsoft\MiracastReceiver" | Out-Null
+	}
+	If (!(Test-Path "HKLM:\SOFTWARE\Microsoft\PlayToReceiver")) {
+		New-Item -Path "HKLM:\SOFTWARE\Microsoft\PlayToReceiver" | Out-Null
+	}
+	Set-ItemProperty -Path "HKLM:\SOFTWARE\Microsoft\MiracastReceiver" -Name "NetworkQualificationEnabled" -Type DWord -Value 1
+	Set-ItemProperty -Path "HKLM:\SOFTWARE\Microsoft\PlayToReceiver" -Name "AutoEnabled" -Type DWord -Value 1
+	Set-ItemProperty -Path "HKLM:\SOFTWARE\Microsoft\MiracastReceiver" -Name "ConsentToast" -Type DWord -Value 1
+
+	" projecting to this PC enabled from secure networks `n" >> "windows_configuration.log"
+}
 
 
 #######################################################################################################
@@ -1715,6 +1775,23 @@ Function EnableEnhPointerPrecision {
 
 	" Enhanced mouse pointed enabled `n" >> "windows_configuration.log"
 }
+
+# Set Highest Mouse sensitivity
+Function MaxMouseSpeed {
+	Write-Output "Increasing mouse speed to the maximum..."
+	Set-ItemProperty -Path "HKCU:\Control Panel\Mouse" -Name "MouseSpeed" -Type String -Value 20
+
+	" Mouse speed increased to the maximum `n" >> "windows_configuration.log"
+}
+
+# Set Medium Mouse Sensitivity
+Function MediumMouseSpeed {
+	Write-Output "Setting mouse speed at the medium..."
+	Set-ItemProperty -Path "HKCU:\Control Panel\Mouse" -Name "MouseSpeed" -Type String -Value 20
+
+	" Mouse speed set to medium `n" >> "windows_configuration.log"
+}
+
 # Enable verbose startup/shutdown status messages
 Function EnableVerboseStatus {
 	Write-Output "Enabling verbose startup/shutdown status messages..."
@@ -1941,9 +2018,32 @@ Function ShowMoreRecommendationsInStartMenu {
 	" More recommendations in start menu `n" >> "windows_configuration.log"
 }
 
+# Improve JPEG Wallpapper quality
+Function ImproveWallpapper {
+	Write-Output "Improving wallpapper quality..."
+	Set-ItemProperty -Path "HKCU:\Control Panel\Desktop" -Name "JPEGImportQuality" -Type DWord -Value 64
+
+	" JPEG & JPG Wallpaper quality improved `n" >> "windows_configuration.log"
+}
+
+# Reduce JPEG Wallpapper quality
+Function ReduceWallpapper {
+	Write-Output "Reducing wallpapper quality..."
+	Remove-ItemProperty -Path "HKCU:\Control Panel\Desktop" -Name "JPEGImportQuality" -ErrorAction SilentlyContinue
+
+	" Wallappper quality reduces `n" >> "windows_configuration.log"
+}
+
+# Hide content (notifications0 above lock screen)
+Function 
+
+
+
+########################## Time & Region Settings ######################################
+
 # Show seconds in taskbar
 # Somehow does not work? Maybe due to regional settings? Tested with en-US region settings.
-Function ShowSecondsInTaskbar {
+Function ShowSecondsOnTaskbar {
 	Write-Output "Showing seconds in taskbar..."
 	If (!(Test-Path "HKCU:\Software\Microsoft\Windows\CurrentVersion\Explorer\Advanced")) {
 		New-Item -Path "HKCU:\Software\Microsoft\Windows\CurrentVersion\Explorer\Advanced" | Out-Null
@@ -1975,6 +2075,70 @@ Function SetRegionDefaultGB {
 
 	" Region set to default en-GB `n" >> "windows_configuration.log"
 }
+
+########################## Typing settings ######################################
+
+ # Highlight misspelled words
+ Function EnableSpellingHighlights {
+	Write-Output "Enabling missplled word highlights..."
+	If (!(Test-Path "HKCU:\Software\Microsoft\TabletTip\1.7")) {
+		New-Item -Path "HKCU:\Software\Microsoft\TabletTip\1.7" | Out-Null
+	}
+	Set-ItemProperty -Path "HKCU:\Software\Microsoft\TabletTip\1.7" -Name "EnableSpellchecking" -Type DWord -Value 1
+	Set-ItemProperty -Path "HKCU:\Software\Microsoft\TabletTip\1.7" -Name "EnableAutocorrection" -Type DWord -Value 1
+
+	" Missplled word highlights enabled `n" >> "windows_configuration.log"
+}
+
+# Do not highlight missplled words
+Function DisableSpellingHighlights {
+	Set-ItemProperty -Path "HKCU:\Software\Microsoft\TabletTip\1.7" -Name "EnableSpellchecking" -Type DWord -Value 0
+	Set-ItemProperty -Path "HKCU:\Software\Microsoft\TabletTip\1.7" -Name "EnableAutocorrection" -Type DWord -Value 0
+
+	" Misspeled word highlights disabled `n" >> "windows_configuration.log"
+}
+
+# Disable Text suggestions
+Function DisableTextSuggestions {
+	Write-Output "Disabling Text suggestions..."
+	If (!(Test-Path "HKCU:\Software\Microsoft\input\Settings")) {
+		New-Item -Path "HKCU:\Software\Microsoft\input\Settings" | Out-Null
+	}
+	Set-ItemProperty -Path "HKCU:\Software\Microsoft\input\Settings" -Name "EnableHwkbTextPrediction" -Type DWord -Value 0
+	Set-ItemProperty -Path "HKCU:\Software\Microsoft\input\Settings" -Name "MultilingualEnabled" -Type DWord -Value 0
+
+	" Text suggestions disabled `n" >> "windows_configuration.log"
+}
+
+# Enable Text suggestions
+Function EnableTextSuggestions {
+	Write-Output "Enabling Text suggestions..."
+	If (!(Test-Path "HKCU:\Software\Microsoft\input\Settings")) {
+		New-Item -Path "HKCU:\Software\Microsoft\input\Settings" | Out-Null
+	}
+	Set-ItemProperty -Path "HKCU:\Software\Microsoft\input\Settings" -Name "EnableHwkbTextPrediction" -Type DWord -Value 1
+	Set-ItemProperty -Path "HKCU:\Software\Microsoft\input\Settings" -Name "MultilingualEnabled" -Type DWord -Value 1
+
+	" Text suggestions enabled `n" >> "windows_configuration.log"
+}
+
+# Enable Typing insights
+Function EnableTypingInsights {
+	Write-Output "Enabling typing insights..."
+	Set-ItemProperty -Path "HKCU:\Software\Input\Settings" -Name "InsightsEnabled" -Type DWord -Value 1
+
+	" Typing insights enabled `n" >> "windows_configuration.log"
+}
+
+# Disable typing insights
+Function DisableTypingInsights {
+	Write-Output "Disabling typing insights..."
+	Set-ItemProperty "HKCU:\Software\Microsoft\Input\Settings" "InsightsEnabled" -Type DWord -Value 0
+
+	" Typing insights disabled `n" >> "windows_configuration.log"
+}
+
+
 
 #######################################################################################################
 #
@@ -2191,6 +2355,23 @@ Function UnpinUserFolderNavPane {
 	" User folder removed from navigation pane `n" >> "windows_configuration.log"
 }
 
+# Hide Network from Navigation pane
+Function HideNetNavPane {
+	Write-Output "Hidding network location from navigation pane namespace..."
+	Remove-ItemProperty -Path "HKCU:\Software\Classes\CLSID\{F02C1A0D-BE21-4350-88B0-7367FC96EF3C}" "System.IsPinnedToNameSpaceTree" -ErrorAction SilentlyContinue
+
+	" Removed network from navigation pane `n" >> "windows_configuration.log"
+}
+
+Function PinNetNavPane {
+	Write-Output "Pinning network location to navigation pane namcespace..."
+	If (!(Test-Path "HKCU:\Software\Classes\CLSID\{F02C1A0D-BE21-4350-88B0-7367FC96EF3C}")) {
+		New-Item -Path "HKCU:\Software\Classes\CLSID\{F02C1A0D-BE21-4350-88B0-7367FC96EF3C}" | Out-Null
+	}
+	Set-ItemProperty -Path "HKCU:\Software\Classes\CLSID\{F02C1A0D-BE21-4350-88B0-7367FC96EF3C}" -Name "System.IsPinnedToNameSpaceTree" -Type DWord -Value 1
+
+	" Network location pinned to navigatio pane `n" >> "windows_configuration.log"
+}
 
 
 #######################################################################################################
@@ -2200,6 +2381,22 @@ Function UnpinUserFolderNavPane {
 #######################################################################################################
 
 
+
+# Disable automatic Maps updates
+Function DisableMapUpdates {
+	Write-Output "Disabling automatic Maps updates..."
+	Set-ItemProperty -Path "HKLM:\SYSTEM\Maps" -Name "AutoUpdateEnabled" -Type DWord -Value 0
+
+	" Map updates disabled `n" >> "windows_configuration.log"
+}
+
+# Enable automatic Maps updates
+Function EnableMapUpdates {
+	Write-Output "Enable automatic Maps updates..."
+	Remove-ItemProperty -Path "HKLM:\SYSTEM\Maps" -Name "AutoUpdateEnabled" -ErrorAction SilentlyContinue
+
+	"Map updates enabled `n" >> "windows_configuration.log"
+}
 
 # Disable OneDrive
 Function DisableOneDrive {
@@ -2306,15 +2503,9 @@ Function UninstallMsftBloat {
 	Get-AppxPackage "Microsoft.YourPhone" | Remove-AppxPackage
 	Get-AppxPackage "Microsoft.ZuneMusic" | Remove-AppxPackage
 	Get-AppxPackage "Microsoft.ZuneVideo" | Remove-AppxPackage
-	Get-AppxPackage "Microsoft.XboxIdentityProvider" | Remove-AppxPackage
 	Get-AppxPackage "MicrosoftTeams" | Remove-AppxPackage
-	Get-AppxPackage "Microsoft.XboxGameCallableUI" | Remove-AppxPackage
 	Get-AppxPackage "Microsoft.PowerAutomateDesktop" | Remove-AppPackage
 	Get-AppxPackage "MicrosoftCorporationII.QuickAssist" | Remove-AppxPackage
-	Get-AppxPackage "Microsoft.XboxSpeechToTextOverlay" | Remove-AppxPackage
-	Get-AppxPackage "Microsoft.XboxGamingOverlay" | Remove-AppxPackage
-	Get-AppxPackage "Microsoft.XboxGameOverlay" | Remove-AppxPackage
-	Get-AppxPackage "Microsoft.Xbox.TCUI" | Remove-AppxPackage
 	Get-AppxPackage "Microsoft.GamingApp" | Remove-AppxPackage
 	Get-AppxPackage "Clipchamp.Clipchamp" | Remove-AppxPackage
 }
@@ -2376,8 +2567,10 @@ Function DisableXboxFeatures {
 	Get-AppxPackage "Microsoft.XboxGameOverlay" | Remove-AppxPackage
 	Get-AppxPackage "Microsoft.XboxGamingOverlay" | Remove-AppxPackage
 	Get-AppxPackage "Microsoft.Xbox.TCUI" | Remove-AppxPackage
+	Get-AppxPackage "Microsoft.XboxGameCallableUI" | Remove-AppxPackage
 	Set-ItemProperty -Path "HKCU:\Software\Microsoft\GameBar" -Name "AutoGameModeEnabled" -Type DWord -Value 0
 	Set-ItemProperty -Path "HKCU:\System\GameConfigStore" -Name "GameDVR_Enabled" -Type DWord -Value 0
+	Set-ItemProperty -Path "HKCU:\Software\Microsoft\GameBar" -Name "UseNexusForGameBarEnabled" -Type DWord -Value 0
 	If (!(Test-Path "HKLM:\SOFTWARE\Policies\Microsoft\Windows\GameDVR")) {
 		New-Item -Path "HKLM:\SOFTWARE\Policies\Microsoft\Windows\GameDVR" | Out-Null
 	}
@@ -2397,6 +2590,7 @@ Function EnableXboxFeatures {
 	Get-AppxPackage -AllUsers "Microsoft.Xbox.TCUI" | ForEach-Object {Add-AppxPackage -DisableDevelopmentMode -Register "$($_.InstallLocation)\AppXManifest.xml"}
 	Remove-ItemProperty -Path "HKCU:\Software\Microsoft\GameBar" -Name "AutoGameModeEnabled" -ErrorAction SilentlyContinue
 	Set-ItemProperty -Path "HKCU:\System\GameConfigStore" -Name "GameDVR_Enabled" -Type DWord -Value 1
+	Set-ItemProperty -Path "HKCU:\Software\Microsoft\GameBar" -Name "UseNexusForGameBarEnabled" -Type DWord -Value 1
 	Remove-ItemProperty -Path "HKLM:\SOFTWARE\Policies\Microsoft\Windows\GameDVR" -Name "AllowGameDVR" -ErrorAction SilentlyContinue
 
 	" Xbox features enabled `n" >> "windows_configuration.log"
@@ -2525,6 +2719,28 @@ Function InstallFaxAndScan {
 	Get-WindowsCapability -Online | Where-Object { $_.Name -like "Print.Fax.Scan*" } | Add-WindowsCapability -Online | Out-Null
 
 	" fax and scan services isntalled `n" >> "windows_configuration.log"
+}
+
+########################################################################################################
+############################	Windows 11 22H2 Tweaks 	################################################
+
+# Set app sharing across devices off
+Function AppSharingOff {
+	Write-Output "Disabling app sharing across devices..."
+	If (!(Test-Path "HKCU:\Software\Microsoft\Windows\CurrentVersion\CDP")) {
+		New-Item -Path "HKCU:\Software\Microsoft\Windows\CurrentVersion\CDP" | Out-Null
+	}
+	Set-ItemProperty -Path "HKCU:\Software\Microsoft\Windows\CurrentVersion\CDP" -Name "CdpSessionUserAuthzPolicy" -Type DWord -Value 0
+
+	" app sharing across devices turned off `n" >> "windows_configuration.log"
+}
+
+# Set app sharing across devices to only my devices (MS Account connected)
+Function AppSharingMyDevices {
+	Write-Output "Enabling app sharing across my connected devices..."
+	Set-ItemProperty -Path "HKCU:\Software\Microsoft\Windows\CurrentVersion\CDP" -Name "CdpSessionUserAuthzPolicy" -Type DWord -Value 1
+
+	" app sharing set between my devices `n" >> "windows_configuration.log"
 }
 
 
