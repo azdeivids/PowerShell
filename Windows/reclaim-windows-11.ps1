@@ -768,6 +768,33 @@ Function EnablePairingWithApps {
 	" App pairing disabled `n" >> "windows_configuration.log"
 }
 
+# Disable Diagnostic Data
+Function DisableDiagData {
+	Write-Output "Disabling diagnostic data..."
+	If (!(Test-Path "HKLM:\SOFTWARE\Policies\Microsoft\Windows\DataCollection")) {
+		New-Item -Path "HKLM:\SOFTWARE\Policies\Microsoft\Windows\DataCollection" | Out-Null
+	}
+	If (!(Test-Path "HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\Diagnostics\DiagTrack\EventTranscriptKey")) {
+		New-Item -Path "HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\Diagnostics\DiagTrack\EventTranscriptKey" | Out-Null
+	}
+	Set-ItemProperty -Path "HKLM:\SOFTWARE\Policies\Microsoft\Windows\DataCollection" -Name "AllowTelemetry" -Type DWord -Value 0
+	Set-ItemProperty -Path "HKLM:\SOFTWARE\Policies\Microsoft\Windows\DataCollection" -Name "DisableDiagnosticDataViewer" -Type DWord -Value 1
+	Set-ItemProperty -Path "HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\Diagnostics\DiagTrack\EventTranscriptKey" -Name "EnableEventTranscript" -Type DWord -Value 0
+
+	" Diagnostic data disabled `n" >> "windows_configuration.log"
+}
+
+# Enable diagnostic data
+Function EnableDiagData {
+	Write-Output "Enabling diagnostic data..."
+	Remove-ItemProperty -Path "HKLM:\SOFTWARE\Policies\Microsoft\Windows\DataCollection" -Name "AllowTelemetry" -ErrorAction SilentlyContinue
+	Remove-ItemProperty -Path "HKLM:\SOFTWARE\Policies\Microsoft\Windows\DataCollection" -Name "DisableDiagnosticDataViewer" -ErrorAction SilentlyContinue
+
+	" Diagnostic data enabled `n" >> "windows_configuration.log"
+}
+
+
+
 
 #######################################################################################################
 #
@@ -2043,18 +2070,22 @@ Function
 
 # Show seconds in taskbar
 # Somehow does not work? Maybe due to regional settings? Tested with en-US region settings.
-Function ShowSecondsOnTaskbar {
-	Write-Output "Showing seconds in taskbar..."
+Function ShowSecOnTaskBar {
+	Write-Output "Seconds added to the clock on taskbar..."
 	If (!(Test-Path "HKCU:\Software\Microsoft\Windows\CurrentVersion\Explorer\Advanced")) {
 		New-Item -Path "HKCU:\Software\Microsoft\Windows\CurrentVersion\Explorer\Advanced" | Out-Null
 	}
 	Set-ItemProperty -Path "HKCU:\Software\Microsoft\Windows\CurrentVersion\Explorer\Advanced" -Name "ShowSecondsInSystemClock" -Type DWord -Value 1
+
+	" Second count added to clock `n" >> "windows_configuration.log"
 }
 
 # Hide seconds from taskbar
 Function HideSecondsFromTaskbar {
 	Write-Output "Hiding seconds from taskbar..."
 	Remove-ItemProperty -Path "HKCU:\Software\Microsoft\Windows\CurrentVersion\Explorer\Advanced" -Name "ShowSecondsInSystemClock" -ErrorAction SilentlyContinue
+
+	" Seconds hiden from taskabr `n" >> "windows_configuration.log"
 }
 
 # Set region to en-GB, but change time format to follow US e.g. 9:40 AM dd.mm.yy
@@ -2298,7 +2329,7 @@ Function SetExplorerThisPC {
 # Change default Explorer view to Home Folder (Default in 22H2)
 Function SetExplorerHomeFolder {
 	Write-Output "Changing default Explorer view to Home Folder..."
-	Remove-ItemProperty -Path "HKCU:\Software\Microsoft\Windows\CurrentVersion\Explorer\Advanced" -Name "LaunchTo" -ErrorAction SilentlyContinue
+	Set-ItemProperty -Path "HKCU:\Software\Microsoft\Windows\CurrentVersion\Explorer\Advanced" -Name "LaunchTo" -Type DWord -Value 2
 
 	" Open 'Home' in explorer `n" >> "windows_configuration.log"
 }
@@ -2371,6 +2402,26 @@ Function PinNetNavPane {
 	Set-ItemProperty -Path "HKCU:\Software\Classes\CLSID\{F02C1A0D-BE21-4350-88B0-7367FC96EF3C}" -Name "System.IsPinnedToNameSpaceTree" -Type DWord -Value 1
 
 	" Network location pinned to navigatio pane `n" >> "windows_configuration.log"
+}
+
+# Create temp folder in C:\ drive
+Function MkdirTemp {
+	Write-Output "Creating 'temp' folder in '$env:SystemDrive'..."
+	If(!(Test-Path "$env:SystemDrive\temp")) {
+		New-Item -Path "$env:SystemDrive\temp"
+	}
+
+	" temp folder created in C:\ drive `n" >> "windows_configuration.log"
+}
+
+# Create Dev folder in user profile folder
+Function MkdirDev {
+	Write-Output "Creating 'dev' folder in '$HOME'..."
+	If (!(Test-Path "$HOME\Dev")) {
+		New-Item -Path "$HOME\Dev" | Out-Null
+	}
+
+	" Dev folder created `n" >> "windows_configuration.log"
 }
 
 
