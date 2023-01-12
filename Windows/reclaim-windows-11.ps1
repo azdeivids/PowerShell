@@ -1150,7 +1150,62 @@ Function DisableControlledFolderAccess {
 	Write-Output "Disabling controlled folder access..."
 	Set-MpPreference -EnableControlledFolderAccess Disable
 
-	"Controlled Folder Access disabled `n" >> "windows_configuration.log"
+	" Controlled Folder Access disabled `n" >> "windows_configuration.log"
+}
+# Turn on real-time protection for MS defender
+Function TurnOnRealTimeProtection {
+	Write-Output "Turning on real time protection..."
+	Set-MpPreference -DisableRealtimeMonitoring $false
+
+	" Real-time monitoring enabled `n" >> "windows_configuration.log"
+}
+
+# Turn of real-time protection for MS defender
+Function TurnOffRealTimeProtection {
+	Write-Output "Real-time protection is being disabled..."
+	Set-MpPreference -DisableRealtimeMonitoring $true
+
+	" Real-time monitoring disabled `n" >> "windows_configuration.log"
+}
+
+# Enable tamper protection
+Function EnableTamperProtection {
+	Write-Output "Enabling tamper protection..."
+	Set-ItemProperty -Path "HKLM:\SOFTWARE\Microsoft\Windows Defender\Features" -Name "EnableTamperProtection" -Type DWord -Value 5
+
+	" Tamer protection enabled `n" >> "windows_configuration.log"
+}
+
+# Disable tamper protection
+Function DisableTamperProtection {
+	Write-Output "Disabling tamper protection..."
+	Set-ItemProperty -Path "HKLM:\SOFTWARE\Microsoft\Windows Defender\Features" -Name "EnableTamperProtection" -Type DWord -Value 0
+
+	" Tamer protection disabled `n" >> "windows_configuration.log"
+}
+
+# Enable SmartScreen Filter for MS Store apps
+Function EnableStoreAppSmartScreen {
+	Write-Output "Enabling smart screen protection for MS store apps..."
+	If (!(Test-Path "HKCU:\Software\Microsoft\Windows\CurrentVersion\AppHost")) {
+		New-Item -Path "HKCU:\Software\Microsoft\Windows\CurrentVersion\AppHost" | Out-Null
+	}
+	Set-ItemProperty -Path "HKCU:\Software\Microsoft\Windows\CurrentVersion\AppHost" -Name "EnableWebContentEvaluation" -Type DWord -Value 1
+	Set-ItemProperty -Path "HKCU:\Software\Microsoft\Windows\CurrentVersion\AppHost" -Name "PreventOverride" -Type DWord -Value 0
+
+	" Smart screen for MS store apps enabled `n" >> "windows_configuration.log"
+}
+
+# Disable SmartScreen Filter for MS Store apps
+Function DisableStoreAppSmartScreen {
+	Write-Output "Disabling smart screen protection for MS store apps..."
+	If (!(Test-Path "HKCU:\Software\Microsoft\Windows\CurrentVersion\AppHost")) {
+		New-Item -Path "HKCU:\Software\Microsoft\Windows\CurrentVersion\AppHost" | Out-Null
+	}
+	Set-ItemProperty -Path "HKCU:\Software\Microsoft\Windows\CurrentVersion\AppHost" -Name "EnableWebContentEvaluation" -Type DWord -Value 0
+	Set-ItemProperty -Path "HKCU:\Software\Microsoft\Windows\CurrentVersion\AppHost" -Name "PreventOverride" -Type DWord -Value 0
+
+	" Smart screen for MS store apps disabled `n" >> "windows_configuration.log"
 }
 
 # Disable SmartScreen Filter
