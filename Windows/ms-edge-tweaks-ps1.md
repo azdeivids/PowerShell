@@ -1,5 +1,0 @@
-- [ ] Enable/Disable StartUp Boost
-- [ ] Enable/Disable Tab Sleep
-- [ ] Set Tab Sleep timeout
-- [ ] Enable/Disable Efficienci mode
-- [ ] Exclude Sites from sleep
