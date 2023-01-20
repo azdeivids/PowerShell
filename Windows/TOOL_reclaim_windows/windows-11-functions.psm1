@@ -2742,6 +2742,10 @@ Function UninstallMsftBloat {
 	Get-AppxPackage "Clipchamp.Clipchamp" | Remove-AppxPackage
 }
 
+
+Write-Host "Script will resume in 5 minutes..."
+Start-Sleep -Seconds 300
+
 # Uninstall default third party applications
 function UninstallThirdPartyBloat {
 	Write-Output "Uninstalling default third party applications..."
@@ -2784,11 +2788,14 @@ function UninstallThirdPartyBloat {
 	Get-AppxPackage "Nordcurrent.CookingFever" | Remove-AppxPackage
 	Get-AppxPackage "PandoraMediaInc.29680B314EFC2" | Remove-AppxPackage
 	Get-AppxPackage "PricelinePartnerNetwork.Booking.comBigsavingsonhot" | Remove-AppxPackage
-	Get-AppxPackage "SpotifyAB.SpotifyMusic" | Remove-AppxPackage
+	# Get-AppxPackage "SpotifyAB.SpotifyMusic" | Remove-AppxPackage
 	Get-AppxPackage "ThumbmunkeysLtd.PhototasticCollage" | Remove-AppxPackage
 	Get-AppxPackage "WinZipComputing.WinZipUniversal" | Remove-AppxPackage
 	Get-AppxPackage "XINGAG.XING" | Remove-AppxPackage
 }
+
+Write-Host "Script will resume in 2 minutes..."
+Start-Sleep -Seconds 120
 
 # Disable Xbox features - Not applicable to Server
 Function DisableXboxFeatures {
@@ -3123,7 +3130,7 @@ Function UnpinTaskbarIcons {
 
 # Wait for key to be presses and proceed
 Function WaitForKey {
-	Write-Output "`nPress any key to continue..."
+	Write-Output "`nPress any key to restart..."
 	[Console]::ReadKey($true) | Out-Null
 }
 
