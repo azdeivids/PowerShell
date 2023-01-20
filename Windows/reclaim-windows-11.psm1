@@ -573,7 +573,7 @@ Function DisableOnlineSpeechRecognition {
 	If (!(Test-Path "HKCU:\Software\Microsoft\Speech_OneCore\Settings\OnlineSpeecLogging")) {
 		New-Item -Path "HKCU:\Software\Microsoft\Speech_OneCore\Setting\OnlineSpeechLogging"
 	}
-	Set-ItemProperty -Path "HKCU:\Software\Microsoft\Speech_OneCore\Settings\OnlineSpeecLogging" -Type DWord -Value 0
+	Set-ItemProperty -Path "HKCU:\Software\Microsoft\Speech_OneCore\Settings\OnlineSpeecLogging" -Name "LoggingAllowed" -Type DWord -Value 0
 	Remove-ItemProperty -Path "HKCU:\Software\Microsoft\Speech_OneCore\Settings\OnlineSpeechPrivacy" -Name "HasAccepted" -ErrorAction SilentlyContinue
 
 	" Online speech recognition disabled `n" >> "windows_configuration.log"
