@@ -31,7 +31,7 @@
      TurnOffAADSearch                                         # TurnOnAADSearch
      DisableCloudContentSearch                                # UserCloudContentSearch
      TurnOffSearchHighlights                                  # TurnOnSearchHighlights
-     DisableSearchHighlights                                   # EnableSearchHighlights                                   
+     DisableSearchHighlights                                  # EnableSearchHighlights                                   
      DisableAdsWin11                                          # EnableAdsWin11
      DisablePairingWithApps                                   # EnablePairingWithApps
      DisableDiagData                                          # EnableDiagData
@@ -50,7 +50,7 @@
     # SetUACLow                                                #  SetUACHigh
     # EnableSharingMappedDrives                                #  DisableSharingMappedDrives
     # DisableAdminShares                                       #  EnableAdminShares
-     EnableCIMemoryIntegrity                                  #  DisableCIMemoryIntegrity
+    # EnableCIMemoryIntegrity                                  #  DisableCIMemoryIntegrity
     # HideAccountProtectionWarn                                #  ShowAccountProtectionWarn
     # DisableScriptHost                                        #  EnableScriptHost
      EnableF8BootMenu                                         #  DisableF8BootMenu
@@ -109,15 +109,15 @@
      SetAppsDarkMode                                          #  SetAppsLightMode
      SetSystemDarkMode                                        #  SetSystemLightMode
      EnableNumlock                                            #  DisableNumlock
-     DisableEnhPointerPrecision                               #  EnableEnhPointerPrecision
-     MaxMouseSpeed                                            #  MediumMouseSpeed
+    # DisableEnhPointerPrecision                               #  EnableEnhPointerPrecision
+    # MaxMouseSpeed                                            #  MediumMouseSpeed
      EnableVerboseStatus                                      #  DisableVerboseStatus
-    # DisplayPreviousLogOn                                     #  HidePreviousLogOn
+     DisplayPreviousLogOn                                     #  HidePreviousLogOn
      DisableF1HelpKey                                         #  EnableF1HelpKey
      
      CenterAlignTaskbar                                       #  LeftAlignTaskbar
      HideTaskbarSearch                                        #  ShowTaskbarSearch
-    # HideTaskView                                             #  ShowTaskView
+    # ShowTaskView                                             #  HideTaskView
      SetTaskbarCombineAlways                                  # SetTaskbarCombineWhenFull       #  SetTaskbarCombineNever
      HideWidgetsIcon                                          # ShowWidgetsIcon
      HideTaskbarChatIcon                                      #  ShowTaskbarChatIcon
@@ -126,7 +126,7 @@
      
 ############################## Time & Region Tweaks ##################################
      
-     ShowSecondsOnTaskBar                                         #  HideSecondsFromTaskbar
+     ShowSecondsOnTaskBar                                     #  HideSecondsFromTaskbar
      SetRegionCustomGB                                        #  SetRegionDefaultGB
      
 ############################## Typing Tweaks ##########################################
@@ -144,15 +144,15 @@
      ShowEmptyDrives                                          #  HideEmptyDrives
     # ShowEncCompFilesColor                                    #  HideEncCompFilesColor
      HideRecentShortcuts                                      #  ShowRecentShortcuts
-     ShowBuildNumberOnDesktop                                 #  HideBuildNumberFromDesktop
+    # ShowBuildNumberOnDesktop                                 #  HideBuildNumberFromDesktop
      
      SetExplorerHomeFolder                                    #  SetExplorerThisPC
      HideDesktopIcons                                         #  ShowDesktopIcons
     # ShowCloudFiles                                           #  HideCloudFiles
      PinUserFolderNavPane                                     #  UnpinUserFolderNavPane
      HideNetNavPane                                           #  PinNetNavPane
-     MkdirTemp
-     MkdirDev
+    # MkdirTemp
+    # MkdirDev
      
 ############################## Application Tweaks ##########################################
      
@@ -184,8 +184,8 @@
      
 ############################## Additional Tweaks #######################################
      
-     UnpinStartMenuTiles
-     UnpinTaskbarIcons
+    # UnpinStartMenuTiles
+    # UnpinTaskbarIcons
      
 ############################## Aux Tweaks ##############################################
      
