@@ -2250,11 +2250,6 @@ Function ReduceWallpapper {
 	" Wallappper quality reduces `n" >> "windows_configuration.log"
 }
 
-<<<<<<< HEAD:Windows/reclaim-windows-11.psm1
-
-
-=======
->>>>>>> 66ec19428c34dafd8c61088bf0bfc9250a5bb51c:Windows/reclaim-windows-11.ps1
 ########################## Time & Region Settings ######################################
 
 # Show seconds in taskbar
