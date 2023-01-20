@@ -1,5 +1,5 @@
-$URI = "github_url"
-$FILE = ".\win11.ent.choco.yml"
+$URI = "https://raw.githubusercontent.com/azdeivids/PowerShell/main/examples/choco-install/ent_packages.config"
+$CONFIG = ".\packages.config"
 #Requires -RunAsAdministrator
 $run_local=$args[0]
 
@@ -10,11 +10,11 @@ if (!(Test-Path -Path "$env:ProgramData\Chocolatey")) {
 
 if ($run_local -eq "local") {
 # for each package in the list run install
-  Get-Content "C:\Users\degle\Dev\PowerShell\examples\choco-install\win11.ent.choco.yml" | ForEach-Object{($_ -split "\r\n")[0]} | ForEach-Object{choco install -y $_}
+  Get-Content $CONFIG | ForEach-Object{($_ -split "\r\n")[0]} | ForEach-Object{choco install -y $_}
 }
 else
 {
 # for each package in the list run install
 Write-Host "File not found!!!"  
-#(Invoke-webrequest -URI $URI).Content | ForEach-Object{($_ -split "\r\n")[0]} | ForEach-Object{choco install -y $_}
+(Invoke-webrequest -URI $URI).Content | ForEach-Object{($_ -split "\r\n")[0]} | ForEach-Object{choco install -y $_}
 }
