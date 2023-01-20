@@ -126,7 +126,7 @@
      
 ############################## Time & Region Tweaks ##################################
      
-     ShowSecOnTaskBar                                         #  HideSecondsFromTaskbar
+     ShowSecondsOnTaskBar                                         #  HideSecondsFromTaskbar
      SetRegionCustomGB                                        #  SetRegionDefaultGB
      
 ############################## Typing Tweaks ##########################################
