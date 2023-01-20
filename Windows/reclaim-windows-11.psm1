@@ -2250,28 +2250,28 @@ Function ReduceWallpapper {
 	" Wallappper quality reduces `n" >> "windows_configuration.log"
 }
 
+<<<<<<< HEAD:Windows/reclaim-windows-11.psm1
 
 
+=======
+>>>>>>> 66ec19428c34dafd8c61088bf0bfc9250a5bb51c:Windows/reclaim-windows-11.ps1
 ########################## Time & Region Settings ######################################
 
 # Show seconds in taskbar
-# Somehow does not work? Maybe due to regional settings? Tested with en-US region settings.
-Function ShowSecOnTaskBar {
-	Write-Output "Seconds added to the clock on taskbar..."
-	If (!(Test-Path "HKCU:\Software\Microsoft\Windows\CurrentVersion\Explorer\Advanced")) {
-		New-Item -Path "HKCU:\Software\Microsoft\Windows\CurrentVersion\Explorer\Advanced" | Out-Null
-	}
-	Set-ItemProperty -Path "HKCU:\Software\Microsoft\Windows\CurrentVersion\Explorer\Advanced" -Name "ShowSecondsInSystemClock" -Type DWord -Value 1
-
-	" Second count added to clock `n" >> "windows_configuration.log"
-}
-
 # Hide seconds from taskbar
 Function HideSecondsFromTaskbar {
 	Write-Output "Hiding seconds from taskbar..."
 	Remove-ItemProperty -Path "HKCU:\Software\Microsoft\Windows\CurrentVersion\Explorer\Advanced" -Name "ShowSecondsInSystemClock" -ErrorAction SilentlyContinue
 
 	" Seconds hiden from taskabr `n" >> "windows_configuration.log"
+}
+
+# Show seconds in taskbar
+Function ShowSecondsOnTaskbar {
+	Write-Output "Adding second counter to the system clock on the taskbar..."
+	Set-ItemProperty -Path "HKCU:\Software\Microsoft\Windows\CurrentVersion\Explorer\Advanced" -Name "ShowSecondsInSystemClock" -Type DWord -Value 1
+
+	" Second count added to clock `n" >> "windows_configuration.log"
 }
 
 # Set region to en-GB, but change time format to follow US e.g. 9:40 AM dd.mm.yy
