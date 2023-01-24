@@ -5,7 +5,6 @@
 #######################################################################################################
 
 
-"################################### Start of the windows configuration log ################################### `n" >> "windows_configuration.log"
 
 # Disable Telemetry
 # Note: This tweak also disables the possibility to join Windows Insider Program and breaks Microsoft Intune enrollment/deployment, as these feaures require Telemetry data.
@@ -56,8 +55,6 @@ Function DisableTelemetry {
 	Disable-ScheduledTask -TaskName "Microsoft\Office\Office ClickToRun Service Monitor" -ErrorAction SilentlyContinue | Out-Null
 	Disable-ScheduledTask -TaskName "Microsoft\Office\OfficeTelemetryAgentFallBack2016" -ErrorAction SilentlyContinue | Out-Null
 	Disable-ScheduledTask -TaskName "Microsoft\Office\OfficeTelemetryAgentLogOn2016" -ErrorAction SilentlyContinue | Out-Null
-
-	" Telemetry disabled `n" >> "windows_configuration.log"
 }
 
 # Enable Telemetry
@@ -84,8 +81,6 @@ Function EnableTelemetry {
 	Enable-ScheduledTask -TaskName "Microsoft\Office\Office ClickToRun Service Monitor" -ErrorAction SilentlyContinue | Out-Null
 	Enable-ScheduledTask -TaskName "Microsoft\Office\OfficeTelemetryAgentFallBack2016" -ErrorAction SilentlyContinue | Out-Null
 	Enable-ScheduledTask -TaskName "Microsoft\Office\OfficeTelemetryAgentLogOn2016" -ErrorAction SilentlyContinue | Out-Null
-
-	" Telemetry enabled `n" >> "windows_configuration.log"
 }
 
 # Disable Cortana
@@ -112,8 +107,6 @@ Function DisableCortana {
 	}
 	Set-ItemProperty -Path "HKLM:\SOFTWARE\Policies\Microsoft\InputPersonalization" -Name "AllowInputPersonalization" -Type DWord -Value 0
 	Get-AppxPackage "Microsoft.549981C3F5F10" | Remove-AppxPackage
-
-	" Cortana disabled `n" >> "windows_configuration.log"
 }
 
 # Enable Cortana
@@ -128,8 +121,6 @@ Function EnableCortana {
 	Remove-ItemProperty -Path "HKLM:\SOFTWARE\Policies\Microsoft\Windows\Windows Search" -Name "AllowCortana" -ErrorAction SilentlyContinue
 	Remove-ItemProperty -Path "HKLM:\SOFTWARE\Policies\Microsoft\InputPersonalization" -Name "AllowInputPersonalization" -ErrorAction SilentlyContinue
 	Get-AppxPackage -AllUsers "Microsoft.549981C3F5F10" | ForEach-Object {Add-AppxPackage -DisableDevelopmentMode -Register "$($_.InstallLocation)\AppXManifest.xml"}
-
-	" Cortana enabled `n" >> "windows_configuration.log"
 }
 
 # Disable Wi-Fi Sense
@@ -148,8 +139,6 @@ Function DisableWiFiSense {
 	}
 	Set-ItemProperty -Path "HKLM:\SOFTWARE\Microsoft\WcmSvc\wifinetworkmanager\config" -Name "AutoConnectAllowedOEM" -Type DWord -Value 0
 	Set-ItemProperty -Path "HKLM:\SOFTWARE\Microsoft\WcmSvc\wifinetworkmanager\config" -Name "WiFISenseAllowed" -Type DWord -Value 0
-
-	" WiFi Sense disabled `n" >> "windows_configuration.log"
 }
 
 # Enable Wi-Fi Sense
@@ -165,8 +154,6 @@ Function EnableWiFiSense {
 	Set-ItemProperty -Path "HKLM:\SOFTWARE\Microsoft\PolicyManager\default\WiFi\AllowAutoConnectToWiFiSenseHotspots" -Name "Value" -Type DWord -Value 1
 	Remove-ItemProperty -Path "HKLM:\SOFTWARE\Microsoft\WcmSvc\wifinetworkmanager\config" -Name "AutoConnectAllowedOEM" -ErrorAction SilentlyContinue
 	Remove-ItemProperty -Path "HKLM:\SOFTWARE\Microsoft\WcmSvc\wifinetworkmanager\config" -Name "WiFISenseAllowed" -ErrorAction SilentlyContinue
-
-	" WiFi Sense enabled `n" >> "windows_configuration.log"
 }
 
 # Disable Web Search in Start Menu
@@ -178,8 +165,6 @@ Function DisableWebSearch {
 		New-Item -Path "HKLM:\SOFTWARE\Policies\Microsoft\Windows\Windows Search" -Force | Out-Null
 	}
 	Set-ItemProperty -Path "HKLM:\SOFTWARE\Policies\Microsoft\Windows\Windows Search" -Name "DisableWebSearch" -Type DWord -Value 1
-
-	" Start menu web search disabled `n" >> "windows_configuration.log"
 }
 
 # Enable Web Search in Start Menu
@@ -188,8 +173,6 @@ Function EnableWebSearch {
 	Remove-ItemProperty -Path "HKCU:\Software\Microsoft\Windows\CurrentVersion\Search" -Name "BingSearchEnabled" -ErrorAction SilentlyContinue
 	Set-ItemProperty -Path "HKCU:\Software\Microsoft\Windows\CurrentVersion\Search" -Name "CortanaConsent" -Type DWord -Value 1
 	Remove-ItemProperty -Path "HKLM:\SOFTWARE\Policies\Microsoft\Windows\Windows Search" -Name "DisableWebSearch" -ErrorAction SilentlyContinue
-
-	"Start menu web search enabled `n" >> "windows_configuration.log"
 }
 
 # Disable Application suggestions and automatic installation
@@ -224,8 +207,6 @@ Function DisableAppSuggestions {
 		Set-ItemProperty -Path $key.PSPath -Name "Data" -Type Binary -Value $key.Data[0..15]
 		Stop-Process -Name "ShellExperienceHost" -Force -ErrorAction SilentlyContinue
 	}
-
-	" App suggestions disabled `n" >> "windows_configuration.log"
 }
 
 # Enable Application suggestions and automatic installation
@@ -248,8 +229,6 @@ Function EnableAppSuggestions {
 	Remove-ItemProperty -Path "HKCU:\Software\Microsoft\Windows\CurrentVersion\ContentDeliveryManager" -Name "SubscribedContent-353698Enabled" -ErrorAction SilentlyContinue
 	Remove-ItemProperty -Path "HKCU:\Software\Microsoft\Windows\CurrentVersion\UserProfileEngagement" -Name "ScoobeSystemSettingEnabled" -ErrorAction SilentlyContinue
 	Remove-ItemProperty -Path "HKLM:\SOFTWARE\Policies\Microsoft\WindowsInkWorkspace" -Name "AllowSuggestedAppsInWindowsInkWorkspace" -ErrorAction SilentlyContinue
-
-	" App suggestions enabled `n" >> "windows_configuration.log"
 }
 
 # Disable Activity History feed in Task View
@@ -259,8 +238,6 @@ Function DisableActivityHistory {
 	Set-ItemProperty -Path "HKLM:\SOFTWARE\Policies\Microsoft\Windows\System" -Name "EnableActivityFeed" -Type DWord -Value 0
 	Set-ItemProperty -Path "HKLM:\SOFTWARE\Policies\Microsoft\Windows\System" -Name "PublishUserActivities" -Type DWord -Value 0
 	Set-ItemProperty -Path "HKLM:\SOFTWARE\Policies\Microsoft\Windows\System" -Name "UploadUserActivities" -Type DWord -Value 0
-
-	" Activity history disabled `n" >> "windows_configuration.log"
 }
 
 # Enable Activity History feed in Task View
@@ -269,8 +246,6 @@ Function EnableActivityHistory {
 	Remove-ItemProperty -Path "HKLM:\SOFTWARE\Policies\Microsoft\Windows\System" -Name "EnableActivityFeed" -ErrorAction SilentlyContinue
 	Remove-ItemProperty -Path "HKLM:\SOFTWARE\Policies\Microsoft\Windows\System" -Name "PublishUserActivities" -ErrorAction SilentlyContinue
 	Remove-ItemProperty -Path "HKLM:\SOFTWARE\Policies\Microsoft\Windows\System" -Name "UploadUserActivities" -ErrorAction SilentlyContinue
-
-	" Activity History enabled `n" >> "windows_configuration.log"
 }
 
 # Disable sensor features (Screen rotation)
@@ -280,16 +255,12 @@ Function DisableSensors {
 		New-Item -Path "HKLM:\SOFTWARE\Policies\Microsoft\Windows\LocationAndSensors" -Force | Out-Null
 	}
 	Set-ItemProperty -Path "HKLM:\SOFTWARE\Policies\Microsoft\Windows\LocationAndSensors" -Name "DisableSensors" -Type DWord -Value 1
-
-	" Sensor features disabled `n" >> "windows_configuration.log"
 }
 
 # Enable sensor features (Screen rotation)
 Function EnableSensors {
 	Write-Output "Enabling sensors..."
 	Remove-ItemProperty -Path "HKLM:\SOFTWARE\Policies\Microsoft\Windows\LocationAndSensors" -Name "DisableSensors" -ErrorAction SilentlyContinue
-
-	" Sensor features enabled `n" >> "windows_configuration.log"
 }
 
 # Disable location feature and scripting for the location feature
@@ -300,8 +271,6 @@ Function DisableLocation {
 	}
 	Set-ItemProperty -Path "HKLM:\SOFTWARE\Policies\Microsoft\Windows\LocationAndSensors" -Name "DisableLocation" -Type DWord -Value 1
 	Set-ItemProperty -Path "HKLM:\SOFTWARE\Policies\Microsoft\Windows\LocationAndSensors" -Name "DisableLocationScripting" -Type DWord -Value 1
-
-	" Location features disbaled `n" >> "windows_configuration.log"
 }
 
 # Enable location feature and scripting for the location feature
@@ -309,8 +278,6 @@ Function EnableLocation {
 	Write-Output "Enabling location services..."
 	Remove-ItemProperty -Path "HKLM:\SOFTWARE\Policies\Microsoft\Windows\LocationAndSensors" -Name "DisableLocation" -ErrorAction SilentlyContinue
 	Remove-ItemProperty -Path "HKLM:\SOFTWARE\Policies\Microsoft\Windows\LocationAndSensors" -Name "DisableLocationScripting" -ErrorAction SilentlyContinue
-
-	" Location features enabled `n" >> "windows_configuration.log"
 }
 
 # Disable Feedback
@@ -323,8 +290,6 @@ Function DisableFeedback {
 	Set-ItemProperty -Path "HKLM:\SOFTWARE\Policies\Microsoft\Windows\DataCollection" -Name "DoNotShowFeedbackNotifications" -Type DWord -Value 1
 	Disable-ScheduledTask -TaskName "Microsoft\Windows\Feedback\Siuf\DmClient" -ErrorAction SilentlyContinue | Out-Null
 	Disable-ScheduledTask -TaskName "Microsoft\Windows\Feedback\Siuf\DmClientOnScenarioDownload" -ErrorAction SilentlyContinue | Out-Null
-
-	" Feedback disabled `n" >> "windows_configuration.log"
 }
 
 # Enable Feedback
@@ -334,8 +299,6 @@ Function EnableFeedback {
 	Remove-ItemProperty -Path "HKLM:\SOFTWARE\Policies\Microsoft\Windows\DataCollection" -Name "DoNotShowFeedbackNotifications" -ErrorAction SilentlyContinue
 	Enable-ScheduledTask -TaskName "Microsoft\Windows\Feedback\Siuf\DmClient" -ErrorAction SilentlyContinue | Out-Null
 	Enable-ScheduledTask -TaskName "Microsoft\Windows\Feedback\Siuf\DmClientOnScenarioDownload" -ErrorAction SilentlyContinue | Out-Null
-
-	" Feedback enbaled `n" >> "windows_configuration.log"
 }
 
 # Disable Tailored Experiences
@@ -1863,8 +1826,7 @@ Function HideMostUsedApps {
 		New-Item -Path "HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\Policies\Explorer" | Out-Null
 	}
 	Set-ItemProperty -Path "HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\Policies\Explorer" -Name "NoStartMenuMFUprogramsList" -Type DWord -Value 1
-
-	" Most used apps setting disabled (Hidden) `n" >> "windows_configuration.log"
+	Set-ItemProperty -Path "HKLM:\SOFTWARE\Policies\Microsoft\Windows\Explorer" -Name "ShowOrHideMostUsedApps" -Type DWord -Value 2
 }
 
 # Show show most used apps in start menu (Disable setting)
