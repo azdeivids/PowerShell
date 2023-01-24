@@ -26,7 +26,7 @@
      SafeSearchDisabled                                       # SafeSearchModerate             # SafeSearchStrict
      DeviceLocalSearchDisabled                                # DeviceLocalSearchEnabled
      DisableOnlineSpeechRecognition                           # EnableOnlineSpeechRecognition
-    # EnableTIPC                                               # DisableTIPC
+     DisableTIPC                                              # EnableTIPC
      TurnOffMSASearch                                         # TurnOnMSASearch
      TurnOffAADSearch                                         # TurnOnAADSearch
      DisableCloudContentSearch                                # UserCloudContentSearch
@@ -42,7 +42,7 @@
      EnableTabSleep                                           #  DefaultTabSleep
      EdgeTabSleepTimeout15                                    #  EdgeTabSleepTimeoutDefualt
     # EnableEdgeEfficiencyMode                                 #  DefaultEdgeEfficiencyMode
-    # EdgeExcludeSitesFromSleep                                #  EdgeRemoveExcludedSitesFromSleep
+     EdgeExcludeSitesFromSleep                                #  EdgeRemoveExcludedSitesFromSleep
      EnableAskBeforeCloseEdge                                 #  DefaultAskBeforeCloseEdge
      
 ############################### Security Tweaks #####################################
@@ -61,9 +61,9 @@
     # EnableControlledFolderAccess                             #  DisableControlledFolderAccess
      TurnOnRealTimeProtection                                 #  TurnOffRealTimeProtection
      EnableTamperProtection                                   #  DisableTamperProtection
-    # EnableStoreAppSmartScreen                                #  DisableStoreAppSmartScreen
+     EnableStoreAppSmartScreen                                #  DisableStoreAppSmartScreen
     # DisableSmartScreen                                       #  EnableSmartScreen
-     EnableLockAcc                                            #  DisableLockAcc
+    # EnableLockAcc                                            #  DisableLockAcc
      
 ############################### Network Tweaks ######################################
      
@@ -98,7 +98,7 @@
      
 ############################## UI Tweaks ###########################################
      
-     SetVisualFXPerformance                                   #  SetVisualFXAppearance
+     SetVisualFXAppearance                                    #  SetVisualFXPerformance
     # HideNetworkFromLockScreen                                #  ShowNetworkOnLockScreen
     # HideShutdownFromLockScreen                               #  ShowShutdownOnLockScreen
      DisableLockScreenBlur                                    #  EnableLockScreenBlur
@@ -110,7 +110,7 @@
      SetSystemDarkMode                                        #  SetSystemLightMode
      EnableNumlock                                            #  DisableNumlock
     # DisableEnhPointerPrecision                               #  EnableEnhPointerPrecision
-    # MaxMouseSpeed                                            #  MediumMouseSpeed
+     MaxMouseSpeed                                            #  MediumMouseSpeed
      EnableVerboseStatus                                      #  DisableVerboseStatus
      DisplayPreviousLogOn                                     #  HidePreviousLogOn
      DisableF1HelpKey                                         #  EnableF1HelpKey
