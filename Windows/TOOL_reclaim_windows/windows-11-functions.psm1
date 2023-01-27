@@ -55,6 +55,10 @@ Function DisableTelemetry {
 	Disable-ScheduledTask -TaskName "Microsoft\Office\Office ClickToRun Service Monitor" -ErrorAction SilentlyContinue | Out-Null
 	Disable-ScheduledTask -TaskName "Microsoft\Office\OfficeTelemetryAgentFallBack2016" -ErrorAction SilentlyContinue | Out-Null
 	Disable-ScheduledTask -TaskName "Microsoft\Office\OfficeTelemetryAgentLogOn2016" -ErrorAction SilentlyContinue | Out-Null
+	New-ItemProperty -Path "HKCU:\SOFTWARE\Policies\Microsoft\Office\15.0\osm" -Name Enablelogging -Type DWord -Value 0 -Force
+	New-ItemProperty -Path "HKCU:\SOFTWARE\Policies\Microsoft\Office\15.0\osm" -Name EnableUpload -Type DWord -Value 0 -Force
+	New-ItemProperty -Path "HKCU:\SOFTWARE\Policies\Microsoft\Office\16.0\osm" -Name Enablelogging -Type DWord -Value 0 -Force
+	New-ItemProperty -Path "HKCU:\SOFTWARE\Policies\Microsoft\Office\16.0\osm" -Name EnableUpload -Type DWord -Value 0 -Force
 }
 
 # Enable Telemetry
@@ -81,6 +85,10 @@ Function EnableTelemetry {
 	Enable-ScheduledTask -TaskName "Microsoft\Office\Office ClickToRun Service Monitor" -ErrorAction SilentlyContinue | Out-Null
 	Enable-ScheduledTask -TaskName "Microsoft\Office\OfficeTelemetryAgentFallBack2016" -ErrorAction SilentlyContinue | Out-Null
 	Enable-ScheduledTask -TaskName "Microsoft\Office\OfficeTelemetryAgentLogOn2016" -ErrorAction SilentlyContinue | Out-Null
+	Remove-ItemProperty -Path "HKCU:\SOFTWARE\Policies\Microsoft\Office\15.0\osm" -Name Enablelogging -ErrorAction SilentlyContinue
+	Remove-ItemProperty -Path "HKCU:\SOFTWARE\Policies\Microsoft\Office\15.0\osm" -Name EnableUpload -ErrorAction SilentlyContinue
+	Remove-ItemProperty -Path "HKCU:\SOFTWARE\Policies\Microsoft\Office\16.0\osm" -Name Enablelogging -ErrorAction SilentlyContinue
+	Remove-ItemProperty -Path "HKCU:\SOFTWARE\Policies\Microsoft\Office\16.0\osm" -Name EnableUpload -ErrorAction SilentlyContinue
 }
 
 # Disable Cortana
@@ -756,11 +764,28 @@ Function EnableDiagData {
 	" Diagnostic data enabled `n" >> "windows_configuration.log"
 }
 
+# Disable Wireless Application Protocol (WAP)
+# Push message Routing Service. This service helps to collect and send user data to Microsoft.
+Function DisableWAP {
+	Write-Output "Disablin Wireless Application Protocol (WAP) used for telemetry..."
+	Stop-Service "dmwappushservice" -WarningAction SilentlyContinue
+	Set-Service "dmwappushservice" -StartupType Disabled
+
+	" WAP Service has been disabled `n" >> "windows_configuration.log"
+}
+
+# Enable Wireless Application Protocol (WAP)
+Function EnableWAP {
+	Write-Output "Disablin Wireless Application Protocol (WAP) used for telemetry..."
+	Set-Service "dmwappushservice" -StartupType Automatic
+
+	" WAP Service has been enabled `n" >> "windows_configuration.log"
+}
 
 
 #######################################################################################################
 #
-# 		Microsoft Edge Tweaks
+# 		Web Browser Tweaks
 #
 #######################################################################################################
 
@@ -889,6 +914,53 @@ Function DefaultAskBeforeCloseEdge {
     Remove-ItemProperty -Path "HKLM:\SOFTWARE\Policies\Microsoft\Edge" -Name "AskBeforeCloseEnabled" -ErrorAction SilentlyContinue
 
     " MS Edge 'Ask before close' default choice `n" >> "windows_configuration.log"
+}
+
+######################################### Google Chrome Tweaks ############################################
+
+# Disable google reporter tool
+# This scans user system for malicious files and removes them 
+# This will disable the software_reporter_tool.exe with registry and shouldn't be re-enabled with google update
+Function DisableGoogleSoftwareTool {
+	Write-Output "Disabling google software_reporter_tool.exe used for scanning harmful software..."
+	New-ItemProperty -Path "HKLM:\SOFTWARE\Policies\Google\Chrome" -Name ChromeCleanupEnabled -Type String -Value 0 -Force
+	New-ItemProperty -Path "HKLM:\SOFTWARE\Policies\Google\Chrome" -Name ChromeCleanupReportingEnabled -Type String -Value 0 -Force
+	New-ItemProperty -Path "HKLM:\SOFTWARE\Policies\Google\Chrome" -Name MetricsReportingEnabled -Type String -Value 0 -Force
+	If (!(Test-Path "HKLM:\SOFTWARE\Microsoft\Windows NT\CurrentVersion\Image File Execution Options\software_reporter_tool.exe")) {
+		New-Item -Path "HKLM:\SOFTWARE\Microsoft\Windows NT\CurrentVersion\Image File Execution Options\software_reporter_tool.exe" -Force | Out-Null
+	}
+	Set-ItemProperty -Path "HKLM:\SOFTWARE\Microsoft\Windows NT\CurrentVersion\Image File Execution Options\software_reporter_tool.exe" -Name "Debugger" -Type String -Value %windir%\System32\taskkill.exe -Force
+
+	" Google software_reporter_tool.exe disabled `n" >> "windows_configuration.log"
+}
+
+# Enable google reporter tool
+Function EnableGoogleSoftwareTool {
+	Write-Output "Enbaling google software_reporter_tool.exe used for scanning harmful software..."
+	Remove-ItemProperty -Path "HKLM:\SOFTWARE\Policies\Google\Chrome" -Name ChromeCleanupEnabled -ErrorAction SilentlyContinue
+	Remove-ItemProperty -Path "HKLM:\SOFTWARE\Policies\Google\Chrome" -Name ChromeCleanupReportingEnabled -ErrorAction SilentlyContinue
+	Remove-ItemProperty -Path "HKLM:\SOFTWARE\Policies\Google\Chrome" -Name MetricsReportingEnabled -ErrorAction SilentlyContinue
+	Remove-ItemProperty -Path "HKLM:\SOFTWARE\Microsoft\Windows NT\CurrentVersion\Image File Execution Options\software_reporter_tool.exe" -Name "Debugger" -ErrorAction SilentlyContinue
+
+	" Goolge software_reporter_tool.exe enbaled `n" >> "windows_configuration.log"
+}
+
+# Disable Firefox telemetry
+Function DisableFirefoxTelemetry {
+	Write-Output "Disabling Firefox default-browser-agent.exe from sending user telemetry..."
+	New-ItemProperty -Path "HKLM:\SOFTWARE\Policies\Mozilla\Firefox" -Name DisableTelemetry -Type DWord -Value 1 -Force
+	New-ItemProperty -Path "HKLM:\SOFTWARE\Policies\Mozilla\Firefox" -Name DisableDefaultBrowserAgent -Type DWord -Value 1 -Force
+
+	" Firefox default-browser-agent.exe disabled `n" >> "windows_configuration.log"
+}
+
+# Enable Firefox telemetry 
+Function EnableFirefoxTelemetry {
+	Write-Output "Enabling Firefox defualt-browser-agent.exe tool..."
+	Remove-ItemProperty -Path "HKLM:\SOFTWARE\Policies\Mozilla\Firefox" -Name DisableTelemetry -ErrorAction SilentlyContinue
+	Remove-ItemProperty -Path "HKLM:\SOFTWARE\Policies\Mozilla\Firefox" -Name DisableDefaultBrowserAgent -ErrorAction SilentlyContinue
+
+	" Firefox default-browser-agent.exe enbaled `n" >> "windows_configuration.log"
 }
 
 
@@ -1211,6 +1283,23 @@ Function DisableLockAcc {
 	" Inactivity timeout removed not set `n" >> "windows_configuration.log"
 }
 
+# Disable Remote Registry Service
+# This allows for remote registry configuration, however, the local user account won't be affected
+Function DisableRemoteRegistry {
+	Write-Output "Disabling Remote Registry service..."
+	Stop-Service "Remote Registry" -WarningAction SilentlyContinue
+	Set-Service "Remote Registry" -StartupType Disabled
+
+	" Remote registry configuration disabled `n" >> "windows_configuration.log"
+}
+
+# Enable Remote Registry Service
+Function EnableRemoteRegistry {
+	Write-Output "Disabling Remote Registry service..."
+	Set-Service "Remote Registry" -StartupType Automatic
+
+	" Remote registry configuration enabled `n" >> "windows_configuration.log"
+}
 
 
 
@@ -1381,6 +1470,24 @@ Function EnableSharedExperiaces {
 	Remove-ItemProperty -Path "HKLM:\SOFTWARE\Policies\Microsoft\Windows\System" -Name "EnableCdp" -ErrorAction SilentlyContinue
 
 	" Shared experiances enabled `n" >> "windows_configuration.log"
+}
+
+# Disable Windows Network Usage Monitor service
+Function DisableNetworkUsageMonitor {
+	Write-Output "Disabling Network Data Usage Monitor (ndu) service..."
+	Stop-Service "ndu" -WarningAction SilentlyContinue
+	Set-Service "ndu" -StartupType Disabled
+
+	" Network usage monitor disabled `n" >> "windows_configuration.log"
+}
+
+# Enable network usage monitor
+Function EnableNetworkUsageMonitor {
+	Write-Output "Enable Network Data Usage Monitor (ndu) service..."
+	Start-Service "ndu" -WarningAction SilentlyContinue
+	Set-Service "ndu" -StartupType Automatic
+
+	" Network usage monitor enabled `n" >> "windows_configuration.log"
 }
 
 
@@ -1708,6 +1815,26 @@ Function EnablePowerThrottling {
 
 	" Power throttling has been enbaled `n" >> "windows_configuration.log"
 }
+
+# Disable ActiveX installer (AxInstSV) 
+# This service is used to connect windows with IoT devices such as Smart TV's, light bulbs etc.
+Function DisableIoTConnectivity {
+	Write-Output "Disabling ActiveX Installer (AxInstSV) service for IoT devices..."
+	Stop-Service "AxInstSV" -WarningAction SilentlyContinue
+	Set-Service "AxInstSV" -StartupType Disabled
+
+	" ActiveX service disabled `n" >> "windows_configuration.log"
+}
+
+# Enable ActiveX Installer service
+Function EnableIoTConnectivity {
+	Write-Output "Enabling ActiveX Installer service..."
+	Set-Service "DiagTrack" -StartupType Automatic
+
+	" ActiveX service enabled `n" >> "windows_configuration.log"
+} 
+
+
 
 
 #######################################################################################################
@@ -2791,6 +2918,12 @@ Function DisableXboxFeatures {
 		New-Item -Path "HKLM:\SOFTWARE\Policies\Microsoft\Windows\GameDVR" | Out-Null
 	}
 	Set-ItemProperty -Path "HKLM:\SOFTWARE\Policies\Microsoft\Windows\GameDVR" -Name "AllowGameDVR" -Type DWord -Value 0
+	Stop-Service "XboxNetApiSvc" -WarningAction SilentlyContinue
+	Set-Service "XboxNetApiSvc" -StartupType Disabled
+	Stop-Service "XblGameSave" -WarningAction SilentlyContinue
+	Set-Service "XblGameSave" -StartupType Disabled
+	Stop-Service "XblAuthManager" -WarningAction SilentlyContinue
+	Set-Service "XblAuthManager" -StartupType Disabled
 
 	" Xbox features disbaled `n" >> "windows_configuration.log"
 }
@@ -2810,6 +2943,9 @@ Function EnableXboxFeatures {
 	Set-ItemProperty -Path "HKCU:\System\GameConfigStore" -Name "GameDVR_FSEBehaviorMode" -Type DWord -Value 0
 	Set-ItemProperty -Path "HKLM:\SOFTWARE\Microsoft\PolicyManager\default\ApplicationManagement\AllowGameDVR" -Name "value" -Type DWord -Value 1
 	Remove-ItemProperty -Path "HKLM:\SOFTWARE\Policies\Microsoft\Windows\GameDVR" -Name "AllowGameDVR" -ErrorAction SilentlyContinue
+	Set-Service "XboxNetApiSvc" -StartupType Automatic
+	Set-Service "XblGameSave" -StartupType Automatic
+	Set-Service "XblAuthManager" -StartupType Automatic
 
 	" Xbox features enabled `n" >> "windows_configuration.log"
 }
@@ -2907,16 +3043,19 @@ Function InstallXPSPrinter {
 
 # Remove Default Fax Printer
 Function RemoveFaxPrinter {
-	Write-Output "Removing Default Fax Printer..."
+	Write-Output "Removing Default Fax Printer and disabling service..."
 	Remove-Printer -Name "Fax" -ErrorAction SilentlyContinue
+	Stop-Service "fxssvc.exe" -WarningAction SilentlyContinue
+	Set-Service "fxssvc.exe" -StartupType Disabled
 
 	" Fax printer removed `n" >> "windows_configuration.log"
 }
 
 # Add Default Fax Printer
 Function AddFaxPrinter {
-	Write-Output "Adding Default Fax Printer..."
+	Write-Output "Adding Default Fax Printer adn re-enabling service..."
 	Add-Printer -Name "Fax" -DriverName "Microsoft Shared Fax Driver" -PortName "SHRFAX:" -ErrorAction SilentlyContinue
+	Set-Service "fxssvc.exe" -StartupType Automatic
 
 	" Fax printer added `n" >> "windows_configuration.log"
 }

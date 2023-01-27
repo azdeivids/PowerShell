@@ -35,8 +35,9 @@
      DisableAdsWin11                                          # EnableAdsWin11
      DisablePairingWithApps                                   # EnablePairingWithApps
      DisableDiagData                                          # EnableDiagData
+     DisableWAP                                               # EnableWAP
      
-############################### MS Edge Tweaks ####################################
+############################### Web Browser Tweaks ####################################
      
      EnableEdgeStartUpBoost                                   #  DisableEdgeStarUpBoost        # DefaultEdgeStartUpBoost
      EnableTabSleep                                           #  DefaultTabSleep
@@ -44,6 +45,8 @@
     # EnableEdgeEfficiencyMode                                 #  DefaultEdgeEfficiencyMode
      EdgeExcludeSitesFromSleep                                #  EdgeRemoveExcludedSitesFromSleep
      EnableAskBeforeCloseEdge                                 #  DefaultAskBeforeCloseEdge
+     DisableGoogleSoftwareTool                                # EnableGoogleSoftwareTool
+     DisableFirefoxTelemetry                                  # EnableFirefoxTelemetry
      
 ############################### Security Tweaks #####################################
      
@@ -64,6 +67,7 @@
      EnableStoreAppSmartScreen                                #  DisableStoreAppSmartScreen
     # DisableSmartScreen                                       #  EnableSmartScreen
     # EnableLockAcc                                            #  DisableLockAcc
+     DisableRemoteRegistry                                     # EnableRemoteRegistry
      
 ############################### Network Tweaks ######################################
      
@@ -76,6 +80,7 @@
      EnableRemoteDesktop                                      #  DisableRemoteDesktop
      EnableConnectionSharing                                  #  DisableConnectionSharing 
      DisableSharedExperiance                                  #  EnableSharedExperiaces
+     DisableNetworkUsageMonitor                               # EnableNetworkUsageMonitor
      
 ############################## Windows Service Tweaks ###############################
      
@@ -96,6 +101,7 @@
      EnableDynamicLock                                        #  DisableDynamicLock
      DisableProjectingToPC                                    #  EnableProjectingToPC
      DisbalePowerThrottling                                   # EnablePowerThrottling
+     DisableIoTConnectivity                                   # EnableIoTConnectivity
 
 ############################## UI Tweaks ###########################################
      
