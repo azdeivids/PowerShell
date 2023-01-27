@@ -38,149 +38,150 @@
      
 ############################### MS Edge Tweaks ####################################
      
-     EnableEdgeStartUpBoost                                   #  DisableEdgeStarUpBoost        # DefaultEdgeStartUpBoost
-     EnableTabSleep                                           #  DefaultTabSleep
-     EdgeTabSleepTimeout15                                    #  EdgeTabSleepTimeoutDefualt
-    # EnableEdgeEfficiencyMode                                 #  DefaultEdgeEfficiencyMode
-     EdgeExcludeSitesFromSleep                                #  EdgeRemoveExcludedSitesFromSleep
-     EnableAskBeforeCloseEdge                                 #  DefaultAskBeforeCloseEdge
+     EnableEdgeStartUpBoost                                   # DisableEdgeStarUpBoost        # DefaultEdgeStartUpBoost
+     EnableTabSleep                                           # DefaultTabSleep
+     EdgeTabSleepTimeout15                                    # EdgeTabSleepTimeoutDefualt
+    # EnableEdgeEfficiencyMode                                 # DefaultEdgeEfficiencyMode
+     EdgeExcludeSitesFromSleep                                # EdgeRemoveExcludedSitesFromSleep
+     EnableAskBeforeCloseEdge                                 # DefaultAskBeforeCloseEdge
      
 ############################### Security Tweaks #####################################
      
-    # SetUACLow                                                #  SetUACHigh
-    # EnableSharingMappedDrives                                #  DisableSharingMappedDrives
-    # DisableAdminShares                                       #  EnableAdminShares
-    # EnableCIMemoryIntegrity                                  #  DisableCIMemoryIntegrity
-    # HideAccountProtectionWarn                                #  ShowAccountProtectionWarn
-    # DisableScriptHost                                        #  EnableScriptHost
-     EnableF8BootMenu                                         #  DisableF8BootMenu
-    # DisableRecoveryAndReset                                  #  EnableRecoveryAndReset
+    # SetUACLow                                                # SetUACHigh
+    # EnableSharingMappedDrives                                # DisableSharingMappedDrives
+    # DisableAdminShares                                       # EnableAdminShares
+    # EnableCIMemoryIntegrity                                  # DisableCIMemoryIntegrity
+    # HideAccountProtectionWarn                                # ShowAccountProtectionWarn
+    # DisableScriptHost                                        # EnableScriptHost
+     EnableF8BootMenu                                         # DisableF8BootMenu
+    # DisableRecoveryAndReset                                  # EnableRecoveryAndReset
      
-    # DisableSAC                                               #  EnableSAC
-     EnableLSA                                                #  DisableLSA                     # EnableLSAWithUEFI
-    # EnableControlledFolderAccess                             #  DisableControlledFolderAccess
-     TurnOnRealTimeProtection                                 #  TurnOffRealTimeProtection
-     EnableTamperProtection                                   #  DisableTamperProtection
-     EnableStoreAppSmartScreen                                #  DisableStoreAppSmartScreen
-    # DisableSmartScreen                                       #  EnableSmartScreen
-    # EnableLockAcc                                            #  DisableLockAcc
+    # DisableSAC                                               # EnableSAC
+     EnableLSA                                                # DisableLSA                     # EnableLSAWithUEFI
+    # EnableControlledFolderAccess                             # DisableControlledFolderAccess
+     TurnOnRealTimeProtection                                 # TurnOffRealTimeProtection
+     EnableTamperProtection                                   # DisableTamperProtection
+     EnableStoreAppSmartScreen                                # DisableStoreAppSmartScreen
+    # DisableSmartScreen                                       # EnableSmartScreen
+    # EnableLockAcc                                            # DisableLockAcc
      
 ############################### Network Tweaks ######################################
      
-    # SetCurrentNetworkPrivate                                 #  SetCurrentNetworkPublic
+    # SetCurrentNetworkPrivate                                 # SetCurrentNetworkPublic
      SetUnknownNetworksPublic                                 # SetUnknownNetworksPrivate
-    # DisableNetDevicesAutoInst                                #  EnableNetDevicesAutoInst
-     DisableSMB1                                              #  EnableSMB1
-     DisableNetBIOS                                           #  EnableNetBIOS
-     DisableRemoteAssistance                                  #  EnableRemoteAssistance
-     EnableRemoteDesktop                                      #  DisableRemoteDesktop
-     DisableConnectionSharing                                 #  EnableConnectionSharing
-     DisableSharedExperiance                                  #  EnableSharedExperiaces
+    # DisableNetDevicesAutoInst                                # EnableNetDevicesAutoInst
+     DisableSMB1                                              # EnableSMB1
+     DisableNetBIOS                                           # EnableNetBIOS
+     DisableRemoteAssistance                                  # EnableRemoteAssistance
+     EnableRemoteDesktop                                      # DisableRemoteDesktop
+     DisableConnectionSharing                                 # EnableConnectionSharing
+     DisableSharedExperiance                                  # EnableSharedExperiaces
      
 ############################## Windows Service Tweaks ###############################
      
-     EnableUpdateMSProducts                                   #  DisableUpdateMSProducts
-     DisableMaintenanceWakeUp                                 #  EnableMaintenanceWakeUp
-     NearbySharingOff                                         #  NearbySharingMyDevices
-     EnableClipboardHistory                                   #  DisableClipboardHistory
-     DisableAutoplay                                          #  EnableAutoplay
-     DisableAutorun                                           #  EnableAutorun
-    # DisableRestorePoints                                     #  EnableRestorePoints
-    # EnableStorageSense                                       #  DisableStorageSense
-    # DisableSuperfetch                                        #  EnableSuperfetch
-    # SetBIOSTimeUTC                                           #  SetBIOSTimeLocal
-    # DisableSleepTimeout                                      #  EnableSleepTimeout
-    # DisableFastStartup                                       #  EnableFastStartup
-     DisableAutoRebootOnCrash                                 #  EnableAutoRebootOnCrash
+     EnableUpdateMSProducts                                   # DisableUpdateMSProducts
+     DisableMaintenanceWakeUp                                 # EnableMaintenanceWakeUp
+     NearbySharingOff                                         # NearbySharingMyDevices
+     EnableClipboardHistory                                   # DisableClipboardHistory
+     DisableAutoplay                                          # EnableAutoplay
+     DisableAutorun                                           # EnableAutorun
+    # DisableRestorePoints                                     # EnableRestorePoints
+    # EnableStorageSense                                       # DisableStorageSense
+    # DisableSuperfetch                                        # EnableSuperfetch
+    # SetBIOSTimeUTC                                           # SetBIOSTimeLocal
+    # DisableSleepTimeout                                      # EnableSleepTimeout
+    # DisableFastStartup                                       # EnableFastStartup
+     DisableAutoRebootOnCrash                                 # EnableAutoRebootOnCrash
      
-    # EnableDynamicLock                                        #  DisableDynamicLock
-     DisableProjectingToPC                                    #  EnableProjectingToPC
-     
+    # EnableDynamicLock                                        # DisableDynamicLock
+     DisableProjectingToPC                                    # EnableProjectingToPC
+     DisbalePowerThrottling                                   # EnablePowerThrottling
+
 ############################## UI Tweaks ###########################################
      
-     SetVisualFXAppearance                                    #  SetVisualFXPerformance
-    # HideNetworkFromLockScreen                                #  ShowNetworkOnLockScreen
-    # HideShutdownFromLockScreen                               #  ShowShutdownOnLockScreen
-     DisableLockScreenBlur                                    #  EnableLockScreenBlur
-     DisableSearchAppInStore                                  #  EnableSearchAppInStore
-     HideRecentlyAddedApps                                    #  ShowRecentlyAddedApps
-     HideMostUsedApps                                         #  ShowMostUsedApps
-     SetControlPanelSmallIcons                                #  SetControlPanelLargeIcons     # SetControlPanelCategories
-     SetAppsDarkMode                                          #  SetAppsLightMode
-     SetSystemDarkMode                                        #  SetSystemLightMode
-     EnableNumlock                                            #  DisableNumlock
-    # DisableEnhPointerPrecision                               #  EnableEnhPointerPrecision
-     MaxMouseSpeed                                            #  MediumMouseSpeed
-     EnableVerboseStatus                                      #  DisableVerboseStatus
-     DisplayPreviousLogOn                                     #  HidePreviousLogOn
-     DisableF1HelpKey                                         #  EnableF1HelpKey
+     SetVisualFXAppearance                                    # SetVisualFXPerformance
+    # HideNetworkFromLockScreen                                # ShowNetworkOnLockScreen
+    # HideShutdownFromLockScreen                               # ShowShutdownOnLockScreen
+     DisableLockScreenBlur                                    # EnableLockScreenBlur
+     DisableSearchAppInStore                                  # EnableSearchAppInStore
+     HideRecentlyAddedApps                                    # ShowRecentlyAddedApps
+     HideMostUsedApps                                         # ShowMostUsedApps
+     SetControlPanelSmallIcons                                # SetControlPanelLargeIcons     # SetControlPanelCategories
+     SetAppsDarkMode                                          # SetAppsLightMode
+     SetSystemDarkMode                                        # SetSystemLightMode
+     EnableNumlock                                            # DisableNumlock
+    # DisableEnhPointerPrecision                               # EnableEnhPointerPrecision
+     MaxMouseSpeed                                            # MediumMouseSpeed
+     EnableVerboseStatus                                      # DisableVerboseStatus
+    # DisplayPreviousLogOn                                     # HidePreviousLogOn
+     DisableF1HelpKey                                         # EnableF1HelpKey
      
-     CenterAlignTaskbar                                       #  LeftAlignTaskbar
-     HideTaskbarSearch                                        #  ShowTaskbarSearch
-    # ShowTaskView                                             #  HideTaskView
+     CenterAlignTaskbar                                       # LeftAlignTaskbar
+     HideTaskbarSearch                                        # ShowTaskbarSearch
+    # ShowTaskView                                             # HideTaskView
      SetTaskbarCombineAlways                                  # SetTaskbarCombineWhenFull       #  SetTaskbarCombineNever
      HideWidgetsIcon                                          # ShowWidgetsIcon
-     HideTaskbarChatIcon                                      #  ShowTaskbarChatIcon
-     ShowMorePinsInStartMenu                                  #  EvenStartMenu       # ShowMoreRecommendationsInStartMenu
-     ImproveWallpapper                                        #  ReduceWallpapper
+     HideTaskbarChatIcon                                      # ShowTaskbarChatIcon
+     ShowMorePinsInStartMenu                                  # EvenStartMenu       # ShowMoreRecommendationsInStartMenu
+     ImproveWallpapper                                        # ReduceWallpapper
      
 ############################## Time & Region Tweaks ##################################
      
-     ShowSecondsOnTaskBar                                     #  HideSecondsFromTaskbar
-     SetRegionCustomGB                                        #  SetRegionDefaultGB
+     ShowSecondsOnTaskBar                                     # HideSecondsFromTaskbar
+     SetRegionCustomGB                                        # SetRegionDefaultGB
      
 ############################## Typing Tweaks ##########################################
      
-     EnableSpellingHighlights                                 #  DisableSpellingHighlights
-     DisableTextSuggestions                                   #  EnableTextSuggestions
-     DisableTypingInsights                                    #  EnableTypingInsights
+     EnableSpellingHighlights                                 # DisableSpellingHighlights
+     DisableTextSuggestions                                   # EnableTextSuggestions
+     DisableTypingInsights                                    # EnableTypingInsights
      
 ############################## Explorer Tweaks #########################################
     
-     UseCompactMode                                           #  UseExpandedMode
-     ShowKnownExtensions                                      #  HideKnownExtensions
-     ShowHiddenFiles                                          #  HideHiddenFiles
-    # ShowSuperHiddenFiles                                     #  HideSuperHiddenFiles
-     ShowEmptyDrives                                          #  HideEmptyDrives
-    # ShowEncCompFilesColor                                    #  HideEncCompFilesColor
-     HideRecentShortcuts                                      #  ShowRecentShortcuts
-    # ShowBuildNumberOnDesktop                                 #  HideBuildNumberFromDesktop
+     UseCompactMode                                           # UseExpandedMode
+     ShowKnownExtensions                                      # HideKnownExtensions
+     ShowHiddenFiles                                          # HideHiddenFiles
+    # ShowSuperHiddenFiles                                     # HideSuperHiddenFiles
+     ShowEmptyDrives                                          # HideEmptyDrives
+    # ShowEncCompFilesColor                                    # HideEncCompFilesColor
+     HideRecentShortcuts                                      # ShowRecentShortcuts
+    # ShowBuildNumberOnDesktop                                 # HideBuildNumberFromDesktop
      
-     SetExplorerHomeFolder                                    #  SetExplorerThisPC
-     HideDesktopIcons                                         #  ShowDesktopIcons
-    # ShowCloudFiles                                           #  HideCloudFiles
-     PinUserFolderNavPane                                     #  UnpinUserFolderNavPane
-     HideNetNavPane                                           #  PinNetNavPane
+     SetExplorerHomeFolder                                    # SetExplorerThisPC
+     HideDesktopIcons                                         # ShowDesktopIcons
+    # ShowCloudFiles                                           # HideCloudFiles
+     PinUserFolderNavPane                                     # UnpinUserFolderNavPane
+     HideNetNavPane                                           # PinNetNavPane
     # MkdirTemp
     # MkdirDev
      
 ############################## Application Tweaks ##########################################
      
-     DisableMapUpdates                                        #  EnableMapUpdates
-    # DisableOneDrive                                          #  EnableOneDrive 
-    # UninstallOneDrive                                        #  InstallOneDrive
+     DisableMapUpdates                                        # EnableMapUpdates
+    # DisableOneDrive                                          # EnableOneDrive 
+    # UninstallOneDrive                                        # InstallOneDrive
     # UninstallAllApps                
      UninstallMsftBloat
      UninstallThirdPartyBloat
-     DisableXboxFeatures                                      #  EnableXboxFeatures
-     DisableFirstLogonAnimation                               #  EnableFirstLogonAnimation
-    # EnableDeveloperMode                                      #  DisableDeveloperMode
-    # InstallLinuxSubsystem                                    #  UninstallLinuxSubsystem
-    # InstallHyperV                                            #  UninstallHyperV
-     UninstallXPSPrinter                                      #  InstallXPSPrinter
-     RemoveFaxPrinter                                         #  AddFaxPrinter
-     UninstallFaxAndScan                                      #  InstallFaxAndScan
+     DisableXboxFeatures                                      # EnableXboxFeatures
+     DisableFirstLogonAnimation                               # EnableFirstLogonAnimation
+    # EnableDeveloperMode                                      # DisableDeveloperMode
+    # InstallLinuxSubsystem                                    # UninstallLinuxSubsystem
+    # InstallHyperV                                            # UninstallHyperV
+     UninstallXPSPrinter                                      # InstallXPSPrinter
+     RemoveFaxPrinter                                         # AddFaxPrinter
+     UninstallFaxAndScan                                      # InstallFaxAndScan
      
-     AppSharingOff                                            #  AppSharingMyDevices
+     AppSharingOff                                            # AppSharingMyDevices
      
 ############################## Windwows Server Tweaks ##################################
      
-    # HideServerManagerOnLogin                                 #  ShowServerManagerOnLogin
-    # DisableShutdownTracker                                   #  EnableShutdownTracker
-    # DisablePasswordPolicy                                    #  EnablePasswordPolicy
-    # DisableCtrlAltDelLogin                                   #  EnableCtrlAltDelLogin
-    # DisableIEEnhancedSecurity                                #  EnableIEEnhancedSecurity
-    # EnableAudio                                              #  DisableAudio
+    # HideServerManagerOnLogin                                 # ShowServerManagerOnLogin
+    # DisableShutdownTracker                                   # EnableShutdownTracker
+    # DisablePasswordPolicy                                    # EnablePasswordPolicy
+    # DisableCtrlAltDelLogin                                   # EnableCtrlAltDelLogin
+    # DisableIEEnhancedSecurity                                # EnableIEEnhancedSecurity
+    # EnableAudio                                              # DisableAudio
      
 ############################## Additional Tweaks #######################################
      
