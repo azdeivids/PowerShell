@@ -2987,8 +2987,7 @@ Function DisableDeveloperMode {
 # Install Linux Subsystem (Ubunut by default and kali-linux additionaly)
 Function InstallLinuxSubsystem {
 	Write-Output "Installing Linux Subsystem..."
-	install --wsl
-	install --wsl -d kali-linux
+	wsl --install ; wsl --install -d kali-linux ; wsl --install -d Ubunut-22.04
 
 	" WSL2 (Ubuntu and Kali) Installed `n" >> "windows_configuration.log"
 }
