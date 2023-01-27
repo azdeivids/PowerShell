@@ -1690,6 +1690,25 @@ Function EnableProjectingToPC {
 	" projecting to this PC enabled from secure networks `n" >> "windows_configuration.log"
 }
 
+# Disable Power throttling
+Function DisbalePowerThrottling {
+	Write-Output "Power throttling is being disabled..."
+	If (!(Test-Path "HKLM:\SYSTEM\CurrentControlSet\Control\Power\PowerThrottling")) {
+		New-Item -Path "HKLM:\SYSTEM\CurrentControlSet\Control\Power\PowerThrottling" | Out-Null
+	}
+	Set-ItemProperty -Path "HKLM:\SYSTEM\CurrentControlSet\Control\Power\PowerThrottling" -Name "PowerThrottlingOff" -Type DWord -Value 1
+
+	" Power throttling has been disabled `n" >> "windows_configuration.log"
+}
+
+# Enable Power Throttling
+Function EnablePowerThrottling {
+	Write-Output "Enabling power throttling..."
+	Remove-ItemProperty -Path "HKLM:\SYSTEM\CurrentControlSet\Control\Power\PowerThrottling" -Name "PowerThrottlingOff" -ErrorAction SilentlyContinue
+
+	" Power throttling has been enbaled `n" >> "windows_configuration.log"
+}
+
 
 #######################################################################################################
 #
@@ -2702,11 +2721,8 @@ Function UninstallMsftBloat {
 	Get-AppxPackage "MicrosoftCorporationII.QuickAssist" | Remove-AppxPackage
 	Get-AppxPackage "Microsoft.GamingApp" | Remove-AppxPackage
 	Get-AppxPackage "Clipchamp.Clipchamp" | Remove-AppxPackage
+	Get-AppPackage "MicrosoftWindows.Client.WebExperience" | Remove-AppxPackage
 }
-
-
-Write-Host "Script will resume in 5 minutes..."
-Start-Sleep -Seconds 300
 
 # Uninstall default third party applications
 function UninstallThirdPartyBloat {
@@ -2756,9 +2772,6 @@ function UninstallThirdPartyBloat {
 	Get-AppxPackage "XINGAG.XING" | Remove-AppxPackage
 }
 
-Write-Host "Script will resume in 2 minutes..."
-Start-Sleep -Seconds 120
-
 # Disable Xbox features - Not applicable to Server
 Function DisableXboxFeatures {
 	Write-Output "Disabling Xbox features..."
@@ -2772,6 +2785,8 @@ Function DisableXboxFeatures {
 	Set-ItemProperty -Path "HKCU:\Software\Microsoft\GameBar" -Name "AutoGameModeEnabled" -Type DWord -Value 0
 	Set-ItemProperty -Path "HKCU:\System\GameConfigStore" -Name "GameDVR_Enabled" -Type DWord -Value 0
 	Set-ItemProperty -Path "HKCU:\Software\Microsoft\GameBar" -Name "UseNexusForGameBarEnabled" -Type DWord -Value 0
+	Set-ItemProperty -Path "HKCU:\System\GameConfigStore" -Name "GameDVR_FSEBehaviorMode" -Type DWord -Value 2
+	Set-ItemProperty -Path "HKLM:\SOFTWARE\Microsoft\PolicyManager\default\ApplicationManagement\AllowGameDVR" -Name "value" -Type DWord -Value 0
 	If (!(Test-Path "HKLM:\SOFTWARE\Policies\Microsoft\Windows\GameDVR")) {
 		New-Item -Path "HKLM:\SOFTWARE\Policies\Microsoft\Windows\GameDVR" | Out-Null
 	}
@@ -2792,6 +2807,8 @@ Function EnableXboxFeatures {
 	Remove-ItemProperty -Path "HKCU:\Software\Microsoft\GameBar" -Name "AutoGameModeEnabled" -ErrorAction SilentlyContinue
 	Set-ItemProperty -Path "HKCU:\System\GameConfigStore" -Name "GameDVR_Enabled" -Type DWord -Value 1
 	Set-ItemProperty -Path "HKCU:\Software\Microsoft\GameBar" -Name "UseNexusForGameBarEnabled" -Type DWord -Value 1
+	Set-ItemProperty -Path "HKCU:\System\GameConfigStore" -Name "GameDVR_FSEBehaviorMode" -Type DWord -Value 0
+	Set-ItemProperty -Path "HKLM:\SOFTWARE\Microsoft\PolicyManager\default\ApplicationManagement\AllowGameDVR" -Name "value" -Type DWord -Value 1
 	Remove-ItemProperty -Path "HKLM:\SOFTWARE\Policies\Microsoft\Windows\GameDVR" -Name "AllowGameDVR" -ErrorAction SilentlyContinue
 
 	" Xbox features enabled `n" >> "windows_configuration.log"
