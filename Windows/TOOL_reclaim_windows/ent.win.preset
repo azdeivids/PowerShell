@@ -95,7 +95,8 @@
      
      EnableDynamicLock                                        #  DisableDynamicLock
      DisableProjectingToPC                                    #  EnableProjectingToPC
-     
+     DisbalePowerThrottling                                   # EnablePowerThrottling
+
 ############################## UI Tweaks ###########################################
      
      SetVisualFXAppearance                                    #  SetVisualFXPerformance
@@ -112,7 +113,7 @@
     # DisableEnhPointerPrecision                               #  EnableEnhPointerPrecision
      MaxMouseSpeed                                            #  MediumMouseSpeed
      EnableVerboseStatus                                      #  DisableVerboseStatus
-     DisplayPreviousLogOn                                     #  HidePreviousLogOn
+    # DisplayPreviousLogOn                                     #  HidePreviousLogOn
      DisableF1HelpKey                                         #  EnableF1HelpKey
      
      CenterAlignTaskbar                                       #  LeftAlignTaskbar
