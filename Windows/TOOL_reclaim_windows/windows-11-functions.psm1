@@ -3024,6 +3024,26 @@ Function UninstallHyperV {
 	" Hyper-V uninstalled (All tools) `n" >> "windows_configuration.log"
 }
 
+# Install Windows RSAT tools
+Function InstallRSAT {
+	Write-Output "Installing windows remote server administration tools..."
+	If ((Get-CimInstance -Class "Win32_OperatingSystem").ProductType -eq 1) {
+		Get-WindowsCapability -Name RSAT* -Online | Add-WindowsCapability -Online
+	}
+
+	" RSAT have been installed `n" >> "windows_configuration.log"
+}
+
+# Uninstall Windows RSAT tools
+Function UnisntallRAST {
+	Write-Output "Uninstalling windows remote server administration tools..."
+	If ((Get-CimInstance -Class "Win32_OperatingSystem").ProductType -eq 1) {
+		Get-WindowsCapability -Name RSAT* -Online | Remove-WindowsCapability 
+	}
+	
+	" RSAT have been uninstalled `n" >> "windows_configuration.log"
+}
+
 # Uninstall Microsoft XPS Document Writer
 Function UninstallXPSPrinter {
 	Write-Output "Uninstalling Microsoft XPS Document Writer..."

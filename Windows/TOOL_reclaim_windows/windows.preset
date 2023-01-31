@@ -172,8 +172,9 @@
      DisableXboxFeatures                                      # EnableXboxFeatures
      DisableFirstLogonAnimation                               # EnableFirstLogonAnimation
     # EnableDeveloperMode                                      # DisableDeveloperMode
-    # InstallLinuxSubsystem                                    # UninstallLinuxSubsystem
-    # InstallHyperV                                            # UninstallHyperV
+     InstallLinuxSubsystem                                    # UninstallLinuxSubsystem
+     InstallHyperV                                            # UninstallHyperV
+     InstallRSAT                                              # UninstallRSAT
      UninstallXPSPrinter                                      # InstallXPSPrinter
      RemoveFaxPrinter                                         # AddFaxPrinter
      UninstallFaxAndScan                                      # InstallFaxAndScan
