@@ -68,6 +68,7 @@
     # DisableSmartScreen                                       #  EnableSmartScreen
     # EnableLockAcc                                            #  DisableLockAcc
      DisableRemoteRegistry                                     # EnableRemoteRegistry
+     DisableCredentialsGuard                                   # EnableCredentialGuard
      
 ############################### Network Tweaks ######################################
      

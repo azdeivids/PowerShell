@@ -1301,6 +1301,29 @@ Function EnableRemoteRegistry {
 	" Remote registry configuration enabled `n" >> "windows_configuration.log"
 }
 
+# Disable Windows Credential Guard
+# With windows 11 22h2 microsoft has introduced windows credential guard as a part of virtualisation-based security
+# this prevents the user from using RDP service with the saved credentials and ask for authentication each time you try to connect.
+Function DisableCredentialsGuard {
+	Write-Output "Disabling virtualisation-based security credential guard feature..."
+	If (!(Test-Path "HKLM:\SOFTWARE\Policies\Microsoft\Windows\DeviceGuard")) {
+		New-Item -Path "HKLM:\SOFTWARE\Policies\Microsoft\Windows\DeviceGuard" | Out-Null
+	}
+	Set-ItemProperty -Path "HKLM:\SOFTWARE\Policies\Microsoft\Windows\DeviceGuard" -Name "LsaCfgFlags" -Type DWord -Value 0
+	Set-ItemProperty -Path "HKLM:\SYSTEM\CurrentControlSet\Control\Lsa" -Name "LsaCfgFlags" -Type DWord -Value 0
+
+	" Virtualisation-based security credential guard has been disabled `n" >> "windows_configuration.log"
+}
+
+# Enable Windows Credential Guard
+Function EnableCredentialGuard {
+	Write-Output "Enabling virtualisation-based security credential guard feature..."
+	Remove-ItemProperty -Path "HKLM:\SOFTWARE\Policies\Microsoft\Windows\DeviceGuard" -Name "LsaCfgFlags" -ErrorAction SilentlyContinue
+	Remove-ItemProperty -Path "HKLM:\SYSTEM\CurrentControlSet\Control\Lsa" -Name "LsaCfgFlags" -ErrorAction SilentlyContinue
+
+	" Credential guard has been enabled `n" >> "windows_configuration.log"
+}
+
 
 
 #######################################################################################################
