@@ -11,33 +11,48 @@ $DomainDN = $Domain.DistinguishedName
 
 $Forest = $Domain.Forest
 
-$ParentOUName = Read-Host "What is the name of the parent OU: "
+$UserGroupParentOUName = Read-Host "What is the user group parent OU name"
 
-If ((Get-ADOrganizationalUnit -Filter "Name -eq `"$ParentOUName`"" -Server $Server -ErrorAction SilentlyContinue))
+$UserParentOUName = Read-Host "What is the name of the parent OU"
+
+If ((Get-ADOrganizationalUnit -Filter "Name -eq `"$UserGroupParentOUName`"" -Server $Server -ErrorAction SilentlyContinue)) 
 {
-    Get-ADOrganizationalUnit -Filter "Name -eq `"$ParentOUName`"" -SearchScope SubTree -Server $Server | Set-ADObject -ProtectedFromAccidentalDeletion:$False -Server $Server -PassThru | Remove-ADOrganizationalUnit -Confirm:$True -Server $Server -Recursive -Verbose
+    Get-ADOrganizationalUnit -Filter "Name -eq `"$UserGroupParentOUName`"" -SearchScope SubTree -Server $Server | Set-ADObject -ProtectedFromAccidentalDeletion:$True -Server $Server -PassThru
+    Write-Host "" 
+}
+Else 
+{
+    New-ADOrganizationalUnit -Name $UserGroupParentOUName -Path $DomainDN -Verbose -Server $Server -ErrorAction Stop
+
+    $GroupParentOU = Get-ADOrganizationalUnit -Filter "Name -eq `"$UserGroupParentOUName`"" -Server $Server
+    
+    $IntakeYear = Read-Host "What is the user intake year"
+
+    $GroupOU = New-ADOrganizationalUnit -Name $IntakeYear -Path $GroupParentOU.DistinguishedName -Verbose -PassThru -Server $Server -ErrorAction Stop
+
+    New-ADGroup -Name "$IntakeYear" -SamAccountName "$IntakeYear" -GroupCategory Security -GroupScope Global -Path $GroupOU.DistinguishedName -Description "Groups Synched with Google Apps" -Verbose -OtherAttributes @{"Mail"="$($IntakeYear.Replace(' ',''))@$($Forest)"} -Server $Server -PassThru
+    Write-Host ""
+}
+
+If ((Get-ADOrganizationalUnit -Filter "Name -eq `"$UserParentOUName`"" -Server $Server -ErrorAction SilentlyContinue))
+{
+    Get-ADOrganizationalUnit -Filter "Name -eq `"$UserParentOUName`"" -SearchScope SubTree -Server $Server | Set-ADObject -ProtectedFromAccidentalDeletion:$False -Server $Server -PassThru | Remove-ADOrganizationalUnit -Confirm:$True -Server $Server -Recursive -Verbose
     Write-Host ""
 }
 Else
 {
-    # Set-ADDefaultDomainPasswordPolicy $Forest -ComplexityEnabled $False -MaxPasswordAge "1000" -PasswordHistoryCount 0 -MinPasswordAge 0 -Server $Server
-    
-    New-ADOrganizationalUnit -Name $ParentOUName -Path $DomainDN -Verbose -Server $Server -ErrorAction Stop
+    New-ADOrganizationalUnit -Name $UserParentOUName -Path $DomainDN -Verbose -Server $Server -ErrorAction Stop
 
-    $ParentOU = Get-ADOrganizationalUnit -Filter "Name -eq `"$ParentOUName`"" -Server $Server
+    $ParentOU = Get-ADOrganizationalUnit -Filter "Name -eq `"$UserParentOUName`"" -Server $Server
 
-    $UserOU = New-ADOrganizationalUnit -Name "Users" -Path $ParentOU.DistinguishedName -Verbose -PassThru -Server $Server -ErrorAction Stop
-    $GroupOU = New-ADOrganizationalUnit -Name "Groups" -Path $ParentOU.DistinguishedName -Verbose -PassThru -Server $Server -ErrorAction Stop
+    $UserOU = New-ADOrganizationalUnit -Name "$IntakeYear" -Path $ParentOU.DistinguishedName -Verbose -PassThru -Server $Server -ErrorAction Stop
 
     $UserCount = 1000
 
-    $InitialPassword = Read-Host "Provide the password used during account creation:" #Initial Password for all users
-
-    $Company = Read-Host "Provide the company name:"
+    #Initial Password for all users
+    $InitialPassword = Read-Host "Provide the password used during account creation:" 
     
     $Content = Import-CSV -Path "$($ScriptDir)\$($ScriptName).csv" -ErrorAction Stop | Get-Random -Count $UserCount | Sort-Object -Property State
-
-    $YearGroup =  Read-Host "Provide the year group:"
 
     $Users = $Content | Select-Object `
         @{Name="Name";Expression={"$($_.Surname), $($_.GivenName)"}},`
@@ -47,60 +62,42 @@ Else
         @{Name="GivenName"; Expression={$_.GivenName}},`
         @{Name="Surname"; Expression={$_.Surname}},`
         @{Name="DisplayName"; Expression={"$($_.GivenName) $($_.MiddleInitial). $($_.Surname)"}},`
-        @{Name="State"; Expression={$_.State}},`
-        @{Name="YearGroup"; Expression={$_.YearGroup}},`
-        @{Name="EmailAddress"; Expression={"$($_.YearGroup.Substring($_.YearGroup.Length - 2))$($_.GivenName.ToCharArray()[0])($_.Surname)@$($Forest)"}},`
+        @{Name="IntakeYear"; Expression={$_.IntakeYear}},`
+        @{Name="EmailAddress"; Expression={"$($_.IntakeYear.Substring($_.IntakeYear.Length - 2))$($_.GivenName.ToCharArray()[0])($_.Surname)@$($Forest)"}},`
         @{Name="AccountPassword"; Expression={ (ConvertTo-SecureString -String $InitialPassword -AsPlainText -Force)}},`
         @{Name="Department"; Expression={$_.Department},`
         @{Name="Enabled"; Expression={$True}},`
         @{Name="PasswordNeverExpires"; Expression={$True}}
     }
  
-    New-ADGroup -Name "$YearGroup" -SamAccountName "$YearGroup" -GroupCategory Security -GroupScope Global -Path $GroupOU.DistinguishedName -Description "Security Group for all $YearGroup users" -Verbose -OtherAttributes @{"Mail"="$($YearGroup.Replace(' ',''))@$($Forest)"} -Server $Server -PassThru
-
     Write-Host ""
+
+    ForEach ($User In $Users) {
+        
+    }
 
     ForEach ($User In $Users)
         {
-            If (!(Get-ADOrganizationalUnit -Filter "Name -eq `"$($User.Department)`"" -SearchBase $UserOU.DistinguishedName -Server $Server -ErrorAction SilentlyContinue))
-                {
-                    $Department = New-ADOrganizationalUnit -Name $User.Department -Path $UserOU.DistinguishedName -Department $User.Department -Verbose -Server $Server -PassThru
-                    Write-Host ""
-                }
-            Else
-                {
-                    $DepartmentOU = Get-ADOrganizationalUnit -Filter "Name -eq `"$($User.YearGroup)`"" -Server $Server
-                }
-
-            If (!(Get-ADOrganizationalUnit -Filter "Name -eq `"$($User.YearGroup)`"" -SearchBase $DepartmentOU.DistinguishedName -Server $Server -ErrorAction SilentlyContinue))
-                {
-                    $YearGroupOU = New-ADOrganizationalUnit -Name $User.YearGroup -Path $DepartmentOU.DistinguishedName -YearGroup $User.YearGroup -Department $User.Department -Verbose -Server $Server -PassThru
-                    Write-Host ""
-                }
-            Else
-                {
-                    $YearGroupOU = Get-ADOrganizationalUnit -Filter "Name -eq `"$($User.YearGroup)`"" -Server $Server
-                }
        
-            $DestinationOU = Get-ADOrganizationalUnit -Filter "Name -eq `"$($User.YearGroup)`"" -SearchBase $DepartmentOU.DistinguishedName -Server $Server
+            $DestinationOU = Get-ADOrganizationalUnit -Filter "Name -eq `"$($User.IntakeYear)`"" -SearchBase $DepartmentOU.DistinguishedName -Server $Server
 
             $CreateADUser = $User | Select-Object -Property @{Name="Path"; Expression={$DestinationOU.DistinguishedName}}, * | New-ADUser -Verbose -Server $Server -PassThru
     
-            $AddADUserToGroup = Add-ADGroupMember -Identity $User.YearGroup -Members $User.SamAccountName -Server $Server -Verbose
+            $AddADUserToGroup = Add-ADGroupMember -Identity $User.IntakeYear -Members $User.SamAccountName -Server $Server -Verbose
 
             Write-Host ""
         }
     
-    ForEach ($Department In $Departments.Name)
-        {
-            $DepartmentManager = Get-ADUser -Filter {(Title -eq "Student") -and (Department -eq $Department)} -Server $Server | Sort-Object | Select-Object -First 1
-            $SetDepartmentManager = Get-ADUser -Filter {(Department -eq $Department)} | Set-ADUser -Manager $DepartmentManager -Verbose
-        }
+    # ForEach ($Department In $Departments.Name)
+    #     {
+    #         $DepartmentManager = Get-ADUser -Filter {(Title -eq "Student") -and (Department -eq $Department)} -Server $Server | Sort-Object | Select-Object -First 1
+    #         $SetDepartmentManager = Get-ADUser -Filter {(Department -eq $Department)} | Set-ADUser -Manager $DepartmentManager -Verbose
+    #     }
 
     Write-Host ""
 }
 
 #Stop logging script output 
 $($NewLine)
-Write-Warning -Message "Run `'$($ScriptName).ps1`' twice if nothing happens initially. This is due to the OU deletion confirmation prompt."
+# Write-Warning -Message "Run `'$($ScriptName).ps1`' twice if nothing happens initially. This is due to the OU deletion confirmation prompt."
 Stop-Transcript
