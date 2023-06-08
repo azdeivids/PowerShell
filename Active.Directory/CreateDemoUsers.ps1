@@ -1,3 +1,6 @@
+#Start logging script output
+Start-Transcript -Path "$Temp\$ScriptName.log" -Force
+
 $Server = "$($Env:Computername).$($Env:UserDnsDomain.ToLower())"
 
 Import-Module -Name 'ActiveDirectory' -Force -NoClobber -ErrorAction Stop
@@ -7,6 +10,8 @@ $Domain = Get-ADDomain -Server $Server
 $DomainDN = $Domain.DistinguishedName
 
 $Forest = $Domain.Forest
+
+$ParentOUName = Read-Host "What is the name of the parent OU: "
 
 If ((Get-ADOrganizationalUnit -Filter "Name -eq `"$ParentOUName`"" -Server $Server -ErrorAction SilentlyContinue))
 {
@@ -23,6 +28,8 @@ Else
 
     $UserOU = New-ADOrganizationalUnit -Name "Users" -Path $ParentOU.DistinguishedName -Verbose -PassThru -Server $Server -ErrorAction Stop
     $GroupOU = New-ADOrganizationalUnit -Name "Groups" -Path $ParentOU.DistinguishedName -Verbose -PassThru -Server $Server -ErrorAction Stop
+
+    $UserCount = 1000
 
     $InitialPassword = Read-Host "Provide the password used during account creation:" #Initial Password for all users
 
