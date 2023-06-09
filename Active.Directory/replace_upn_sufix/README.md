@@ -1,0 +1,1 @@
+This short script will replace the exisiting UPN sufix with the provided custom domain name for users residing in the specified group.
