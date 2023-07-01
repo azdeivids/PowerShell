@@ -13,7 +13,7 @@ Path to the Organizational Unit in Active Directory where all the users should b
 Group name where the users are to be joined. Can accept multiple values. This parameter is optional.
 .PARAMETER Credentials
 Password to be set for the users during the account creation. 
-.PARAMETER pwreset
+.PARAMETER PasswordReset
 Enable or disabled the option for the created users to reset their password.
 .EXAMPLE
 ~.\Create-ADUsers.ps1 -Csv \\dc2k22\Folder\sub-folder\Newusers.csv -OU 'ou=NewUsers,ou=AllUsers,dc=deividsegle,dc=com' -Group 'cn=UserGroup,ou=SecurityGroup,dc=deividsegle,dc=com' -Upn deividsegle.com
@@ -46,10 +46,14 @@ param(
     $Department,
     [Alias("Password")]
     $Credentials,
-    $pwreset
+    $PasswordReset
 )
 If (Test-Path -LiteralPath $filepath)
 {
+
+    $UserCSV = Import-Csv -Path $filepath
+
+
     ForEach ($User in $UserCSV)
     {
         $Displayname = $User.Firstname + " "  + $User.Lastname
@@ -63,7 +67,7 @@ If (Test-Path -LiteralPath $filepath)
 
         If ($ValidateUser -eq $null)
         {
-            New-ADUser -Name $samAccountName -DisplayName $Displayname -GivenName $UserFirstName -Surname $UserLastName -SamAccountName $samAccountName -UserPrincipalName $upn -Department $Department -EmailAddress $upn -ChangePasswordAtLogon $pwreset -AccountPassword (ConvertTo-SecureString $Credentials -AsPlainText) -Enabled $true -PasswordNeverExpires $True -Verbose
+            New-ADUser -Name $DisplayName -DisplayName $Displayname -GivenName $UserFirstName -Surname $UserLastName -SamAccountName $samAccountName -UserPrincipalName $upn -Department $Department -EmailAddress $upn -ChangePasswordAtLogon $PasswordReset -AccountPassword (ConvertTo-SecureString $Credentials -AsPlainText) -Enabled $true -PasswordNeverExpires $False -Verbose
 
             If ($AdGroup)
             {
