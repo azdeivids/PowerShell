@@ -2381,6 +2381,25 @@ Function ReduceWallpapper {
 	" Wallappper quality reduces `n" >> "windows_configuration.log"
 }
 
+# Removed taskbar icon thumbnail hover speed delay
+Function RemoveThumbnailHoverDelay {
+	Write-Output "Removed taskbar icon thumbnail hover delay..."
+	If (!(Test-Path "HKCU\Software\Microsoft\Windows\CurrentVersion\Explorer\Advanced")) {
+		New-Item "HKCU\Software\Microsoft\Windows\CurrentVersion\Explorer\Advanced" | Out-Null
+	}
+	Set-ItemProperty -Path "HKCU\Software\Microsoft\Windows\CurrentVersion\Explorer\Advanced" -Name "ExtendedUIHoverTime" -Type DWord -Value 1
+
+	" Taskbar icon thumbnail hover speed removed `n" >> "windows_configuration.log"
+}
+
+# Set taskbar icon thumbnail hover speed delay back to default
+Function DefaultThumbnailHoverDelay {
+	Write-Output "Taskbar icon thumbnail hover speed set back to default..."
+	Remove-ItemProperty -Path "HKCU\Software\Microsoft\Windows\CurrentVersion\Explorer\Advanced" -Name "ExtendedUIHoverTime" -ErrorAction SilentlyContinue
+
+	" Taskbar icon thumbnail hover speed set to default `n" >> "windows_configuration.log"
+}
+
 ########################## Time & Region Settings ######################################
 
 # Show seconds in taskbar

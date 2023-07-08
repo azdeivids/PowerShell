@@ -131,6 +131,7 @@
      HideTaskbarChatIcon                                      #  ShowTaskbarChatIcon
      ShowMorePinsInStartMenu                                  #  EvenStartMenu       # ShowMoreRecommendationsInStartMenu
      ImproveWallpapper                                        #  ReduceWallpapper
+     RemoveThumbnailHoverDelay                                # DefaultThumbnailHoverDelay
      
 ############################## Time & Region Tweaks ##################################
      
