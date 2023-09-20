@@ -86,3 +86,7 @@ else
 {
      Write-Host "There is no user list to work with." -ForegroundColor Magenta
 }
+
+
+.\Create-ADUsers.ps1 -Csv C:\scripts\Newusers.csv -OU 'OU=2023 Entry,OU=Pupils,OU=Users,OU=Philip Southcote School,DC=pss-curriculum,DC=local' -Upn 'philip-southcote.surrey.sch.uk'
+CN=test user
